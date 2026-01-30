@@ -25,6 +25,7 @@ import {
 	Mail,
 	Building,
 	Loader2,
+	FileText,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -165,7 +166,7 @@ export default function AdminOrderDetailsPage() {
 		description,
 		isActive,
 		isCompleted,
-	}: { 
+	}: {
 		title: string;
 		date?: string;
 		description: string;
@@ -249,13 +250,7 @@ export default function AdminOrderDetailsPage() {
 					</Link>
 				</Button>
 				<div>
-					<h1 className="text-2xl font-bold flex items-center gap-3">
-						Order #{order.orderNumber || order.id?.substring(0, 8).toUpperCase()}
-					</h1>
-					<div className="flex items-center gap-2 text-muted-foreground text-sm">
-						<Calendar className="h-3.5 w-3.5" />
-						<span>Placed on {new Date(order.orderDate).toLocaleDateString()}</span>
-					</div>
+					<h1 className="text-2xl font-bold">Order Details</h1>
 				</div>
 			</div>
 			<div className="flex items-center gap-2">
@@ -463,40 +458,77 @@ export default function AdminOrderDetailsPage() {
 				<div className="md:col-span-4 flex flex-col gap-6">
 					{/* STATUS & ACTIONS CARD (Sticky-ish logic could be applied here) */}
 					<div className="space-y-6">
-						{/* Current Status Badge */}
-						<Card
-							className={cn(
-								"rounded-xl border-none shadow-sm overflow-hidden",
-								isPending
-									? "bg-yellow-50 dark:bg-yellow-950/20"
-									: isApproved
-										? "bg-emerald-50 dark:bg-emerald-950/20"
-										: isProcessing
-											? "bg-purple-50 dark:bg-purple-950/20"
-											: isShipped
-												? "bg-indigo-50 dark:bg-indigo-950/20"
-												: isDelivered
-													? "bg-green-50 dark:bg-green-950/20"
-													: "bg-card",
-							)}>
-							<div className="p-6 text-center space-y-2">
-								<p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
-									Current Status
-								</p>
-								<Badge
-									className={cn(
-										"mx-auto text-base py-1 px-4 h-auto",
-										getStatusColor(order.status),
-										"border-none text-white shadow-md",
-									)}>
-									{order.status.replace("_", " ")}
-								</Badge>
-								{isPending && (
-									<p className="text-xs text-yellow-700 dark:text-yellow-400 mt-2">
-										Waiting for your approval
+						{/* Order Details & Status Card */}
+						<Card className="rounded-xl border-none shadow-sm bg-card ring-1 ring-border/50">
+							<CardHeader className="pb-3">
+								<CardTitle className="text-base font-semibold">
+									Order Details
+								</CardTitle>
+							</CardHeader>
+							<CardContent className="space-y-5">
+								<div className="space-y-1">
+									<p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+										Order ID
 									</p>
-								)}
-							</div>
+									<p className="text-lg font-bold font-mono text-foreground">
+										#
+										{order.orderNumber ||
+											order.id?.substring(0, 8).toUpperCase()}
+									</p>
+								</div>
+
+								<div className="space-y-1">
+									<p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+										Date Placed
+									</p>
+									<div className="flex items-center gap-2">
+										<Calendar className="h-4 w-4 text-muted-foreground" />
+										<span className="font-medium text-foreground">
+											{new Date(order.orderDate).toLocaleDateString()}
+										</span>
+									</div>
+								</div>
+
+								<Separator className="bg-border/50" />
+
+								<div className="space-y-2">
+									<p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">
+										Current Status
+									</p>
+									<div
+										className={cn(
+											"rounded-lg p-4 border",
+											isPending
+												? "bg-yellow-50/50 border-yellow-200 dark:border-yellow-900/30 dark:bg-yellow-900/10"
+												: isApproved
+													? "bg-emerald-50/50 border-emerald-200 dark:border-emerald-900/30 dark:bg-emerald-900/10"
+													: isProcessing
+														? "bg-purple-50/50 border-purple-200 dark:border-purple-900/30 dark:bg-purple-900/10"
+														: isShipped
+															? "bg-indigo-50/50 border-indigo-200 dark:border-indigo-900/30 dark:bg-indigo-900/10"
+															: isDelivered
+																? "bg-green-50/50 border-green-200 dark:border-green-900/30 dark:bg-green-900/10"
+																: "bg-muted/50 border-border",
+										)}>
+										<div className="flex flex-col gap-2">
+											<Badge
+												className={cn(
+													"w-fit text-sm py-0.5 px-3 h-auto shadow-none",
+													getStatusColor(order.status),
+													"border-none text-white",
+												)}>
+												{order.status.replace("_", " ")}
+											</Badge>
+											{isPending && (
+												<p className="text-xs text-muted-foreground leading-tight">
+													This order requires your approval before
+													processing.
+												</p>
+											)}
+										</div>
+									</div>
+								</div>
+							</CardContent>
 						</Card>
 
 						{/* Actions */}
@@ -528,13 +560,25 @@ export default function AdminOrderDetailsPage() {
 										</>
 									)}
 									{isApproved && (
-										<Button
-											onClick={() => handleStatusUpdate("PROCESSING")}
-											className="w-full justify-start gap-3"
-											variant="secondary">
-											<Package className="h-4 w-4" />
-											Start Processing
-										</Button>
+										<>
+											<Button
+												onClick={() => {
+													toast.success("PO Created successfully!");
+													// Setup navigation or logic for PO creation here
+												}}
+												className="w-full justify-start gap-3"
+												variant="default">
+												<FileText className="h-4 w-4" />
+												Create PO
+											</Button>
+											<Button
+												onClick={() => handleStatusUpdate("PROCESSING")}
+												className="w-full justify-start gap-3"
+												variant="secondary">
+												<Package className="h-4 w-4" />
+												Start Processing
+											</Button>
+										</>
 									)}
 									{isProcessing && (
 										<Button

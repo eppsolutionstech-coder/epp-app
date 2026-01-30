@@ -5,20 +5,105 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, Truck, CheckCircle, Package, Clock } from "lucide-react";
 import { DataTable, type DataTableColumn } from "@/components/molecule/data-table-updated";
-import { useGetOrders } from "~/hooks/use-order";
+// import { useGetOrders } from "~/hooks/use-order";
 import type { Order } from "~/zod/order.zod";
+
+const MOCK_ORDERS = [
+	{
+		id: "1",
+		orderNumber: "ORD-2024-001",
+		employeeId: "EMP001",
+		status: "PENDING_APPROVAL",
+		orderItems: [{ id: "item1" }, { id: "item2" }],
+		total: 15600.0,
+		orderDate: new Date("2024-01-28").toISOString(),
+		customer: {
+			name: "Juan Dela Cruz",
+			email: "juan.delacruz@company.com",
+		},
+	},
+	{
+		id: "2",
+		orderNumber: "ORD-2024-002",
+		employeeId: "EMP002",
+		status: "APPROVED",
+		orderItems: [{ id: "item3" }],
+		total: 2500.5,
+		orderDate: new Date("2024-01-27").toISOString(),
+		customer: {
+			name: "Maria Santos",
+			email: "maria.santos@company.com",
+		},
+	},
+	{
+		id: "3",
+		orderNumber: "ORD-2024-003",
+		employeeId: "EMP003",
+		status: "PROCESSING",
+		orderItems: [{ id: "item4" }, { id: "item5" }, { id: "item6" }],
+		total: 45000.0,
+		orderDate: new Date("2024-01-26").toISOString(),
+		customer: {
+			name: "Jose Reyes",
+			email: "jose.reyes@company.com",
+		},
+	},
+	{
+		id: "4",
+		orderNumber: "ORD-2024-004",
+		employeeId: "EMP004",
+		status: "SHIPPED",
+		orderItems: [{ id: "item7" }],
+		total: 8900.0,
+		orderDate: new Date("2024-01-25").toISOString(),
+		customer: {
+			name: "Ana Garcia",
+			email: "ana.garcia@company.com",
+		},
+	},
+	{
+		id: "5",
+		orderNumber: "ORD-2024-005",
+		employeeId: "EMP005",
+		status: "DELIVERED",
+		orderItems: [{ id: "item8" }, { id: "item9" }],
+		total: 1200.0,
+		orderDate: new Date("2024-01-24").toISOString(),
+		customer: {
+			name: "Pedro Penduko",
+			email: "pedro.penduko@company.com",
+		},
+	},
+	{
+		id: "6",
+		orderNumber: "ORD-2024-006",
+		employeeId: "EMP006",
+		status: "CANCELLED",
+		orderItems: [{ id: "item10" }],
+		total: 500.0,
+		orderDate: new Date("2024-01-23").toISOString(),
+		customer: {
+			name: "Cardo Dalisay",
+			email: "cardo.dalisay@company.com",
+		},
+	},
+];
 
 export default function AdminOrdersPage() {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 
-	const { data: ordersResponse, isLoading } = useGetOrders({
-		fields: "id, orderNumber, employeeId, status, orderItems.id, total, orderDate",
-		count: true,
-	});
+	// const { data: ordersResponse, isLoading } = useGetOrders({
+	// 	fields: "id, orderNumber, employeeId, status, orderItems.id, total, orderDate",
+	// 	count: true,
+	// });
 
-	const orders = ordersResponse?.orders || [];
-	const totalDocs = ordersResponse?.count || 0;
+	// const orders = ordersResponse?.orders || [];
+	// const totalDocs = ordersResponse?.count || 0;
+
+	const isLoading = false;
+	const orders = MOCK_ORDERS;
+	const totalDocs = MOCK_ORDERS.length;
 
 	const getStatusColor = (status: string) => {
 		switch (status) {
@@ -52,6 +137,18 @@ export default function AdminOrdersPage() {
 			searchable: true,
 			className: "font-mono",
 			render: (value) => <span>{value || "N/A"}</span>,
+		},
+		{
+			key: "customer",
+			label: "Customer",
+			render: (_, row: any) => (
+				<div className="flex flex-col">
+					<span className="font-medium">{row.customer?.name || "Unknown"}</span>
+					<span className="text-xs text-muted-foreground">
+						{row.customer?.email || "No email"}
+					</span>
+				</div>
+			),
 		},
 		{
 			key: "orderItems",

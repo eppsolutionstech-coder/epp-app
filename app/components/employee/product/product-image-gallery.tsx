@@ -25,7 +25,7 @@ export function ProductImageGallery({
 	return (
 		<div className="space-y-2 lg:sticky lg:top-0 lg:self-start">
 			{/* Main Image */}
-			<div className="relative aspect-square bg-muted/30 rounded-2xl overflow-hidden group">
+			<div className="relative aspect-square bg-transparent rounded-2xl overflow-hidden group">
 				{currentImage ? (
 					<img
 						src={currentImage}
