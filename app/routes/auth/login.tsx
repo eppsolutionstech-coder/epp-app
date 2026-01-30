@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, Users, Store, Shield, ArrowRight } from "lucide-react";
+import { Loader2, Users, Store, Shield, ArrowRight, Wallet } from "lucide-react";
 import { useNavigate } from "react-router";
 import { PAGE_TITLES } from "~/config/page-titles";
 import type { Route } from "./+types/login";
@@ -51,6 +51,16 @@ const roleOptions: RoleOption[] = [
 		color: "text-purple-600 dark:text-purple-400",
 		bgColor:
 			"bg-purple-50 dark:bg-purple-950/50 hover:bg-purple-100 dark:hover:bg-purple-900/50 border-purple-200 dark:border-purple-800",
+	},
+	{
+		id: "financer",
+		title: "Login as Financer",
+		description: "Manage loan applications, payments, and financing",
+		icon: Wallet,
+		route: "/financer",
+		color: "text-teal-600 dark:text-teal-400",
+		bgColor:
+			"bg-teal-50 dark:bg-teal-950/50 hover:bg-teal-100 dark:hover:bg-teal-900/50 border-teal-200 dark:border-teal-800",
 	},
 ];
 
@@ -110,7 +120,7 @@ export default function LoginPage() {
 										isSelected ? "ring-2 ring-primary ring-offset-2" : ""
 									}`}
 									onClick={() => !isLoading && handleRoleSelect(role)}>
-									<CardContent className="p-6">
+									<CardContent className="px-6">
 										<div className="flex items-center gap-4">
 											{/* Icon */}
 											<div

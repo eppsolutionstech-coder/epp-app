@@ -48,6 +48,20 @@ const adminRoutes: RouteConfig = [
 	route("reports", "routes/admin/reports.tsx"),
 ];
 
+// Financer routes
+const financerRoutes: RouteConfig = [
+	index("routes/financer/index.tsx"),
+	route("dashboard", "routes/financer/dashboard.tsx"),
+	route("applications", "routes/financer/applications.tsx"),
+	route("applications/:id", "routes/financer/applications.$id.tsx"),
+	route("loans", "routes/financer/loans.tsx"),
+	route("loans/:id", "routes/financer/loans.$id.tsx"),
+	route("payments", "routes/financer/payments.tsx"),
+	route("customers", "routes/financer/customers.tsx"),
+	route("reports", "routes/financer/reports.tsx"),
+	route("profile/:tab?", "routes/financer/profile.tsx"),
+];
+
 // Main routes
 export default [
 	index("routes/landing.tsx"),
@@ -55,4 +69,5 @@ export default [
 	layout("layouts/employee-layout.tsx", prefix("employee", employeeRoutes)),
 	layout("layouts/vendor-layout.tsx", prefix("vendor", vendorRoutes)),
 	layout("layouts/admin-layout.tsx", prefix("admin", adminRoutes)),
+	layout("layouts/financer-layout.tsx", prefix("financer", financerRoutes)),
 ] satisfies RouteConfig;
