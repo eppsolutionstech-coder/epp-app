@@ -165,7 +165,7 @@ export default function AdminOrderDetailsPage() {
 		description,
 		isActive,
 		isCompleted,
-	}: {
+	}: { 
 		title: string;
 		date?: string;
 		description: string;
