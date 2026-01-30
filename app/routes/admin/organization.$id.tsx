@@ -20,7 +20,7 @@ export default function OrganizationDetailsPage() {
 		fields: "id, name, description, code, branding, createdAt, updatedAt",
 	});
 
-	const organization = data as Organization;
+	const organization = data as Organization; 
 
 	if (isLoading) {
 		return (
