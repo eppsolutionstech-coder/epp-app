@@ -4,7 +4,6 @@ import {
 	FileText,
 	Wallet,
 	CreditCard,
-	Users,
 	PieChart,
 	Settings,
 	LogOut,
@@ -51,8 +50,8 @@ export function FinancerSidebar({ isOpen, onClose }: FinancerSidebarProps) {
 				{/* Sidebar Header - Fixed */}
 				<div className="flex h-16 items-center border-b px-6 min-w-[16rem] shrink-0">
 					<div className="flex items-center gap-2 font-bold text-xl text-emerald-600">
-						<div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-							<Wallet className="h-5 w-5" />
+						<div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+							<Wallet className="h-4 w-4" />
 						</div>
 						<span>Financer</span>
 					</div>
@@ -90,11 +89,8 @@ export function FinancerSidebar({ isOpen, onClose }: FinancerSidebarProps) {
 
 				{/* Sidebar Footer - Fixed */}
 				<div className="p-4 border-t min-w-[16rem] shrink-0">
-					<Button
-						variant="outline"
-						className="w-full justify-start gap-3 border-0 bg-gray-100"
-						asChild>
-						<a href="/">
+					<Button variant="outline" className="w-full justify-start gap-3" asChild>
+						<a href="/login">
 							<LogOut className="h-4 w-4" />
 							Sign Out
 						</a>

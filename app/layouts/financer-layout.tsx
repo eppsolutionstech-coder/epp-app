@@ -1,22 +1,17 @@
 import { Outlet } from "react-router";
-import { useState } from "react";
-import { FinancerSidebar } from "@/components/financer/financer-sidebar";
 import { FinancerHeader } from "@/components/financer/financer-header";
 
 export default function FinancerLayout() {
-	const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-
 	return (
-		<div className="fixed inset-0 flex overflow-hidden bg-muted/40 dark:bg-muted/10">
-			<FinancerSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+		<div className="flex flex-col h-screen overflow-hidden bg-muted/40 dark:bg-muted/10">
+			<FinancerHeader />
 
 			{/* Main Content */}
-			<div className="flex-1 flex flex-col min-w-0 h-full transition-all duration-300 ease-in-out">
-				<FinancerHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-				<main className="flex-1 p-6 overflow-y-auto">
+			<main className="flex-1 p-6 overflow-y-auto">
+				<div className="max-w-7xl mx-auto px-6">
 					<Outlet />
-				</main>
-			</div>
+				</div>
+			</main>
 		</div>
 	);
 }
