@@ -13,7 +13,7 @@ import {
 	DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
 
-export default function OrganizationDetailsPage() {
+export default function OrganizationDetailsPage() { 
 	const { id } = useParams<{ id: string }>();
 	const location = useLocation();
 	const { data, isLoading } = useGetOrganizationById(id!, {
