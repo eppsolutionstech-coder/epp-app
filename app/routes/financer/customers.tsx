@@ -44,7 +44,9 @@ export default function FinancerCustomers() {
 	const getStatusBadge = (status: string) => {
 		switch (status) {
 			case "active":
-				return <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Active</Badge>;
+				return (
+					<Badge className="bg-green-100 text-green-700 hover:bg-green-100">Active</Badge>
+				);
 			case "inactive":
 				return <Badge variant="secondary">Inactive</Badge>;
 			case "blacklisted":
@@ -91,9 +93,7 @@ export default function FinancerCustomers() {
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">{MOCK_FINANCER_CUSTOMERS.length}</div>
-						<p className="text-xs text-muted-foreground">
-							{activeCustomers} active
-						</p>
+						<p className="text-xs text-muted-foreground">{activeCustomers} active</p>
 					</CardContent>
 				</Card>
 				<Card>
@@ -102,7 +102,7 @@ export default function FinancerCustomers() {
 						<TrendingUp className="h-4 w-4 text-blue-600" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">${totalBorrowed.toLocaleString()}</div>
+						<div className="text-2xl font-bold">₱{totalBorrowed.toLocaleString()}</div>
 						<p className="text-xs text-muted-foreground">Across all customers</p>
 					</CardContent>
 				</Card>
@@ -112,7 +112,9 @@ export default function FinancerCustomers() {
 						<TrendingUp className="h-4 w-4 text-green-600" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold text-green-600">${totalPaid.toLocaleString()}</div>
+						<div className="text-2xl font-bold text-green-600">
+							₱{totalPaid.toLocaleString()}
+						</div>
 						<p className="text-xs text-muted-foreground">Payments received</p>
 					</CardContent>
 				</Card>
@@ -123,7 +125,10 @@ export default function FinancerCustomers() {
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold text-red-600">
-							{MOCK_FINANCER_CUSTOMERS.filter((c) => c.status === "blacklisted").length}
+							{
+								MOCK_FINANCER_CUSTOMERS.filter((c) => c.status === "blacklisted")
+									.length
+							}
 						</div>
 						<p className="text-xs text-muted-foreground">Restricted customers</p>
 					</CardContent>
@@ -136,9 +141,7 @@ export default function FinancerCustomers() {
 						<Users className="h-5 w-5" />
 						Customer List
 					</CardTitle>
-					<CardDescription>
-						{filteredCustomers.length} customer(s) found
-					</CardDescription>
+					<CardDescription>{filteredCustomers.length} customer(s) found</CardDescription>
 				</CardHeader>
 				<CardContent>
 					<div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -194,7 +197,9 @@ export default function FinancerCustomers() {
 							<TableBody>
 								{filteredCustomers.length === 0 ? (
 									<TableRow>
-										<TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+										<TableCell
+											colSpan={9}
+											className="text-center py-8 text-muted-foreground">
 											No customers found
 										</TableCell>
 									</TableRow>
@@ -211,8 +216,12 @@ export default function FinancerCustomers() {
 														/>
 													)}
 													<div>
-														<p className="font-medium">{customer.name}</p>
-														<p className="text-xs text-muted-foreground">{customer.email}</p>
+														<p className="font-medium">
+															{customer.name}
+														</p>
+														<p className="text-xs text-muted-foreground">
+															{customer.email}
+														</p>
 													</div>
 												</div>
 											</TableCell>
@@ -221,16 +230,19 @@ export default function FinancerCustomers() {
 												{customer.organization || "-"}
 											</TableCell>
 											<TableCell className="text-center">
-												<Badge variant="outline">{customer.activeLoans}</Badge>
+												<Badge variant="outline">
+													{customer.activeLoans}
+												</Badge>
 											</TableCell>
 											<TableCell className="text-right">
-												${customer.totalBorrowed.toLocaleString()}
+												₱{customer.totalBorrowed.toLocaleString()}
 											</TableCell>
 											<TableCell className="text-right text-green-600">
-												${customer.totalPaid.toLocaleString()}
+												₱{customer.totalPaid.toLocaleString()}
 											</TableCell>
 											<TableCell className="text-center">
-												<span className={`font-bold ${getCreditScoreColor(customer.creditScore)}`}>
+												<span
+													className={`font-bold ${getCreditScoreColor(customer.creditScore)}`}>
 													{customer.creditScore}
 												</span>
 											</TableCell>

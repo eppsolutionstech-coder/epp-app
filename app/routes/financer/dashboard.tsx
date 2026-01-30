@@ -1,42 +1,66 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { MOCK_FINANCER_STATS, MOCK_LOAN_APPLICATIONS, MOCK_PAYMENTS } from "~/data/mock-financer-data";
-import { Wallet, FileText, TrendingUp, AlertTriangle, ArrowUpRight, DollarSign } from "lucide-react";
+import {
+	MOCK_FINANCER_STATS,
+	MOCK_LOAN_APPLICATIONS,
+	MOCK_PAYMENTS,
+} from "~/data/mock-financer-data";
+import {
+	Wallet,
+	FileText,
+	TrendingUp,
+	AlertTriangle,
+	ArrowUpRight,
+	DollarSign,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { StatCard } from "~/components/stat-card";
 
 export default function FinancerDashboard() {
 	const stats = [
 		{
 			title: "Total Portfolio",
-			value: `$${MOCK_FINANCER_STATS.totalPortfolio.toLocaleString()}`,
+			value: `₱${MOCK_FINANCER_STATS.totalPortfolio.toLocaleString()}`,
 			description: "Active loan balance",
 			icon: Wallet,
+			trend: "up" as const,
 			color: "text-emerald-600",
+			bg: "bg-emerald-600/10",
+			border: "border-emerald-600/20",
 		},
 		{
 			title: "Active Loans",
 			value: MOCK_FINANCER_STATS.activeLoans,
 			description: "Currently financed",
 			icon: TrendingUp,
+			trend: "up" as const,
 			color: "text-blue-600",
+			bg: "bg-blue-600/10",
+			border: "border-blue-600/20",
 		},
 		{
 			title: "Pending Applications",
 			value: MOCK_FINANCER_STATS.pendingApplications,
 			description: "Awaiting review",
 			icon: FileText,
+			trend: "neutral" as const,
 			color: "text-amber-600",
+			bg: "bg-amber-600/10",
+			border: "border-amber-600/20",
 		},
 		{
 			title: "Overdue Amount",
-			value: `$${MOCK_FINANCER_STATS.overdueAmount.toLocaleString()}`,
+			value: `₱${MOCK_FINANCER_STATS.overdueAmount.toLocaleString()}`,
 			description: `${MOCK_FINANCER_STATS.defaultRate}% default rate`,
 			icon: AlertTriangle,
+			trend: "down" as const,
 			color: "text-red-600",
+			bg: "bg-red-600/10",
+			border: "border-red-600/20",
 		},
 	];
 
 	const pendingApplications = MOCK_LOAN_APPLICATIONS.filter(
-		(app) => app.status === "pending" || app.status === "under_review"
+		(app) => app.status === "pending" || app.status === "under_review",
 	);
 
 	const recentPayments = MOCK_PAYMENTS.filter((p) => p.status === "paid").slice(0, 5);
@@ -52,16 +76,7 @@ export default function FinancerDashboard() {
 
 			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 				{stats.map((stat) => (
-					<Card key={stat.title}>
-						<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-							<CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-							<stat.icon className={`h-4 w-4 ${stat.color}`} />
-						</CardHeader>
-						<CardContent>
-							<div className="text-2xl font-bold">{stat.value}</div>
-							<p className="text-xs text-muted-foreground">{stat.description}</p>
-						</CardContent>
-					</Card>
+					<StatCard key={stat.title} {...stat} />
 				))}
 			</div>
 
@@ -69,9 +84,7 @@ export default function FinancerDashboard() {
 				<Card className="col-span-4">
 					<CardHeader>
 						<CardTitle>Pending Applications</CardTitle>
-						<CardDescription>
-							Loan applications awaiting your review.
-						</CardDescription>
+						<CardDescription>Loan applications awaiting your review.</CardDescription>
 					</CardHeader>
 					<CardContent>
 						{pendingApplications.length === 0 ? (
@@ -79,25 +92,42 @@ export default function FinancerDashboard() {
 						) : (
 							<div className="space-y-4">
 								{pendingApplications.map((app) => (
-									<div key={app.id} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
+									<div
+										key={app.id}
+										className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
 										<div className="flex items-center gap-4">
 											<div className="h-10 w-10 rounded-full bg-emerald-500/10 flex items-center justify-center">
 												<DollarSign className="h-5 w-5 text-emerald-600" />
 											</div>
 											<div>
-												<p className="text-sm font-medium">{app.customerName}</p>
+												<p className="text-sm font-medium">
+													{app.customerName}
+												</p>
 												<p className="text-xs text-muted-foreground">
-													{app.productName} - ${app.requestedAmount.toLocaleString()}
+													{app.productName} - ₱
+													{app.requestedAmount.toLocaleString()}
 												</p>
 											</div>
 										</div>
 										<div className="text-right">
 											<Badge
-												variant={app.status === "pending" ? "secondary" : "outline"}
-												className={app.status === "under_review" ? "bg-amber-100 text-amber-700" : ""}>
-												{app.status === "under_review" ? "Under Review" : "Pending"}
+												variant={
+													app.status === "pending"
+														? "secondary"
+														: "outline"
+												}
+												className={
+													app.status === "under_review"
+														? "bg-amber-100 text-amber-700"
+														: ""
+												}>
+												{app.status === "under_review"
+													? "Under Review"
+													: "Pending"}
 											</Badge>
-											<p className="text-xs text-muted-foreground mt-1">{app.appliedDate}</p>
+											<p className="text-xs text-muted-foreground mt-1">
+												{app.appliedDate}
+											</p>
 										</div>
 									</div>
 								))}
@@ -144,7 +174,9 @@ export default function FinancerDashboard() {
 										<TrendingUp className="h-5 w-5 text-green-600" />
 									</div>
 									<div>
-										<p className="text-sm font-medium">{payment.customerName}</p>
+										<p className="text-sm font-medium">
+											{payment.customerName}
+										</p>
 										<p className="text-xs text-muted-foreground">
 											Loan {payment.loanId} - {payment.paymentMethod}
 										</p>
@@ -152,9 +184,11 @@ export default function FinancerDashboard() {
 								</div>
 								<div className="text-right">
 									<p className="text-sm font-medium text-green-600">
-										+${payment.amount.toFixed(2)}
+										+₱{payment.amount.toFixed(2)}
 									</p>
-									<p className="text-xs text-muted-foreground">{payment.paymentDate}</p>
+									<p className="text-xs text-muted-foreground">
+										{payment.paymentDate}
+									</p>
 								</div>
 							</div>
 						))}

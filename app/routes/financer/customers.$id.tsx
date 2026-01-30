@@ -68,11 +68,23 @@ export default function CustomerDetail() {
 	const getStatusBadge = (status: string) => {
 		switch (status) {
 			case "active":
-				return <Badge className="bg-green-100 text-green-700 text-base px-3 py-1">Active</Badge>;
+				return (
+					<Badge className="bg-green-100 text-green-700 text-base px-3 py-1">
+						Active
+					</Badge>
+				);
 			case "inactive":
-				return <Badge variant="secondary" className="text-base px-3 py-1">Inactive</Badge>;
+				return (
+					<Badge variant="secondary" className="text-base px-3 py-1">
+						Inactive
+					</Badge>
+				);
 			case "blacklisted":
-				return <Badge variant="destructive" className="text-base px-3 py-1">Blacklisted</Badge>;
+				return (
+					<Badge variant="destructive" className="text-base px-3 py-1">
+						Blacklisted
+					</Badge>
+				);
 			default:
 				return <Badge variant="outline">{status}</Badge>;
 		}
@@ -137,9 +149,10 @@ export default function CustomerDetail() {
 
 	const totalPaidPayments = customerPayments.filter((p) => p.status === "paid").length;
 	const totalOverduePayments = customerPayments.filter((p) => p.status === "overdue").length;
-	const paymentRate = customerPayments.length > 0
-		? ((totalPaidPayments / customerPayments.length) * 100).toFixed(0)
-		: "N/A";
+	const paymentRate =
+		customerPayments.length > 0
+			? ((totalPaidPayments / customerPayments.length) * 100).toFixed(0)
+			: "N/A";
 
 	return (
 		<div className="space-y-6">
@@ -208,12 +221,16 @@ export default function CustomerDetail() {
 						{/* Quick Actions */}
 						<div className="flex flex-wrap gap-3">
 							{customer.status !== "blacklisted" ? (
-								<Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50">
+								<Button
+									variant="outline"
+									className="text-red-600 border-red-200 hover:bg-red-50">
 									<Ban className="h-4 w-4 mr-2" />
 									Blacklist Customer
 								</Button>
 							) : (
-								<Button variant="outline" className="text-green-600 border-green-200 hover:bg-green-50">
+								<Button
+									variant="outline"
+									className="text-green-600 border-green-200 hover:bg-green-50">
 									<CheckCircle className="h-4 w-4 mr-2" />
 									Remove from Blacklist
 								</Button>
@@ -232,10 +249,12 @@ export default function CustomerDetail() {
 					</CardHeader>
 					<CardContent className="space-y-4">
 						<div className="text-center">
-							<p className={`text-5xl font-bold ${getCreditScoreColor(customer.creditScore)}`}>
+							<p
+								className={`text-5xl font-bold ${getCreditScoreColor(customer.creditScore)}`}>
 								{customer.creditScore}
 							</p>
-							<p className={`text-lg font-medium ${getCreditScoreColor(customer.creditScore)}`}>
+							<p
+								className={`text-lg font-medium ${getCreditScoreColor(customer.creditScore)}`}>
 								{getCreditScoreLabel(customer.creditScore)}
 							</p>
 						</div>
@@ -257,7 +276,8 @@ export default function CustomerDetail() {
 							</div>
 							<div className="flex justify-between">
 								<span className="text-muted-foreground">Overdue Payments</span>
-								<span className={`font-medium ${totalOverduePayments > 0 ? "text-red-600" : "text-green-600"}`}>
+								<span
+									className={`font-medium ${totalOverduePayments > 0 ? "text-red-600" : "text-green-600"}`}>
 									{totalOverduePayments}
 								</span>
 							</div>
@@ -284,7 +304,9 @@ export default function CustomerDetail() {
 						<TrendingUp className="h-4 w-4 text-emerald-600" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">${customer.totalBorrowed.toLocaleString()}</div>
+						<div className="text-2xl font-bold">
+							₱{customer.totalBorrowed.toLocaleString()}
+						</div>
 						<p className="text-xs text-muted-foreground">All-time total</p>
 					</CardContent>
 				</Card>
@@ -295,7 +317,7 @@ export default function CustomerDetail() {
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold text-green-600">
-							${customer.totalPaid.toLocaleString()}
+							₱{customer.totalPaid.toLocaleString()}
 						</div>
 						<p className="text-xs text-muted-foreground">Payments received</p>
 					</CardContent>
@@ -307,7 +329,7 @@ export default function CustomerDetail() {
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold text-amber-600">
-							${(customer.totalBorrowed - customer.totalPaid).toLocaleString()}
+							₱{(customer.totalBorrowed - customer.totalPaid).toLocaleString()}
 						</div>
 						<p className="text-xs text-muted-foreground">Remaining balance</p>
 					</CardContent>
@@ -325,7 +347,9 @@ export default function CustomerDetail() {
 				</CardHeader>
 				<CardContent>
 					{customerLoans.length === 0 ? (
-						<p className="text-center py-8 text-muted-foreground">No loan records found</p>
+						<p className="text-center py-8 text-muted-foreground">
+							No loan records found
+						</p>
 					) : (
 						<div className="rounded-md border">
 							<Table>
@@ -342,10 +366,13 @@ export default function CustomerDetail() {
 								</TableHeader>
 								<TableBody>
 									{customerLoans.map((loan) => {
-										const progressPercent = (loan.paidInstallments / loan.term) * 100;
+										const progressPercent =
+											(loan.paidInstallments / loan.term) * 100;
 										return (
 											<TableRow key={loan.id}>
-												<TableCell className="font-medium">{loan.id}</TableCell>
+												<TableCell className="font-medium">
+													{loan.id}
+												</TableCell>
 												<TableCell>
 													<div className="flex items-center gap-2">
 														{loan.productImage && (
@@ -361,20 +388,25 @@ export default function CustomerDetail() {
 													</div>
 												</TableCell>
 												<TableCell className="text-right">
-													${loan.principalAmount.toLocaleString()}
+													₱{loan.principalAmount.toLocaleString()}
 												</TableCell>
 												<TableCell>
 													<div className="w-24">
-														<Progress value={progressPercent} className="h-2" />
+														<Progress
+															value={progressPercent}
+															className="h-2"
+														/>
 														<p className="text-xs text-muted-foreground mt-1">
 															{loan.paidInstallments}/{loan.term} paid
 														</p>
 													</div>
 												</TableCell>
 												<TableCell className="text-right font-medium">
-													${loan.remainingAmount.toLocaleString()}
+													₱{loan.remainingAmount.toLocaleString()}
 												</TableCell>
-												<TableCell>{getLoanStatusBadge(loan.status)}</TableCell>
+												<TableCell>
+													{getLoanStatusBadge(loan.status)}
+												</TableCell>
 												<TableCell className="text-right">
 													<Button variant="ghost" size="sm" asChild>
 														<Link to={`/financer/loans/${loan.id}`}>
@@ -404,7 +436,9 @@ export default function CustomerDetail() {
 				</CardHeader>
 				<CardContent>
 					{customerPayments.length === 0 ? (
-						<p className="text-center py-8 text-muted-foreground">No payment records found</p>
+						<p className="text-center py-8 text-muted-foreground">
+							No payment records found
+						</p>
 					) : (
 						<div className="rounded-md border">
 							<Table>
@@ -422,17 +456,23 @@ export default function CustomerDetail() {
 								<TableBody>
 									{customerPayments.map((payment) => (
 										<TableRow key={payment.id}>
-											<TableCell className="font-medium">{payment.id}</TableCell>
-											<TableCell className="text-muted-foreground">{payment.loanId}</TableCell>
+											<TableCell className="font-medium">
+												{payment.id}
+											</TableCell>
+											<TableCell className="text-muted-foreground">
+												{payment.loanId}
+											</TableCell>
 											<TableCell>{payment.dueDate}</TableCell>
 											<TableCell>{payment.paymentDate || "-"}</TableCell>
 											<TableCell className="text-right font-medium">
-												${payment.amount.toFixed(2)}
+												₱{payment.amount.toFixed(2)}
 											</TableCell>
 											<TableCell className="text-sm">
 												{payment.paymentMethod || "-"}
 											</TableCell>
-											<TableCell>{getPaymentStatusBadge(payment.status)}</TableCell>
+											<TableCell>
+												{getPaymentStatusBadge(payment.status)}
+											</TableCell>
 										</TableRow>
 									))}
 								</TableBody>
@@ -469,7 +509,7 @@ export default function CustomerDetail() {
 											<TableCell className="font-medium">{app.id}</TableCell>
 											<TableCell>{app.productName}</TableCell>
 											<TableCell className="text-right">
-												${app.requestedAmount.toLocaleString()}
+												₱{app.requestedAmount.toLocaleString()}
 											</TableCell>
 											<TableCell>{app.requestedTerm} mo</TableCell>
 											<TableCell>{app.appliedDate}</TableCell>
@@ -479,19 +519,20 @@ export default function CustomerDetail() {
 														app.status === "approved"
 															? "default"
 															: app.status === "rejected"
-															? "destructive"
-															: "secondary"
+																? "destructive"
+																: "secondary"
 													}
 													className={
 														app.status === "approved"
 															? "bg-green-100 text-green-700"
 															: app.status === "under_review"
-															? "bg-amber-100 text-amber-700"
-															: ""
+																? "bg-amber-100 text-amber-700"
+																: ""
 													}>
 													{app.status === "under_review"
 														? "Under Review"
-														: app.status.charAt(0).toUpperCase() + app.status.slice(1)}
+														: app.status.charAt(0).toUpperCase() +
+															app.status.slice(1)}
 												</Badge>
 											</TableCell>
 											<TableCell className="text-right">

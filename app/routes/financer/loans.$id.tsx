@@ -13,15 +13,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { MOCK_ACTIVE_LOANS, MOCK_PAYMENTS } from "~/data/mock-financer-data";
-import {
-	ArrowLeft,
-	User,
-	Mail,
-	Calendar,
-	Wallet,
-	TrendingUp,
-	AlertTriangle,
-} from "lucide-react";
+import { ArrowLeft, User, Mail, Calendar, Wallet, TrendingUp, AlertTriangle } from "lucide-react";
 
 export default function LoanDetail() {
 	const { id } = useParams();
@@ -49,13 +41,27 @@ export default function LoanDetail() {
 	const getStatusBadge = (status: string) => {
 		switch (status) {
 			case "active":
-				return <Badge className="bg-blue-100 text-blue-700 text-base px-3 py-1">Active</Badge>;
+				return (
+					<Badge className="bg-blue-100 text-blue-700 text-base px-3 py-1">Active</Badge>
+				);
 			case "completed":
-				return <Badge className="bg-green-100 text-green-700 text-base px-3 py-1">Completed</Badge>;
+				return (
+					<Badge className="bg-green-100 text-green-700 text-base px-3 py-1">
+						Completed
+					</Badge>
+				);
 			case "defaulted":
-				return <Badge variant="destructive" className="text-base px-3 py-1">Defaulted</Badge>;
+				return (
+					<Badge variant="destructive" className="text-base px-3 py-1">
+						Defaulted
+					</Badge>
+				);
 			case "restructured":
-				return <Badge className="bg-amber-100 text-amber-700 text-base px-3 py-1">Restructured</Badge>;
+				return (
+					<Badge className="bg-amber-100 text-amber-700 text-base px-3 py-1">
+						Restructured
+					</Badge>
+				);
 			default:
 				return <Badge variant="outline">{status}</Badge>;
 		}
@@ -93,9 +99,7 @@ export default function LoanDetail() {
 
 			<div>
 				<h1 className="text-3xl font-bold tracking-tight">Loan {loan.id}</h1>
-				<p className="text-muted-foreground">
-					Started on {loan.startDate}
-				</p>
+				<p className="text-muted-foreground">Started on {loan.startDate}</p>
 			</div>
 
 			<div className="grid gap-6 md:grid-cols-2">
@@ -114,7 +118,8 @@ export default function LoanDetail() {
 							<div>
 								<p className="text-lg font-semibold">{loan.customerName}</p>
 								<Badge variant="outline">
-									{loan.customerType.charAt(0).toUpperCase() + loan.customerType.slice(1)}
+									{loan.customerType.charAt(0).toUpperCase() +
+										loan.customerType.slice(1)}
 								</Badge>
 							</div>
 						</div>
@@ -157,7 +162,9 @@ export default function LoanDetail() {
 						<div className="grid grid-cols-2 gap-4">
 							<div>
 								<p className="text-sm text-muted-foreground">Principal</p>
-								<p className="text-xl font-bold">${loan.principalAmount.toLocaleString()}</p>
+								<p className="text-xl font-bold">
+									₱{loan.principalAmount.toLocaleString()}
+								</p>
 							</div>
 							<div>
 								<p className="text-sm text-muted-foreground">Interest Rate</p>
@@ -165,11 +172,15 @@ export default function LoanDetail() {
 							</div>
 							<div>
 								<p className="text-sm text-muted-foreground">Total Amount</p>
-								<p className="text-xl font-bold">${loan.totalAmount.toLocaleString()}</p>
+								<p className="text-xl font-bold">
+									₱{loan.totalAmount.toLocaleString()}
+								</p>
 							</div>
 							<div>
 								<p className="text-sm text-muted-foreground">Monthly Payment</p>
-								<p className="text-xl font-bold">${loan.monthlyPayment.toFixed(2)}</p>
+								<p className="text-xl font-bold">
+									₱{loan.monthlyPayment.toFixed(2)}
+								</p>
 							</div>
 						</div>
 					</CardContent>
@@ -198,7 +209,8 @@ export default function LoanDetail() {
 							<div className="flex justify-between mb-2">
 								<span className="text-sm font-medium">Amount Paid</span>
 								<span className="text-sm text-muted-foreground">
-									${loan.paidAmount.toLocaleString()} of ${loan.totalAmount.toLocaleString()}
+									₱{loan.paidAmount.toLocaleString()} of ₱
+									{loan.totalAmount.toLocaleString()}
 								</span>
 							</div>
 							<Progress value={amountProgressPercent} className="h-3" />
@@ -209,11 +221,15 @@ export default function LoanDetail() {
 
 					<div className="grid gap-4 md:grid-cols-4">
 						<div className="text-center p-4 bg-muted/50 rounded-lg">
-							<p className="text-2xl font-bold text-green-600">${loan.paidAmount.toLocaleString()}</p>
+							<p className="text-2xl font-bold text-green-600">
+								₱{loan.paidAmount.toLocaleString()}
+							</p>
 							<p className="text-sm text-muted-foreground">Total Paid</p>
 						</div>
 						<div className="text-center p-4 bg-muted/50 rounded-lg">
-							<p className="text-2xl font-bold text-amber-600">${loan.remainingAmount.toLocaleString()}</p>
+							<p className="text-2xl font-bold text-amber-600">
+								₱{loan.remainingAmount.toLocaleString()}
+							</p>
 							<p className="text-sm text-muted-foreground">Remaining</p>
 						</div>
 						<div className="text-center p-4 bg-muted/50 rounded-lg">
@@ -232,7 +248,7 @@ export default function LoanDetail() {
 							<div>
 								<p className="font-medium">Next Payment Due</p>
 								<p className="text-sm text-muted-foreground">
-									{loan.nextPaymentDate} - ${loan.monthlyPayment.toFixed(2)}
+									{loan.nextPaymentDate} - ₱{loan.monthlyPayment.toFixed(2)}
 								</p>
 							</div>
 						</div>
@@ -259,7 +275,9 @@ export default function LoanDetail() {
 				</CardHeader>
 				<CardContent>
 					{loanPayments.length === 0 ? (
-						<p className="text-center py-8 text-muted-foreground">No payment records found</p>
+						<p className="text-center py-8 text-muted-foreground">
+							No payment records found
+						</p>
 					) : (
 						<div className="rounded-md border">
 							<Table>
@@ -277,13 +295,23 @@ export default function LoanDetail() {
 								<TableBody>
 									{loanPayments.map((payment) => (
 										<TableRow key={payment.id}>
-											<TableCell className="font-medium">{payment.id}</TableCell>
+											<TableCell className="font-medium">
+												{payment.id}
+											</TableCell>
 											<TableCell>{payment.dueDate}</TableCell>
 											<TableCell>{payment.paymentDate || "-"}</TableCell>
-											<TableCell className="text-right">${payment.amount.toFixed(2)}</TableCell>
-											<TableCell className="text-right">${payment.principalPortion.toFixed(2)}</TableCell>
-											<TableCell className="text-right">${payment.interestPortion.toFixed(2)}</TableCell>
-											<TableCell>{getPaymentStatusBadge(payment.status)}</TableCell>
+											<TableCell className="text-right">
+												₱{payment.amount.toFixed(2)}
+											</TableCell>
+											<TableCell className="text-right">
+												₱{payment.principalPortion.toFixed(2)}
+											</TableCell>
+											<TableCell className="text-right">
+												₱{payment.interestPortion.toFixed(2)}
+											</TableCell>
+											<TableCell>
+												{getPaymentStatusBadge(payment.status)}
+											</TableCell>
 										</TableRow>
 									))}
 								</TableBody>

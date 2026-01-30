@@ -40,9 +40,17 @@ export default function FinancerApplications() {
 			case "pending":
 				return <Badge variant="secondary">Pending</Badge>;
 			case "under_review":
-				return <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100">Under Review</Badge>;
+				return (
+					<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100">
+						Under Review
+					</Badge>
+				);
 			case "approved":
-				return <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Approved</Badge>;
+				return (
+					<Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+						Approved
+					</Badge>
+				);
 			case "rejected":
 				return <Badge variant="destructive">Rejected</Badge>;
 			default:
@@ -126,7 +134,9 @@ export default function FinancerApplications() {
 							<TableBody>
 								{filteredApplications.length === 0 ? (
 									<TableRow>
-										<TableCell colSpan={9} className="text-center py-8 text-muted-foreground">
+										<TableCell
+											colSpan={9}
+											className="text-center py-8 text-muted-foreground">
 											No applications found
 										</TableCell>
 									</TableRow>
@@ -136,11 +146,17 @@ export default function FinancerApplications() {
 											<TableCell className="font-medium">{app.id}</TableCell>
 											<TableCell>
 												<div>
-													<p className="font-medium">{app.customerName}</p>
-													<p className="text-xs text-muted-foreground">{app.customerEmail}</p>
+													<p className="font-medium">
+														{app.customerName}
+													</p>
+													<p className="text-xs text-muted-foreground">
+														{app.customerEmail}
+													</p>
 												</div>
 											</TableCell>
-											<TableCell>{getCustomerTypeBadge(app.customerType)}</TableCell>
+											<TableCell>
+												{getCustomerTypeBadge(app.customerType)}
+											</TableCell>
 											<TableCell>
 												<div className="flex items-center gap-2">
 													{app.productImage && (
@@ -150,11 +166,13 @@ export default function FinancerApplications() {
 															className="h-8 w-8 rounded object-cover"
 														/>
 													)}
-													<span className="text-sm truncate max-w-[150px]">{app.productName}</span>
+													<span className="text-sm truncate max-w-[150px]">
+														{app.productName}
+													</span>
 												</div>
 											</TableCell>
 											<TableCell className="text-right font-medium">
-												${app.requestedAmount.toLocaleString()}
+												₱{app.requestedAmount.toLocaleString()}
 											</TableCell>
 											<TableCell>{app.requestedTerm} mo</TableCell>
 											<TableCell>{getStatusBadge(app.status)}</TableCell>

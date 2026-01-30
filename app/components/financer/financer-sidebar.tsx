@@ -23,7 +23,6 @@ const navItems = [
 	{ href: "/financer/applications", icon: FileText, label: "Applications" },
 	{ href: "/financer/loans", icon: Wallet, label: "Active Loans" },
 	{ href: "/financer/payments", icon: CreditCard, label: "Payments" },
-	{ href: "/financer/customers", icon: Users, label: "Customers" },
 	{ href: "/financer/reports", icon: PieChart, label: "Reports" },
 	{ href: "/financer/profile", icon: Settings, label: "Settings" },
 ];

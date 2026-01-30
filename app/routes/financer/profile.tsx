@@ -38,7 +38,9 @@ export default function FinancerProfile() {
 
 	const toggleTerm = (term: number) => {
 		setEnabledTerms((prev) =>
-			prev.includes(term) ? prev.filter((t) => t !== term) : [...prev, term].sort((a, b) => a - b)
+			prev.includes(term)
+				? prev.filter((t) => t !== term)
+				: [...prev, term].sort((a, b) => a - b),
 		);
 	};
 
@@ -78,7 +80,9 @@ export default function FinancerProfile() {
 									<User className="h-10 w-10 text-emerald-600" />
 								</div>
 								<div>
-									<Button variant="outline" size="sm">Change Photo</Button>
+									<Button variant="outline" size="sm">
+										Change Photo
+									</Button>
 									<p className="text-xs text-muted-foreground mt-1">
 										JPG, PNG or GIF. Max size 2MB.
 									</p>
@@ -98,7 +102,11 @@ export default function FinancerProfile() {
 								</div>
 								<div className="space-y-2">
 									<Label htmlFor="email">Email</Label>
-									<Input id="email" type="email" defaultValue="john@financecompany.com" />
+									<Input
+										id="email"
+										type="email"
+										defaultValue="john@financecompany.com"
+									/>
 								</div>
 								<div className="space-y-2">
 									<Label htmlFor="phone">Phone</Label>
@@ -123,9 +131,7 @@ export default function FinancerProfile() {
 								<Building className="h-5 w-5" />
 								Company Information
 							</CardTitle>
-							<CardDescription>
-								Your financing company details.
-							</CardDescription>
+							<CardDescription>Your financing company details.</CardDescription>
 						</CardHeader>
 						<CardContent className="space-y-6">
 							<div className="grid gap-4 md:grid-cols-2">
@@ -139,7 +145,11 @@ export default function FinancerProfile() {
 								</div>
 								<div className="space-y-2">
 									<Label htmlFor="companyEmail">Company Email</Label>
-									<Input id="companyEmail" type="email" defaultValue="info@quickfinance.com" />
+									<Input
+										id="companyEmail"
+										type="email"
+										defaultValue="info@quickfinance.com"
+									/>
 								</div>
 								<div className="space-y-2">
 									<Label htmlFor="companyPhone">Company Phone</Label>
@@ -147,7 +157,10 @@ export default function FinancerProfile() {
 								</div>
 								<div className="space-y-2 md:col-span-2">
 									<Label htmlFor="address">Address</Label>
-									<Input id="address" defaultValue="123 Finance Tower, Makati City, Metro Manila" />
+									<Input
+										id="address"
+										defaultValue="123 Finance Tower, Makati City, Metro Manila"
+									/>
 								</div>
 							</div>
 
@@ -170,7 +183,8 @@ export default function FinancerProfile() {
 									Interest Rates by Customer Type
 								</CardTitle>
 								<CardDescription>
-									Configure the annual interest rate for each customer type. Lower rates for lower-risk customers.
+									Configure the annual interest rate for each customer type. Lower
+									rates for lower-risk customers.
 								</CardDescription>
 							</CardHeader>
 							<CardContent className="space-y-6">
@@ -183,7 +197,9 @@ export default function FinancerProfile() {
 													Low risk - Salary deduction available
 												</p>
 											</div>
-											<Badge className="bg-blue-100 text-blue-700">Low Risk</Badge>
+											<Badge className="bg-blue-100 text-blue-700">
+												Low Risk
+											</Badge>
 										</div>
 										<div className="flex items-center gap-2">
 											<Input
@@ -200,7 +216,9 @@ export default function FinancerProfile() {
 												max={100}
 												step={0.5}
 											/>
-											<span className="text-muted-foreground">% annually</span>
+											<span className="text-muted-foreground">
+												% annually
+											</span>
 										</div>
 									</div>
 
@@ -212,7 +230,9 @@ export default function FinancerProfile() {
 													Lowest risk - Established businesses
 												</p>
 											</div>
-											<Badge className="bg-cyan-100 text-cyan-700">Lowest Risk</Badge>
+											<Badge className="bg-cyan-100 text-cyan-700">
+												Lowest Risk
+											</Badge>
 										</div>
 										<div className="flex items-center gap-2">
 											<Input
@@ -229,7 +249,9 @@ export default function FinancerProfile() {
 												max={100}
 												step={0.5}
 											/>
-											<span className="text-muted-foreground">% annually</span>
+											<span className="text-muted-foreground">
+												% annually
+											</span>
 										</div>
 									</div>
 
@@ -241,7 +263,9 @@ export default function FinancerProfile() {
 													Medium risk - Business income variability
 												</p>
 											</div>
-											<Badge className="bg-purple-100 text-purple-700">Medium Risk</Badge>
+											<Badge className="bg-purple-100 text-purple-700">
+												Medium Risk
+											</Badge>
 										</div>
 										<div className="flex items-center gap-2">
 											<Input
@@ -258,7 +282,9 @@ export default function FinancerProfile() {
 												max={100}
 												step={0.5}
 											/>
-											<span className="text-muted-foreground">% annually</span>
+											<span className="text-muted-foreground">
+												% annually
+											</span>
 										</div>
 									</div>
 
@@ -270,7 +296,9 @@ export default function FinancerProfile() {
 													High risk - No guaranteed income source
 												</p>
 											</div>
-											<Badge className="bg-gray-100 text-gray-700">High Risk</Badge>
+											<Badge className="bg-gray-100 text-gray-700">
+												High Risk
+											</Badge>
 										</div>
 										<div className="flex items-center gap-2">
 											<Input
@@ -287,7 +315,9 @@ export default function FinancerProfile() {
 												max={100}
 												step={0.5}
 											/>
-											<span className="text-muted-foreground">% annually</span>
+											<span className="text-muted-foreground">
+												% annually
+											</span>
 										</div>
 									</div>
 								</div>
@@ -308,7 +338,8 @@ export default function FinancerProfile() {
 									Available Installment Terms
 								</CardTitle>
 								<CardDescription>
-									Select which installment terms are available for customers to choose from.
+									Select which installment terms are available for customers to
+									choose from.
 								</CardDescription>
 							</CardHeader>
 							<CardContent className="space-y-6">
@@ -330,23 +361,34 @@ export default function FinancerProfile() {
 											</div>
 											<p className="text-sm text-muted-foreground">months</p>
 											<p className="text-xs text-muted-foreground mt-1">
-												{term <= 6 ? "Short-term" : term <= 12 ? "Standard" : "Extended"}
+												{term <= 6
+													? "Short-term"
+													: term <= 12
+														? "Standard"
+														: "Extended"}
 											</p>
 										</div>
 									))}
 								</div>
 
 								<div className="p-4 bg-muted/50 rounded-lg">
-									<p className="text-sm font-medium mb-2">Currently Enabled Terms:</p>
+									<p className="text-sm font-medium mb-2">
+										Currently Enabled Terms:
+									</p>
 									<div className="flex flex-wrap gap-2">
 										{enabledTerms.length > 0 ? (
 											enabledTerms.map((term) => (
-												<Badge key={term} variant="outline" className="bg-white">
+												<Badge
+													key={term}
+													variant="outline"
+													className="bg-white">
 													{term} months
 												</Badge>
 											))
 										) : (
-											<span className="text-sm text-muted-foreground">No terms enabled</span>
+											<span className="text-sm text-muted-foreground">
+												No terms enabled
+											</span>
 										)}
 									</div>
 								</div>
@@ -375,7 +417,11 @@ export default function FinancerProfile() {
 									<div className="space-y-2">
 										<Label>Auto-Approve Threshold</Label>
 										<div className="flex items-center gap-2">
-											<Input type="number" defaultValue={750} className="w-24" />
+											<Input
+												type="number"
+												defaultValue={750}
+												className="w-24"
+											/>
 											<span className="text-sm text-muted-foreground">
 												Score 750+ auto-approved
 											</span>
@@ -384,7 +430,11 @@ export default function FinancerProfile() {
 									<div className="space-y-2">
 										<Label>Manual Review Threshold</Label>
 										<div className="flex items-center gap-2">
-											<Input type="number" defaultValue={650} className="w-24" />
+											<Input
+												type="number"
+												defaultValue={650}
+												className="w-24"
+											/>
 											<span className="text-sm text-muted-foreground">
 												Score 650-749 requires review
 											</span>
@@ -393,7 +443,11 @@ export default function FinancerProfile() {
 									<div className="space-y-2">
 										<Label>Auto-Reject Threshold</Label>
 										<div className="flex items-center gap-2">
-											<Input type="number" defaultValue={550} className="w-24" />
+											<Input
+												type="number"
+												defaultValue={550}
+												className="w-24"
+											/>
 											<span className="text-sm text-muted-foreground">
 												Score below 550 auto-rejected
 											</span>
@@ -402,7 +456,11 @@ export default function FinancerProfile() {
 									<div className="space-y-2">
 										<Label>Maximum Loan-to-Income Ratio</Label>
 										<div className="flex items-center gap-2">
-											<Input type="number" defaultValue={30} className="w-24" />
+											<Input
+												type="number"
+												defaultValue={30}
+												className="w-24"
+											/>
 											<span className="text-sm text-muted-foreground">
 												% of monthly salary
 											</span>
@@ -512,7 +570,9 @@ export default function FinancerProfile() {
 									<h4 className="font-medium mb-2">Change Password</h4>
 									<div className="grid gap-4 md:grid-cols-2">
 										<div className="space-y-2">
-											<Label htmlFor="currentPassword">Current Password</Label>
+											<Label htmlFor="currentPassword">
+												Current Password
+											</Label>
 											<Input id="currentPassword" type="password" />
 										</div>
 										<div />
@@ -521,7 +581,9 @@ export default function FinancerProfile() {
 											<Input id="newPassword" type="password" />
 										</div>
 										<div className="space-y-2">
-											<Label htmlFor="confirmPassword">Confirm New Password</Label>
+											<Label htmlFor="confirmPassword">
+												Confirm New Password
+											</Label>
 											<Input id="confirmPassword" type="password" />
 										</div>
 									</div>
@@ -577,7 +639,9 @@ export default function FinancerProfile() {
 							<div className="p-4 bg-emerald-50 rounded-lg">
 								<div className="flex items-center justify-between">
 									<div>
-										<p className="font-medium text-emerald-700">Enterprise Plan</p>
+										<p className="font-medium text-emerald-700">
+											Enterprise Plan
+										</p>
 										<p className="text-sm text-emerald-600">
 											Unlimited loans, advanced reporting, priority support
 										</p>
@@ -596,9 +660,13 @@ export default function FinancerProfile() {
 									</div>
 									<div className="flex-1">
 										<p className="font-medium">**** **** **** 4242</p>
-										<p className="text-sm text-muted-foreground">Expires 12/2025</p>
+										<p className="text-sm text-muted-foreground">
+											Expires 12/2025
+										</p>
 									</div>
-									<Button variant="ghost" size="sm">Edit</Button>
+									<Button variant="ghost" size="sm">
+										Edit
+									</Button>
 								</div>
 							</div>
 
@@ -608,18 +676,24 @@ export default function FinancerProfile() {
 								<h4 className="font-medium mb-4">Billing History</h4>
 								<div className="space-y-2">
 									{[
-										{ date: "Jun 1, 2024", amount: "$299.00", status: "Paid" },
-										{ date: "May 1, 2024", amount: "$299.00", status: "Paid" },
-										{ date: "Apr 1, 2024", amount: "$299.00", status: "Paid" },
+										{ date: "Jun 1, 2024", amount: "₱299.00", status: "Paid" },
+										{ date: "May 1, 2024", amount: "₱299.00", status: "Paid" },
+										{ date: "Apr 1, 2024", amount: "₱299.00", status: "Paid" },
 									].map((invoice, i) => (
-										<div key={i} className="flex items-center justify-between p-3 border rounded-lg">
+										<div
+											key={i}
+											className="flex items-center justify-between p-3 border rounded-lg">
 											<div>
 												<p className="font-medium">{invoice.date}</p>
-												<p className="text-sm text-muted-foreground">Enterprise Plan</p>
+												<p className="text-sm text-muted-foreground">
+													Enterprise Plan
+												</p>
 											</div>
 											<div className="text-right">
 												<p className="font-medium">{invoice.amount}</p>
-												<p className="text-sm text-green-600">{invoice.status}</p>
+												<p className="text-sm text-green-600">
+													{invoice.status}
+												</p>
 											</div>
 										</div>
 									))}

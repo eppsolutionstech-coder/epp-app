@@ -45,13 +45,19 @@ export default function FinancerPayments() {
 	const getStatusBadge = (status: string) => {
 		switch (status) {
 			case "paid":
-				return <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Paid</Badge>;
+				return (
+					<Badge className="bg-green-100 text-green-700 hover:bg-green-100">Paid</Badge>
+				);
 			case "pending":
 				return <Badge variant="secondary">Pending</Badge>;
 			case "overdue":
 				return <Badge variant="destructive">Overdue</Badge>;
 			case "partial":
-				return <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100">Partial</Badge>;
+				return (
+					<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100">
+						Partial
+					</Badge>
+				);
 			default:
 				return <Badge variant="outline">{status}</Badge>;
 		}
@@ -75,7 +81,9 @@ export default function FinancerPayments() {
 				<TableBody>
 					{payments.length === 0 ? (
 						<TableRow>
-							<TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+							<TableCell
+								colSpan={8}
+								className="text-center py-8 text-muted-foreground">
 								No payments found
 							</TableCell>
 						</TableRow>
@@ -84,11 +92,13 @@ export default function FinancerPayments() {
 							<TableRow key={payment.id}>
 								<TableCell className="font-medium">{payment.id}</TableCell>
 								<TableCell>{payment.customerName}</TableCell>
-								<TableCell className="text-muted-foreground">{payment.loanId}</TableCell>
+								<TableCell className="text-muted-foreground">
+									{payment.loanId}
+								</TableCell>
 								<TableCell>{payment.dueDate}</TableCell>
 								<TableCell>{payment.paymentDate || "-"}</TableCell>
 								<TableCell className="text-right font-medium">
-									${payment.amount.toFixed(2)}
+									₱{payment.amount.toFixed(2)}
 								</TableCell>
 								<TableCell className="text-sm">
 									{payment.paymentMethod || "-"}
@@ -106,20 +116,20 @@ export default function FinancerPayments() {
 		<div className="space-y-6">
 			<div>
 				<h1 className="text-3xl font-bold tracking-tight">Payments</h1>
-				<p className="text-muted-foreground">
-					Track and manage all loan payments.
-				</p>
+				<p className="text-muted-foreground">Track and manage all loan payments.</p>
 			</div>
 
 			<div className="grid gap-4 md:grid-cols-3">
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Collected (This Month)</CardTitle>
+						<CardTitle className="text-sm font-medium">
+							Collected (This Month)
+						</CardTitle>
 						<CheckCircle className="h-4 w-4 text-green-600" />
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold text-green-600">
-							${totalCollected.toLocaleString()}
+							₱{totalCollected.toLocaleString()}
 						</div>
 						<p className="text-xs text-muted-foreground">
 							{paidPayments.length} payments received
@@ -133,7 +143,7 @@ export default function FinancerPayments() {
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold text-amber-600">
-							${totalPending.toLocaleString()}
+							₱{totalPending.toLocaleString()}
 						</div>
 						<p className="text-xs text-muted-foreground">
 							{pendingPayments.length} payments due
@@ -147,7 +157,7 @@ export default function FinancerPayments() {
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold text-red-600">
-							${totalOverdue.toLocaleString()}
+							₱{totalOverdue.toLocaleString()}
 						</div>
 						<p className="text-xs text-muted-foreground">
 							{overduePayments.length} payments overdue
@@ -162,12 +172,8 @@ export default function FinancerPayments() {
 					<TabsTrigger value="overdue" className="text-red-600">
 						Overdue ({overduePayments.length})
 					</TabsTrigger>
-					<TabsTrigger value="pending">
-						Pending ({pendingPayments.length})
-					</TabsTrigger>
-					<TabsTrigger value="paid">
-						Paid ({paidPayments.length})
-					</TabsTrigger>
+					<TabsTrigger value="pending">Pending ({pendingPayments.length})</TabsTrigger>
+					<TabsTrigger value="paid">Paid ({paidPayments.length})</TabsTrigger>
 				</TabsList>
 
 				<TabsContent value="all">
@@ -234,9 +240,7 @@ export default function FinancerPayments() {
 								<Clock className="h-5 w-5 text-amber-600" />
 								Pending Payments
 							</CardTitle>
-							<CardDescription>
-								Upcoming payments due
-							</CardDescription>
+							<CardDescription>Upcoming payments due</CardDescription>
 						</CardHeader>
 						<CardContent>
 							<PaymentsTable payments={pendingPayments} />
@@ -251,9 +255,7 @@ export default function FinancerPayments() {
 								<CheckCircle className="h-5 w-5 text-green-600" />
 								Paid Payments
 							</CardTitle>
-							<CardDescription>
-								Successfully received payments
-							</CardDescription>
+							<CardDescription>Successfully received payments</CardDescription>
 						</CardHeader>
 						<CardContent>
 							<PaymentsTable payments={paidPayments} />

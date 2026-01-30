@@ -41,13 +41,29 @@ export default function ApplicationDetail() {
 	const getStatusBadge = (status: string) => {
 		switch (status) {
 			case "pending":
-				return <Badge variant="secondary" className="text-base px-3 py-1">Pending</Badge>;
+				return (
+					<Badge variant="secondary" className="text-base px-3 py-1">
+						Pending
+					</Badge>
+				);
 			case "under_review":
-				return <Badge className="bg-amber-100 text-amber-700 text-base px-3 py-1">Under Review</Badge>;
+				return (
+					<Badge className="bg-amber-100 text-amber-700 text-base px-3 py-1">
+						Under Review
+					</Badge>
+				);
 			case "approved":
-				return <Badge className="bg-green-100 text-green-700 text-base px-3 py-1">Approved</Badge>;
+				return (
+					<Badge className="bg-green-100 text-green-700 text-base px-3 py-1">
+						Approved
+					</Badge>
+				);
 			case "rejected":
-				return <Badge variant="destructive" className="text-base px-3 py-1">Rejected</Badge>;
+				return (
+					<Badge variant="destructive" className="text-base px-3 py-1">
+						Rejected
+					</Badge>
+				);
 			default:
 				return <Badge variant="outline">{status}</Badge>;
 		}
@@ -69,9 +85,7 @@ export default function ApplicationDetail() {
 
 			<div>
 				<h1 className="text-3xl font-bold tracking-tight">Application {application.id}</h1>
-				<p className="text-muted-foreground">
-					Submitted on {application.appliedDate}
-				</p>
+				<p className="text-muted-foreground">Submitted on {application.appliedDate}</p>
 			</div>
 
 			<div className="grid gap-6 md:grid-cols-2">
@@ -90,7 +104,8 @@ export default function ApplicationDetail() {
 							<div>
 								<p className="text-lg font-semibold">{application.customerName}</p>
 								<Badge variant="outline">
-									{application.customerType.charAt(0).toUpperCase() + application.customerType.slice(1)}
+									{application.customerType.charAt(0).toUpperCase() +
+										application.customerType.slice(1)}
 								</Badge>
 							</div>
 						</div>
@@ -102,7 +117,10 @@ export default function ApplicationDetail() {
 							</div>
 							<div className="flex items-center gap-2 text-sm">
 								<CreditCard className="h-4 w-4 text-muted-foreground" />
-								<span>Credit Score: <strong>{application.creditScore || "N/A"}</strong></span>
+								<span>
+									Credit Score:{" "}
+									<strong>{application.creditScore || "N/A"}</strong>
+								</span>
 							</div>
 							<div className="flex items-center gap-2 text-sm">
 								<Calendar className="h-4 w-4 text-muted-foreground" />
@@ -130,14 +148,18 @@ export default function ApplicationDetail() {
 							)}
 							<div>
 								<p className="font-semibold">{application.productName}</p>
-								<p className="text-sm text-muted-foreground">Product to be financed</p>
+								<p className="text-sm text-muted-foreground">
+									Product to be financed
+								</p>
 							</div>
 						</div>
 						<Separator />
 						<div className="grid grid-cols-2 gap-4">
 							<div>
 								<p className="text-sm text-muted-foreground">Requested Amount</p>
-								<p className="text-xl font-bold">${application.requestedAmount.toLocaleString()}</p>
+								<p className="text-xl font-bold">
+									₱{application.requestedAmount.toLocaleString()}
+								</p>
 							</div>
 							<div>
 								<p className="text-sm text-muted-foreground">Interest Rate</p>
@@ -145,11 +167,15 @@ export default function ApplicationDetail() {
 							</div>
 							<div>
 								<p className="text-sm text-muted-foreground">Loan Term</p>
-								<p className="text-xl font-bold">{application.requestedTerm} months</p>
+								<p className="text-xl font-bold">
+									{application.requestedTerm} months
+								</p>
 							</div>
 							<div>
 								<p className="text-sm text-muted-foreground">Monthly Payment</p>
-								<p className="text-xl font-bold">${application.monthlyPayment.toFixed(2)}</p>
+								<p className="text-xl font-bold">
+									₱{application.monthlyPayment.toFixed(2)}
+								</p>
 							</div>
 						</div>
 					</CardContent>
@@ -171,9 +197,7 @@ export default function ApplicationDetail() {
 				<Card>
 					<CardHeader>
 						<CardTitle>Review Actions</CardTitle>
-						<CardDescription>
-							Take action on this loan application.
-						</CardDescription>
+						<CardDescription>Take action on this loan application.</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<div className="flex flex-wrap gap-4">
@@ -203,9 +227,12 @@ export default function ApplicationDetail() {
 					</CardHeader>
 					<CardContent>
 						<div className="flex items-center gap-4">
-							<div className={`h-10 w-10 rounded-full flex items-center justify-center ${
-								application.status === "approved" ? "bg-green-100" : "bg-red-100"
-							}`}>
+							<div
+								className={`h-10 w-10 rounded-full flex items-center justify-center ${
+									application.status === "approved"
+										? "bg-green-100"
+										: "bg-red-100"
+								}`}>
 								{application.status === "approved" ? (
 									<CheckCircle className="h-5 w-5 text-green-600" />
 								) : (
@@ -214,7 +241,8 @@ export default function ApplicationDetail() {
 							</div>
 							<div>
 								<p className="font-medium">
-									Application {application.status === "approved" ? "Approved" : "Rejected"}
+									Application{" "}
+									{application.status === "approved" ? "Approved" : "Rejected"}
 								</p>
 								<p className="text-sm text-muted-foreground">
 									Reviewed on {application.reviewedDate}

@@ -75,7 +75,7 @@ export default function LoginPage() {
 		setIsLoading(true);
 
 		try {
-			await login("epp-admin@gmail.com", "Test123!");
+			// await login("epp-admin@gmail.com", "Test123!");
 			navigate(role.route);
 		} catch (err) {
 			// Error is handled by the hook, but you can add additional handling here if needed

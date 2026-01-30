@@ -101,7 +101,7 @@ export default function FinancerReports() {
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold">
-							${MOCK_FINANCER_STATS.totalPortfolio.toLocaleString()}
+							₱{MOCK_FINANCER_STATS.totalPortfolio.toLocaleString()}
 						</div>
 						<p className="text-xs text-muted-foreground flex items-center gap-1">
 							<TrendingUp className="h-3 w-3 text-green-500" />
@@ -116,7 +116,7 @@ export default function FinancerReports() {
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold text-green-600">
-							${totalInterestEarned.toFixed(2)}
+							₱{totalInterestEarned.toFixed(2)}
 						</div>
 						<p className="text-xs text-muted-foreground">
 							From {paidPayments.length} payments
@@ -130,11 +130,9 @@ export default function FinancerReports() {
 					</CardHeader>
 					<CardContent>
 						<div className="text-2xl font-bold text-blue-600">
-							${totalPrincipalCollected.toFixed(2)}
+							₱{totalPrincipalCollected.toFixed(2)}
 						</div>
-						<p className="text-xs text-muted-foreground">
-							Principal repayments
-						</p>
+						<p className="text-xs text-muted-foreground">Principal repayments</p>
 					</CardContent>
 				</Card>
 				<Card>
@@ -143,9 +141,7 @@ export default function FinancerReports() {
 						<TrendingDown className="h-4 w-4 text-red-600" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">
-							{MOCK_FINANCER_STATS.defaultRate}%
-						</div>
+						<div className="text-2xl font-bold">{MOCK_FINANCER_STATS.defaultRate}%</div>
 						<p className="text-xs text-muted-foreground">
 							{defaultedLoans.length} defaulted loans
 						</p>
@@ -169,7 +165,12 @@ export default function FinancerReports() {
 								<div className="flex items-center gap-2">
 									<span className="font-medium">{activeLoans.length}</span>
 									<span className="text-sm text-muted-foreground">
-										({((activeLoans.length / MOCK_ACTIVE_LOANS.length) * 100).toFixed(0)}%)
+										(
+										{(
+											(activeLoans.length / MOCK_ACTIVE_LOANS.length) *
+											100
+										).toFixed(0)}
+										%)
 									</span>
 								</div>
 							</div>
@@ -181,7 +182,12 @@ export default function FinancerReports() {
 								<div className="flex items-center gap-2">
 									<span className="font-medium">{completedLoans.length}</span>
 									<span className="text-sm text-muted-foreground">
-										({((completedLoans.length / MOCK_ACTIVE_LOANS.length) * 100).toFixed(0)}%)
+										(
+										{(
+											(completedLoans.length / MOCK_ACTIVE_LOANS.length) *
+											100
+										).toFixed(0)}
+										%)
 									</span>
 								</div>
 							</div>
@@ -193,7 +199,12 @@ export default function FinancerReports() {
 								<div className="flex items-center gap-2">
 									<span className="font-medium">{defaultedLoans.length}</span>
 									<span className="text-sm text-muted-foreground">
-										({((defaultedLoans.length / MOCK_ACTIVE_LOANS.length) * 100).toFixed(0)}%)
+										(
+										{(
+											(defaultedLoans.length / MOCK_ACTIVE_LOANS.length) *
+											100
+										).toFixed(0)}
+										%)
 									</span>
 								</div>
 							</div>
@@ -257,8 +268,12 @@ export default function FinancerReports() {
 								</div>
 								<div className="flex-1 min-w-0">
 									<p className="font-medium">{report.title}</p>
-									<p className="text-sm text-muted-foreground">{report.description}</p>
-									<Button variant="link" className="h-auto p-0 mt-2 text-emerald-600">
+									<p className="text-sm text-muted-foreground">
+										{report.description}
+									</p>
+									<Button
+										variant="link"
+										className="h-auto p-0 mt-2 text-emerald-600">
 										<Download className="h-3 w-3 mr-1" />
 										Download PDF
 									</Button>
@@ -282,7 +297,7 @@ export default function FinancerReports() {
 							</p>
 							<p className="text-sm text-muted-foreground mt-1">Payments Collected</p>
 							<p className="text-lg font-semibold text-green-600 mt-2">
-								${paidPayments.reduce((sum, p) => sum + p.amount, 0).toFixed(2)}
+								₱{paidPayments.reduce((sum, p) => sum + p.amount, 0).toFixed(2)}
 							</p>
 						</div>
 						<div className="text-center p-6 bg-amber-50 rounded-lg">
@@ -291,7 +306,8 @@ export default function FinancerReports() {
 							</p>
 							<p className="text-sm text-muted-foreground mt-1">Pending Payments</p>
 							<p className="text-lg font-semibold text-amber-600 mt-2">
-								${MOCK_PAYMENTS.filter((p) => p.status === "pending")
+								₱
+								{MOCK_PAYMENTS.filter((p) => p.status === "pending")
 									.reduce((sum, p) => sum + p.amount, 0)
 									.toFixed(2)}
 							</p>
@@ -302,7 +318,7 @@ export default function FinancerReports() {
 							</p>
 							<p className="text-sm text-muted-foreground mt-1">Overdue Payments</p>
 							<p className="text-lg font-semibold text-red-600 mt-2">
-								${overduePayments.reduce((sum, p) => sum + p.amount, 0).toFixed(2)}
+								₱{overduePayments.reduce((sum, p) => sum + p.amount, 0).toFixed(2)}
 							</p>
 						</div>
 					</div>
