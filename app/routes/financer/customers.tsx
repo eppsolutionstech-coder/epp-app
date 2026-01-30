@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -235,9 +236,11 @@ export default function FinancerCustomers() {
 											</TableCell>
 											<TableCell>{getStatusBadge(customer.status)}</TableCell>
 											<TableCell className="text-right">
-												<Button variant="ghost" size="sm">
-													<Eye className="h-4 w-4 mr-1" />
-													View
+												<Button variant="ghost" size="sm" asChild>
+													<Link to={`/financer/customers/${customer.id}`}>
+														<Eye className="h-4 w-4 mr-1" />
+														View
+													</Link>
 												</Button>
 											</TableCell>
 										</TableRow>
