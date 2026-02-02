@@ -292,6 +292,52 @@ The app automatically supports dark mode via the `.dark` class. All color tokens
 
 ---
 
+## Charts
+
+All charts and data visualizations in the application **must use [Recharts](https://recharts.org/)**. This ensures consistent styling, animations, and responsive behavior across the app.
+
+### Import
+
+```tsx
+import {
+	LineChart,
+	Line,
+	BarChart,
+	Bar,
+	PieChart,
+	Pie,
+	XAxis,
+	YAxis,
+	CartesianGrid,
+	Tooltip,
+	Legend,
+	ResponsiveContainer,
+} from "recharts";
+```
+
+### Best Practices
+
+- **Always wrap charts** in `<ResponsiveContainer>` for responsive sizing.
+- **Use chart colors** from the CSS variables (`--chart-1` through `--chart-5`).
+- **Add tooltips** for better data accessibility.
+- **Keep charts simple** – avoid clutter with too many data series.
+
+### Example
+
+```tsx
+<ResponsiveContainer width="100%" height={300}>
+	<BarChart data={data}>
+		<CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+		<XAxis dataKey="name" className="text-xs" />
+		<YAxis className="text-xs" />
+		<Tooltip />
+		<Bar dataKey="value" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} />
+	</BarChart>
+</ResponsiveContainer>
+```
+
+---
+
 ## Data Tables
 
 All tables in the application should use the `DataTable` component from `@app/components/molecule/data-table-updated.tsx`. This component provides consistent styling, sorting, filtering, searching, and loading states.
