@@ -1,26 +1,16 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Link } from "react-router";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Plus, MoreVertical, Pencil, Trash2, Loader2, Building2 } from "lucide-react";
+import { Plus, Loader2, Building2, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import type {
 	FinancierConfigWithRelation,
 	CreateFinancierConfig,
 	UpdateFinancierConfig,
 } from "~/zod/financier-config.zod";
-import {
-	useGetFinancierConfigs,
-	useCreateFinancierConfig,
-	useUpdateFinancierConfig,
-	useDeleteFinancierConfig,
-} from "~/hooks/use-financier-config";
+import { useGetFinancierConfigs, useCreateFinancierConfig } from "~/hooks/use-financier-config";
 import { OrganizationUpsertModal } from "./organization-upsert-modal";
 
 const formatCurrency = (amount: number) => {
@@ -30,11 +20,6 @@ const formatCurrency = (amount: number) => {
 		minimumFractionDigits: 0,
 		maximumFractionDigits: 0,
 	}).format(amount);
-};
-
-const getUtilizationPercentage = (used: number, max: number) => {
-	if (max === 0) return 0;
-	return Math.round((used / max) * 100);
 };
 
 const getUserTypeBadgeStyle = (userType: string) => {
@@ -52,8 +37,6 @@ const getUserTypeBadgeStyle = (userType: string) => {
 
 export function FinancerOrganizationsTab() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [selectedOrganization, setSelectedOrganization] =
-		useState<FinancierConfigWithRelation | null>(null);
 
 	// Fetch data from API
 	const { data, isLoading, isError } = useGetFinancierConfigs({ limit: 100 });
@@ -61,52 +44,22 @@ export function FinancerOrganizationsTab() {
 
 	// Mutation hooks
 	const createMutation = useCreateFinancierConfig();
-	const updateMutation = useUpdateFinancierConfig();
-	const deleteMutation = useDeleteFinancierConfig();
 
 	const handleOpenCreate = () => {
-		setSelectedOrganization(null);
 		setIsModalOpen(true);
-	};
-
-	const handleOpenEdit = (org: FinancierConfigWithRelation) => {
-		setSelectedOrganization(org);
-		setIsModalOpen(true);
-	};
-
-	const handleDelete = async (orgId: string, orgName: string) => {
-		if (confirm(`Are you sure you want to delete "${orgName}"?`)) {
-			try {
-				await deleteMutation.mutateAsync(orgId);
-				toast.success("Organization deleted successfully");
-			} catch (error: any) {
-				toast.error(error.message || "Failed to delete organization");
-			}
-		}
 	};
 
 	const handleSubmit = async (data: CreateFinancierConfig | UpdateFinancierConfig) => {
 		try {
-			if (selectedOrganization) {
-				// Update
-				await updateMutation.mutateAsync({
-					financierConfigId: selectedOrganization.id,
-					data: data as UpdateFinancierConfig,
-				});
-				toast.success("Organization updated successfully");
-			} else {
-				// Create
-				await createMutation.mutateAsync(data as CreateFinancierConfig);
-				toast.success("Organization created successfully");
-			}
+			await createMutation.mutateAsync(data as CreateFinancierConfig);
+			toast.success("Organization created successfully");
 			setIsModalOpen(false);
-			setSelectedOrganization(null);
 		} catch (error: any) {
-			toast.error(error.message || "Failed to save organization");
+			toast.error(error.message || "Failed to create organization");
 		}
 	};
 
-	const isSubmitting = createMutation.isPending || updateMutation.isPending;
+	const isSubmitting = createMutation.isPending;
 
 	return (
 		<div className="space-y-6">
@@ -149,162 +102,53 @@ export function FinancerOrganizationsTab() {
 				</div>
 			)}
 
-			{/* Organization Cards Grid */}
+			{/* Simplified Organization Cards Grid */}
 			{!isLoading && !isError && organizations.length > 0 && (
-				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-					{organizations.map((config) => {
-						const utilization = getUtilizationPercentage(
-							config.usedCredits || 0,
-							config.maxCreditLimit || 0,
-						);
-
-						return (
+				<div className="grid gap-4 md:grid-cols-2">
+					{organizations.map((config) => (
+						<Link
+							key={config.id}
+							to={`/financer/organization/${config.id}`}
+							className="block">
 							<Card
-								key={config.id}
-								className={`transition-all hover:shadow-md ${!config.isActive ? "opacity-60" : ""}`}>
-								<CardHeader className="pb-3">
-									<div className="flex items-start justify-between">
-										<div className="flex items-center gap-3">
-											<div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white font-bold text-lg">
-												{config.name.charAt(0)}
+								className={`transition-all hover:shadow-md hover:border-emerald-300 cursor-pointer ${!config.isActive ? "opacity-60" : ""}`}>
+								<CardContent className="p-4">
+									<div className="flex items-center gap-4">
+										{/* Avatar */}
+										<div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white font-bold text-lg shrink-0">
+											{config.name.charAt(0)}
+										</div>
+
+										{/* Info */}
+										<div className="flex-1 min-w-0">
+											<h3
+												className="font-semibold mb-2 line-clamp-2 leading-tight"
+												title={config.name}>
+												{config.name}
+											</h3>
+											<div className="flex items-center gap-2 flex-wrap">
+												<Badge
+													className={`${getUserTypeBadgeStyle(config.userType)} text-xs`}>
+													{config.userType}
+												</Badge>
 											</div>
-											<div>
-												<CardTitle className="text-base">
-													{config.name}
-												</CardTitle>
-												<p className="text-sm text-muted-foreground">
-													{config.code}
-												</p>
-											</div>
 										</div>
-										<DropdownMenu>
-											<DropdownMenuTrigger asChild>
-												<Button
-													variant="ghost"
-													size="icon"
-													className="h-8 w-8">
-													<MoreVertical className="h-4 w-4" />
-												</Button>
-											</DropdownMenuTrigger>
-											<DropdownMenuContent align="end">
-												<DropdownMenuItem
-													onClick={() => handleOpenEdit(config)}>
-													<Pencil className="h-4 w-4 mr-2" />
-													Edit
-												</DropdownMenuItem>
-												<DropdownMenuItem
-													className="text-destructive"
-													onClick={() =>
-														handleDelete(config.id, config.name)
-													}>
-													<Trash2 className="h-4 w-4 mr-2" />
-													Delete
-												</DropdownMenuItem>
-											</DropdownMenuContent>
-										</DropdownMenu>
-									</div>
-								</CardHeader>
-								<CardContent className="space-y-4">
-									{/* Status & Type Badges */}
-									<div className="flex items-center gap-2">
-										<Badge className={getUserTypeBadgeStyle(config.userType)}>
-											{config.userType}
-										</Badge>
-										<Badge
-											variant={config.isActive ? "default" : "secondary"}
-											className={
-												config.isActive ? "bg-green-100 text-green-700" : ""
-											}>
-											{config.isActive ? "Active" : "Inactive"}
-										</Badge>
-									</div>
 
-									{/* Credit Info */}
-									<div className="space-y-2">
-										<div className="flex justify-between text-sm">
-											<span className="text-muted-foreground">
-												Credit Limit
-											</span>
-											<span className="font-medium">
-												{formatCurrency(config.maxCreditLimit || 0)}
-											</span>
-										</div>
-										<div className="flex justify-between text-sm">
-											<span className="text-muted-foreground">Available</span>
-											<span className="font-medium text-emerald-600">
-												{formatCurrency(config.availableCredits || 0)}
-											</span>
-										</div>
-										<div className="flex justify-between text-sm">
-											<span className="text-muted-foreground">
-												Auto-Approve Limit
-											</span>
-											<span className="font-medium">
-												{formatCurrency(config.autoApproveLimit || 0)}
-											</span>
-										</div>
+										{/* Arrow */}
+										<ChevronRight className="h-5 w-5 text-muted-foreground shrink-0" />
 									</div>
-
-									{/* Utilization Bar */}
-									<div className="space-y-1">
-										<div className="flex justify-between text-xs">
-											<span className="text-muted-foreground">
-												Credit Utilization
-											</span>
-											<span className="font-medium">{utilization}%</span>
-										</div>
-										<div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-											<div
-												className={`h-full rounded-full transition-all ${
-													utilization >= 90
-														? "bg-red-500"
-														: utilization >= 70
-															? "bg-amber-500"
-															: "bg-emerald-500"
-												}`}
-												style={{ width: `${utilization}%` }}
-											/>
-										</div>
-									</div>
-
-									{/* Installment Rates */}
-									{config.installmentRateConfig &&
-										config.installmentRateConfig.length > 0 && (
-											<div className="pt-2 border-t">
-												<p className="text-xs text-muted-foreground mb-2">
-													Installment Rates
-												</p>
-												<div className="flex flex-wrap gap-1">
-													{config.installmentRateConfig.map((tier) => (
-														<Badge
-															key={tier.installmentCount}
-															variant="outline"
-															className="text-xs">
-															{tier.installmentCount}mo @ {tier.rate}%
-														</Badge>
-													))}
-												</div>
-											</div>
-										)}
-
-									{/* Notes */}
-									{config.notes && (
-										<p className="text-xs text-muted-foreground italic pt-2 border-t">
-											{config.notes}
-										</p>
-									)}
 								</CardContent>
 							</Card>
-						);
-					})}
+						</Link>
+					))}
 				</div>
 			)}
 
-			{/* Upsert Modal */}
+			{/* Create Modal */}
 			<OrganizationUpsertModal
 				open={isModalOpen}
 				onOpenChange={setIsModalOpen}
-				organization={selectedOrganization}
+				organization={null}
 				onSubmit={handleSubmit}
 				isLoading={isSubmitting}
 			/>

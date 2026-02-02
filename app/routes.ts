@@ -60,6 +60,7 @@ const financerRoutes: RouteConfig = [
 	route("payments", "routes/financer/payments.tsx"),
 	route("reports", "routes/financer/reports.tsx"),
 	route("profile/:tab?", "routes/financer/profile.tsx"),
+	route("organization/:id", "routes/financer/organization.$id.tsx"),
 ];
 
 // Main routes
