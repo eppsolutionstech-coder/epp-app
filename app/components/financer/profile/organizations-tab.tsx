@@ -66,7 +66,7 @@ export function FinancerOrganizationsTab() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h2 className="text-xl font-semibold">Organizations</h2>
+					<h2 className="text-xl font-semibold">Organization Configurations</h2>
 					<p className="text-sm text-muted-foreground">
 						Manage financing configurations for partner organizations
 					</p>
@@ -112,7 +112,7 @@ export function FinancerOrganizationsTab() {
 							className="block">
 							<Card
 								className={`transition-all hover:shadow-md hover:border-emerald-300 cursor-pointer ${!config.isActive ? "opacity-60" : ""}`}>
-								<CardContent className="p-4">
+								<CardContent className="px-4">
 									<div className="flex items-center gap-4">
 										{/* Avatar */}
 										<div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center text-white font-bold text-lg shrink-0">
@@ -121,6 +121,13 @@ export function FinancerOrganizationsTab() {
 
 										{/* Info */}
 										<div className="flex-1 min-w-0">
+											{config.code && (
+												<div className="mb-1">
+													<span className="font-mono text-[10px] uppercase bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded border border-slate-200">
+														{config.code}
+													</span>
+												</div>
+											)}
 											<h3
 												className="font-semibold mb-2 line-clamp-2 leading-tight"
 												title={config.name}>

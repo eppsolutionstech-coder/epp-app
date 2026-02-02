@@ -28,6 +28,8 @@ import type {
 	InstallmentRateTier,
 	UserType,
 } from "~/zod/financier-config.zod";
+import { useGetOrganizations } from "~/hooks/use-organization";
+import { useAuth } from "~/hooks/use-auth";
 
 interface OrganizationUpsertModalProps {
 	open: boolean;
@@ -76,6 +78,11 @@ export function OrganizationUpsertModal({
 	const [newTierMonths, setNewTierMonths] = useState<string>("");
 	const [newTierRate, setNewTierRate] = useState<string>("");
 
+	// Fetch organizations for select dropdown
+	const { data: orgData, isLoading: isLoadingOrgs } = useGetOrganizations({ limit: 100 });
+	const organizationsList = orgData?.organizations || [];
+	const { user } = useAuth();
+
 	const isEditing = !!organization;
 
 	// Reset form when modal opens/closes or organization changes
@@ -95,12 +102,15 @@ export function OrganizationUpsertModal({
 					notes: organization.notes || "",
 				});
 			} else {
-				setFormData(initialFormData);
+				setFormData({
+					...initialFormData,
+					userId: user?.id || "",
+				});
 			}
 			setNewTierMonths("");
 			setNewTierRate("");
 		}
-	}, [open, organization]);
+	}, [open, organization, user]);
 
 	const handleAddInstallmentTier = () => {
 		const months = parseInt(newTierMonths);
@@ -187,46 +197,55 @@ export function OrganizationUpsertModal({
 
 						<div className="grid gap-4 md:grid-cols-2">
 							<div className="space-y-2">
-								<Label htmlFor="name">Organization Name *</Label>
-								<Input
-									id="name"
-									placeholder="Enter organization name"
-									value={formData.name}
-									onChange={(e) =>
-										setFormData({ ...formData, name: e.target.value })
-									}
-									disabled={isLoading}
-								/>
+								<Label htmlFor="organization">Organization *</Label>
+								<Select
+									value={formData.organizationId || undefined}
+									onValueChange={(value) => {
+										const selectedOrg = organizationsList.find(
+											(org) => org.id === value,
+										);
+										if (selectedOrg) {
+											setFormData({
+												...formData,
+												organizationId: selectedOrg.id,
+												name: selectedOrg.name,
+												code: selectedOrg.code,
+											});
+										}
+									}}
+									disabled={isLoading}>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="Select organization" />
+									</SelectTrigger>
+									<SelectContent>
+										{isLoadingOrgs ? (
+											<div className="flex items-center justify-center p-2">
+												<Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+											</div>
+										) : (
+											organizationsList.map((org) => (
+												<SelectItem key={org.id} value={org.id}>
+													{org.name}
+												</SelectItem>
+											))
+										)}
+									</SelectContent>
+								</Select>
 							</div>
 
 							<div className="space-y-2">
 								<Label htmlFor="code">Organization Code</Label>
 								<Input
 									id="code"
-									placeholder="e.g., ACME-001"
+									placeholder="Auto-filled from selection"
 									value={formData.code}
-									onChange={(e) =>
-										setFormData({ ...formData, code: e.target.value })
-									}
-									disabled={isLoading}
+									disabled={true}
+									className="bg-muted"
 								/>
 							</div>
 						</div>
 
 						<div className="grid gap-4 md:grid-cols-2">
-							<div className="space-y-2">
-								<Label htmlFor="userId">User ID *</Label>
-								<Input
-									id="userId"
-									placeholder="Enter user ID"
-									value={formData.userId}
-									onChange={(e) =>
-										setFormData({ ...formData, userId: e.target.value })
-									}
-									disabled={isLoading}
-								/>
-							</div>
-
 							<div className="space-y-2">
 								<Label htmlFor="userType">User Type *</Label>
 								<Select

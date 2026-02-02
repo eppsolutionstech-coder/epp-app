@@ -6,6 +6,8 @@ interface VendorAnalyticsTabProps {
 	products: Product[];
 }
 
+
+/**U001-1 */
 export function VendorAnalyticsTab({ products }: VendorAnalyticsTabProps) {
 	const totalProducts = products.length;
 	const activeProducts = products.filter((p) => p.status === "active").length;

@@ -138,7 +138,7 @@ export default function FinancierConfigDetailPage() {
 				<Link
 					to="/financer/profile/organizations"
 					className="hover:text-foreground transition-colors">
-					Organizations
+					Organization Configurations
 				</Link>
 				<ChevronRight className="h-4 w-4 mx-2" />
 				<span className="font-medium text-foreground">{config.name}</span>
