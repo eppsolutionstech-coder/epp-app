@@ -100,4 +100,12 @@ export const API_ENDPOINTS = {
 		UPDATE: "/workflowApprovalLevel/:id",
 		DELETE: "/workflowApprovalLevel/:id", // Soft delete
 	},
+
+	FINANCIER_CONFIG: {
+		GET_ALL: "/financierConfig",
+		GET_BY_ID: "/financierConfig/:id",
+		CREATE: "/financierConfig",
+		UPDATE: "/financierConfig/:id",
+		DELETE: "/financierConfig/:id", // Soft delete
+	},
 };
