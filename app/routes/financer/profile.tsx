@@ -1,16 +1,16 @@
 import { useParams, useNavigate } from "react-router";
-import { User, Building, Bell, Shield, CreditCard, Percent } from "lucide-react";
+import { User, Building, Bell, Shield, CreditCard, Percent, Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { FinancerProfileTab } from "@/components/financer/profile/profile-tab";
-import { FinancerCompanyTab } from "@/components/financer/profile/company-tab";
 import { FinancerLoanSettingsTab } from "@/components/financer/profile/loan-settings-tab";
 import { FinancerNotificationsTab } from "@/components/financer/profile/notifications-tab";
 import { FinancerSecurityTab } from "@/components/financer/profile/security-tab";
 import { FinancerBillingTab } from "@/components/financer/profile/billing-tab";
+import { FinancerOrganizationsTab } from "@/components/financer/profile/organizations-tab";
 
 const tabs = [
 	{ id: "profile", label: "Profile", icon: User },
-	{ id: "company", label: "Company", icon: Building },
+	{ id: "organizations", label: "Organizations", icon: Building2 },
 	{ id: "loan-settings", label: "Loan Settings", icon: Percent },
 	{ id: "notifications", label: "Notifications", icon: Bell },
 	{ id: "security", label: "Security", icon: Shield },
@@ -77,7 +77,7 @@ export default function FinancerProfile() {
 				{/* Right - Content */}
 				<div className="flex-1 min-w-0">
 					{activeTab === "profile" && <FinancerProfileTab />}
-					{activeTab === "company" && <FinancerCompanyTab />}
+					{activeTab === "organizations" && <FinancerOrganizationsTab />}
 					{activeTab === "loan-settings" && <FinancerLoanSettingsTab />}
 					{activeTab === "notifications" && <FinancerNotificationsTab />}
 					{activeTab === "security" && <FinancerSecurityTab />}

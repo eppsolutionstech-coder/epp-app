@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useGetCartItems, useUpdateCartItem, useDeleteCartItem } from "~/hooks/use-cart-item";
 import {
