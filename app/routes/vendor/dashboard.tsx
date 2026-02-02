@@ -10,6 +10,7 @@ import {
 	TrendingUp,
 	ArrowRight,
 	DollarSign,
+	AlertTriangle,
 } from "lucide-react";
 import { Link } from "react-router";
 import { StatsCard } from "~/components/molecule/stats-card";
@@ -29,7 +30,7 @@ export default function VendorDashboard() {
 	const pendingOrders = vendorOrders.filter((o) =>
 		["pending", "approved", "processing"].includes(o.status),
 	).length;
-	const completedOrders = vendorOrders.filter((o) => o.status === "delivered").length;
+	const lowStockItems = vendorProducts.filter((p) => p.stock < 10).length;
 	const totalRevenue = vendorOrders
 		.filter((o) => o.status === "delivered")
 		.reduce((sum, o) => sum + o.amount, 0);
@@ -52,15 +53,15 @@ export default function VendorDashboard() {
 			bgColor: "bg-amber-50 dark:bg-amber-950/50",
 		},
 		{
-			title: "Completed Orders",
-			value: completedOrders,
-			description: "Successfully delivered",
-			icon: CheckCircle,
-			color: "text-emerald-600",
-			bgColor: "bg-emerald-50 dark:bg-emerald-950/50",
+			title: "Low Stock Alerts",
+			value: lowStockItems,
+			description: "Items need restocking",
+			icon: AlertTriangle,
+			color: "text-red-600",
+			bgColor: "bg-red-50 dark:bg-red-950/50",
 		},
 		{
-			title: "Total Revenue",
+			title: "Total Sales",
 			value: `₱${totalRevenue.toLocaleString()}`,
 			description: "From delivered orders",
 			icon: DollarSign,
