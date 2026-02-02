@@ -43,16 +43,6 @@ const roleOptions: RoleOption[] = [
 			"bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border-emerald-200 dark:border-emerald-800",
 	},
 	{
-		id: "admin",
-		title: "Login as EPP Admin",
-		description: "Manage vendors, products, and program oversight",
-		icon: Shield,
-		route: "/admin",
-		color: "text-purple-600 dark:text-purple-400",
-		bgColor:
-			"bg-purple-50 dark:bg-purple-950/50 hover:bg-purple-100 dark:hover:bg-purple-900/50 border-purple-200 dark:border-purple-800",
-	},
-	{
 		id: "financer",
 		title: "Login as Financer",
 		description: "Manage loan applications, payments, and financing",
@@ -61,6 +51,16 @@ const roleOptions: RoleOption[] = [
 		color: "text-teal-600 dark:text-teal-400",
 		bgColor:
 			"bg-teal-50 dark:bg-teal-950/50 hover:bg-teal-100 dark:hover:bg-teal-900/50 border-teal-200 dark:border-teal-800",
+	},
+	{
+		id: "admin",
+		title: "Login as EPP Admin",
+		description: "Manage vendors, products, and program oversight",
+		icon: Shield,
+		route: "/admin",
+		color: "text-purple-600 dark:text-purple-400",
+		bgColor:
+			"bg-purple-50 dark:bg-purple-950/50 hover:bg-purple-100 dark:hover:bg-purple-900/50 border-purple-200 dark:border-purple-800",
 	},
 ];
 
