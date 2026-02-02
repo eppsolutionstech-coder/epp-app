@@ -14,76 +14,33 @@ import {
 	Truck,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-
-// Mock data for the order details
-const MOCK_ORDER = {
-	id: "69787c6951f10f46a05d4202",
-	orderNumber: "ORD-20260127-A0001",
-	status: "PENDING_APPROVAL",
-	orderDate: "2026-01-27T08:50:49.239Z",
-	paymentType: "INSTALLMENT",
-	paymentMethod: "PAYROLL_DEDUCTION",
-	installmentMonths: 6,
-	installmentCount: 12, // Total cutoffs
-	installmentAmount: 1339.25,
-	subtotal: 14610,
-	tax: 1461,
-	total: 16071,
-	shippingAddress: {
-		street: "123 Innovation Drive",
-		city: "Makati City",
-		province: "Metro Manila",
-		zipCode: "1200",
-	},
-	items: [
-		{
-			id: "1",
-			name: "Ergonomic Office Chair",
-			sku: "CH-001",
-			price: 8500,
-			quantity: 1,
-			total: 8500,
-			image: "https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=1000&auto=format&fit=crop",
-		},
-		{
-			id: "2",
-			name: "Wireless Mechanical Keyboard",
-			sku: "KB-045",
-			price: 3500,
-			quantity: 1,
-			total: 3500,
-			image: "https://images.unsplash.com/photo-1587829741301-356364971915?q=80&w=1000&auto=format&fit=crop",
-		},
-		{
-			id: "3",
-			name: "USB-C Hub Multiport Adapter",
-			sku: "AC-102",
-			price: 2610,
-			quantity: 1,
-			total: 2610,
-			image: "https://images.unsplash.com/photo-1625842268584-8f3296236761?q=80&w=1000&auto=format&fit=crop",
-		},
-	],
-	installments: Array(12)
-		.fill(null)
-		.map((_, i) => ({
-			cutoffDate: new Date(2026, 1 + Math.floor(i / 2), i % 2 === 0 ? 15 : 30).toISOString(),
-			amount: 1339.25,
-			status: "PENDING",
-		})),
-	timeline: [
-		{
-			date: "2026-01-27T08:50:49.239Z",
-			title: "Order Placed",
-			description: "Order has been created and is pending approval.",
-		},
-	],
-};
+import { useGetOrderById } from "~/hooks/use-order";
 
 export default function OrderDetailsPage() {
 	const { id } = useParams();
-	// In a real implementation, we would fetch data based on `id`
-	const order = MOCK_ORDER;
+
+	const { data: orderData, isLoading } = useGetOrderById(id!, {
+		fields: "id, orderNumber, userId, status, orderItems.id, orderItems.item.name, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.images, subtotal, tax, total, paymentType, installmentMonths, installmentCount, installmentAmount, paymentMethod, paymentStatus, orderDate, installments.status",
+	});
+
+	const order = orderData as any;
+
+	if (isLoading) {
+		return <div>Loading...</div>;
+	}
+
+	if (!order) {
+		return <div>Order not found</div>;
+	}
+
+	// Mock timeline as requested
+	const timeline = [
+		{
+			date: order.orderDate,
+			title: "Order Placed",
+			description: "Order has been created and is pending approval.",
+		},
+	];
 
 	const formatCurrency = (amount: number) => {
 		return new Intl.NumberFormat("en-PH", {
@@ -101,11 +58,13 @@ export default function OrderDetailsPage() {
 		});
 	};
 
-	const paidInstallments = order.installments.filter((i) => i.status === "PAID").length;
-	const progress = (paidInstallments / order.installmentCount) * 100;
+	const paidInstallments =
+		order.installments?.filter((i: any) => i.status === "PAID").length || 0;
+	const totalInstallments = order.installmentCount || 0;
+	const progress = totalInstallments > 0 ? (paidInstallments / totalInstallments) * 100 : 0;
 
 	return (
-		<div className="max-w-5xl mx-auto p-6 space-y-8">
+		<div className="max-w-5xl mx-auto p-6 space-y-4">
 			{/* Header */}
 			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 				<div className="flex items-center gap-4">
@@ -117,12 +76,17 @@ export default function OrderDetailsPage() {
 					<div>
 						<h1 className="text-2xl font-bold flex items-center gap-3">
 							Order {order.orderNumber}
-							<Badge variant={order.status === "COMPLETED" ? "default" : "secondary"}>
+							<Badge
+								variant={
+									["DELIVERED", "SHIPPED"].includes(order.status)
+										? "default"
+										: "secondary"
+								}>
 								{order.status.replace("_", " ")}
 							</Badge>
 						</h1>
 						<p className="text-muted-foreground">
-							Placed on {formatDate(order.orderDate)}
+							Placed on {formatDate(order.orderDate.toString())}
 						</p>
 					</div>
 				</div>
@@ -134,7 +98,7 @@ export default function OrderDetailsPage() {
 
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
 				{/* Left Column - Details */}
-				<div className="lg:col-span-2 space-y-8">
+				<div className="lg:col-span-2 space-y-4">
 					{/* Progress Section (if installment) */}
 					{order.paymentType === "INSTALLMENT" && (
 						<Card>
@@ -154,14 +118,14 @@ export default function OrderDetailsPage() {
 											Monthly Deduction
 										</p>
 										<p className="font-semibold text-lg">
-											{formatCurrency(order.installmentAmount)}
+											{formatCurrency(order.installmentAmount || 0)}
 										</p>
 									</div>
 									<div className="bg-muted/50 p-3 rounded-lg">
 										<p className="text-xs text-muted-foreground">Total Paid</p>
 										<p className="font-semibold text-lg text-primary">
 											{formatCurrency(
-												paidInstallments * order.installmentAmount,
+												paidInstallments * (order.installmentAmount || 0),
 											)}
 										</p>
 									</div>
@@ -171,18 +135,21 @@ export default function OrderDetailsPage() {
 					)}
 
 					{/* Order Items */}
-					<Card>
+					<Card className="gap-0">
 						<CardHeader>
-							<CardTitle>Items ({order.items.length})</CardTitle>
+							<CardTitle>Items ({order.orderItems?.length || 0})</CardTitle>
 						</CardHeader>
 						<CardContent className="p-0">
 							<div className="divide-y">
-								{order.items.map((item) => (
-									<div key={item.id} className="flex gap-4 p-6">
+								{order.orderItems?.map((orderItem: any) => (
+									<div key={orderItem.id} className="flex items-center gap-4 p-6">
 										<div className="h-20 w-20 rounded-lg bg-muted overflow-hidden shrink-0 border">
 											<img
-												src={item.image}
-												alt={item.name}
+												src={
+													orderItem.item?.images?.[0]?.url ||
+													"https://placehold.co/400"
+												}
+												alt={orderItem.item?.name}
 												className="h-full w-full object-cover"
 											/>
 										</div>
@@ -190,18 +157,16 @@ export default function OrderDetailsPage() {
 											<div className="flex justify-between items-start gap-4">
 												<div>
 													<h4 className="font-semibold line-clamp-2">
-														{item.name}
+														{orderItem.item?.name}
 													</h4>
-													<p className="text-sm text-muted-foreground mt-1">
-														SKU: {item.sku}
-													</p>
 												</div>
 												<p className="font-semibold">
-													{formatCurrency(item.total)}
+													{formatCurrency(orderItem.subtotal)}
 												</p>
 											</div>
-											<div className="mt-2 text-sm text-muted-foreground">
-												Qty: {item.quantity} × {formatCurrency(item.price)}
+											<div className="text-sm text-muted-foreground">
+												Qty: {orderItem.quantity} ×{" "}
+												{formatCurrency(orderItem.unitPrice)}
 											</div>
 										</div>
 									</div>
@@ -220,13 +185,13 @@ export default function OrderDetailsPage() {
 						</CardHeader>
 						<CardContent>
 							<div className="space-y-6 relative pl-4 border-l-2 border-muted ml-2">
-								{order.timeline.map((event, index) => (
+								{timeline.map((event, index) => (
 									<div key={index} className="relative">
 										<div className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-primary ring-4 ring-background" />
 										<div className="space-y-1">
 											<p className="font-medium text-sm">{event.title}</p>
 											<p className="text-xs text-muted-foreground">
-												{new Date(event.date).toLocaleString()}
+												{new Date(event.date.toString()).toLocaleString()}
 											</p>
 											<p className="text-sm text-muted-foreground">
 												{event.description}
@@ -240,7 +205,7 @@ export default function OrderDetailsPage() {
 				</div>
 
 				{/* Right Column - Summary */}
-				<div className="space-y-8">
+				<div className="space-y-4">
 					{/* Order Summary */}
 					<Card>
 						<CardHeader>
@@ -264,24 +229,6 @@ export default function OrderDetailsPage() {
 								<span>Total</span>
 								<span>{formatCurrency(order.total)}</span>
 							</div>
-						</CardContent>
-					</Card>
-
-					{/* Delivery Address */}
-					<Card>
-						<CardHeader>
-							<CardTitle className="text-base flex items-center gap-2">
-								<MapPin className="h-4 w-4" />
-								Shipping Address
-							</CardTitle>
-						</CardHeader>
-						<CardContent className="text-sm text-muted-foreground space-y-1">
-							<p>Juan Dela Cruz (Employee)</p>
-							<p>{order.shippingAddress.street}</p>
-							<p>
-								{order.shippingAddress.city}, {order.shippingAddress.province}
-							</p>
-							<p>{order.shippingAddress.zipCode}</p>
 						</CardContent>
 					</Card>
 

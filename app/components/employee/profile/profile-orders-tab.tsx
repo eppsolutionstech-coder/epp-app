@@ -14,7 +14,7 @@ interface ProfileOrdersTabProps {
 export function ProfileOrdersTab({ purchases }: ProfileOrdersTabProps) {
 	const { user } = useAuth();
 	const { data: ordersResponse } = useGetOrders({
-		fields: "id, orderNumber, userId, status, orderItems.item.images, subtotal, tax, total, paymentType, installmentMonths, installmentCount, installmentAmount, paymentMethod, paymentStatus, orderDate, installments.status",
+		fields: "id, orderNumber, userId, status, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.images, subtotal, tax, total, paymentType, installmentMonths, installmentCount, installmentAmount, paymentMethod, paymentStatus, orderDate, installments.status",
 		filter: `userId:${user?.id}`,
 	});
 
