@@ -10,13 +10,13 @@ Always reference `@app/app.css` for the color theme. The app uses **OKLCH color 
 
 ### Primary Palette
 
-| Token | Usage |
-|-------|-------|
-| `--primary` | Main brand color, CTAs, active states |
-| `--secondary` | Supporting elements, less prominent actions |
-| `--accent` | Highlights, hover states |
-| `--muted` | Backgrounds, disabled states |
-| `--destructive` | Errors, delete actions, warnings |
+| Token           | Usage                                       |
+| --------------- | ------------------------------------------- |
+| `--primary`     | Main brand color, CTAs, active states       |
+| `--secondary`   | Supporting elements, less prominent actions |
+| `--accent`      | Highlights, hover states                    |
+| `--muted`       | Backgrounds, disabled states                |
+| `--destructive` | Errors, delete actions, warnings            |
 
 ### Chart/Accent Colors
 
@@ -34,9 +34,9 @@ Use these for data visualization, status indicators, and category differentiatio
 
 ```tsx
 // Consistent color pairing for stat cards and indicators
-color: "text-chart-1"
-bg: "bg-chart-1/10"
-border: "border-chart-1/20"
+color: "text-chart-1";
+bg: "bg-chart-1/10";
+border: "border-chart-1/20";
 ```
 
 ---
@@ -49,21 +49,21 @@ The app uses **Outfit** as the primary sans-serif font, defined in `@app/app.css
 
 ### Hierarchy
 
-| Element | Classes |
-|---------|---------|
-| Page Title | `text-4xl font-bold tracking-tight` |
-| Section Title | `text-xl font-semibold` |
-| Card Title | `text-sm font-medium text-muted-foreground` |
-| Body Text | `text-sm` or `text-base` |
-| Small/Caption | `text-xs text-muted-foreground` |
-| Large Values | `text-3xl font-bold` or `text-2xl font-bold` |
+| Element       | Classes                                      |
+| ------------- | -------------------------------------------- |
+| Page Title    | `text-4xl font-bold tracking-tight`          |
+| Section Title | `text-xl font-semibold`                      |
+| Card Title    | `text-sm font-medium text-muted-foreground`  |
+| Body Text     | `text-sm` or `text-base`                     |
+| Small/Caption | `text-xs text-muted-foreground`              |
+| Large Values  | `text-3xl font-bold` or `text-2xl font-bold` |
 
 ### Gradient Text (Use Sparingly)
 
 For impactful headings:
 
 ```tsx
-className="bg-gradient-to-r from-primary to-chart-4 bg-clip-text text-transparent"
+className = "bg-gradient-to-r from-primary to-chart-4 bg-clip-text text-transparent";
 ```
 
 ---
@@ -76,10 +76,10 @@ Use responsive grid layouts with consistent gaps:
 
 ```tsx
 // Stats grid - 4 columns on large screens
-"grid gap-6 md:grid-cols-2 lg:grid-cols-4"
+"grid gap-6 md:grid-cols-2 lg:grid-cols-4";
 
 // Mixed content grid - asymmetric layout
-"grid gap-6 md:grid-cols-2 lg:grid-cols-7"
+"grid gap-6 md:grid-cols-2 lg:grid-cols-7";
 // Then use col-span-4 and col-span-3 for children
 ```
 
@@ -113,7 +113,7 @@ Add visual interest with large, faded icons:
 
 ```tsx
 <div className={`absolute top-0 right-0 p-3 opacity-10 ${color} rounded-bl-full`}>
-  <Icon className="h-16 w-16" />
+	<Icon className="h-16 w-16" />
 </div>
 ```
 
@@ -136,7 +136,7 @@ className="h-24 flex flex-col items-center justify-center gap-2
 
 ```tsx
 <Button variant="ghost" className="w-full text-xs text-muted-foreground hover:text-primary">
-  View all <ArrowUpRight className="ml-2 h-3 w-3" />
+	View all <ArrowUpRight className="ml-2 h-3 w-3" />
 </Button>
 ```
 
@@ -146,10 +146,10 @@ Use semantic colors for status indicators:
 
 ```tsx
 // Approved/Success
-className="bg-green-500/15 text-green-600 hover:bg-green-500/25 border-green-500/20"
+className = "bg-green-500/15 text-green-600 hover:bg-green-500/25 border-green-500/20";
 
 // Pending/Warning
-className="bg-yellow-500/15 text-yellow-600 hover:bg-yellow-500/25 border-yellow-500/20"
+className = "bg-yellow-500/15 text-yellow-600 hover:bg-yellow-500/25 border-yellow-500/20";
 
 // Use variant="destructive" for rejected/error states
 ```
@@ -209,7 +209,7 @@ Show directional data with appropriate colors:
 Apply to main content containers:
 
 ```tsx
-className="animate-in fade-in slide-in-from-bottom-4 duration-500"
+className = "animate-in fade-in slide-in-from-bottom-4 duration-500";
 ```
 
 ### Hover Transitions
@@ -218,19 +218,20 @@ Always use smooth transitions for interactive elements:
 
 ```tsx
 // Standard transition
-"transition-colors"
+"transition-colors";
 
 // Transform transitions
-"transition-transform group-hover:scale-105"
+"transition-transform group-hover:scale-105";
 
 // All properties
-"transition-all duration-200"
-"transition-all duration-300"
+"transition-all duration-200";
+"transition-all duration-300";
 ```
 
 ### Custom Animations
 
 Reference `@app/app.css` for:
+
 - `.animate-scroll` - Horizontal scrolling marquee effect
 
 ---
@@ -252,8 +253,8 @@ Use Tailwind's group utilities for coordinated hover states:
 
 ```tsx
 <div className="group">
-  <Avatar className="transition-transform group-hover:scale-105" />
-  <p className="group-hover:text-primary transition-colors">{name}</p>
+	<Avatar className="transition-transform group-hover:scale-105" />
+	<p className="group-hover:text-primary transition-colors">{name}</p>
 </div>
 ```
 
@@ -262,7 +263,7 @@ Use Tailwind's group utilities for coordinated hover states:
 For floating or overlay elements:
 
 ```tsx
-className="bg-white/20 backdrop-blur-sm"
+className = "bg-white/20 backdrop-blur-sm";
 ```
 
 ---
@@ -271,11 +272,11 @@ className="bg-white/20 backdrop-blur-sm"
 
 Custom utilities defined in `@app/app.css`:
 
-| Class | Usage |
-|-------|-------|
-| `.hide-scrollbar` | Hide scrollbars while maintaining scroll functionality |
-| `.minimal-scrollbar` | Thin, subtle scrollbar |
-| `.neumorphism` | Soft shadow effect (use sparingly) |
+| Class                | Usage                                                  |
+| -------------------- | ------------------------------------------------------ |
+| `.hide-scrollbar`    | Hide scrollbars while maintaining scroll functionality |
+| `.minimal-scrollbar` | Thin, subtle scrollbar                                 |
+| `.neumorphism`       | Soft shadow effect (use sparingly)                     |
 
 ---
 
@@ -284,15 +285,107 @@ Custom utilities defined in `@app/app.css`:
 The app automatically supports dark mode via the `.dark` class. All color tokens in `@app/app.css` have dark mode variants.
 
 **Best Practices:**
+
 - Use CSS custom properties (not hardcoded colors)
 - Test all components in both light and dark modes
 - Use `/opacity` suffixes for backgrounds (e.g., `bg-chart-1/10`)
 
 ---
 
+## Data Tables
+
+All tables in the application should use the `DataTable` component from `@app/components/molecule/data-table-updated.tsx`. This component provides consistent styling, sorting, filtering, searching, and loading states.
+
+### Import
+
+```tsx
+import { DataTable, type DataTableColumn } from "@/components/molecule/data-table-updated";
+```
+
+### Column Definition
+
+Define columns with the `DataTableColumn` interface:
+
+```tsx
+const columns: DataTableColumn<YourDataType>[] = [
+	{
+		key: "id",
+		label: "ID",
+		sortable: true,
+	},
+	{
+		key: "name",
+		label: "Name",
+		sortable: true,
+		searchable: true,
+	},
+	{
+		key: "status",
+		label: "Status",
+		filterable: true,
+		filterOptions: [
+			{ value: "active", label: "Active" },
+			{ value: "pending", label: "Pending" },
+			{ value: "inactive", label: "Inactive" },
+		],
+		render: (value) => <Badge className={getStatusColor(value)}>{value}</Badge>,
+	},
+	{
+		key: "amount",
+		label: "Amount",
+		className: "text-right",
+		render: (value) => `₱${value.toLocaleString()}`,
+	},
+];
+```
+
+### Column Options
+
+| Option          | Type                        | Description                             |
+| --------------- | --------------------------- | --------------------------------------- |
+| `key`           | `keyof T`                   | Data field to display                   |
+| `label`         | `string`                    | Column header text                      |
+| `sortable`      | `boolean`                   | Enable sorting (asc/desc)               |
+| `searchable`    | `boolean`                   | Enable search input                     |
+| `filterable`    | `boolean`                   | Enable filter checkboxes                |
+| `filterOptions` | `ColumnFilter[]`            | Filter options with `value` and `label` |
+| `render`        | `(value, row) => ReactNode` | Custom cell renderer                    |
+| `className`     | `string`                    | Additional cell classes                 |
+
+### Basic Usage
+
+```tsx
+<DataTable columns={columns} data={data} onRowClick={(row) => navigate(`/details/${row.id}`)} />
+```
+
+### With Loading State
+
+```tsx
+<DataTable columns={columns} data={data} isLoading={isLoading} skeletonRowCount={5} />
+```
+
+### Features
+
+- **URL Persistence**: Sort, filter, and search states are synced with URL params
+- **Skeleton Loading**: Built-in loading states with configurable row count
+- **Empty State**: Automatic "No results found" display
+- **Interactive Headers**: Click column headers to access sort/search/filter controls
+- **Debounced Search**: Search input has 500ms debounce to reduce API calls
+
+### Styling
+
+The component uses minimal styling by default. Customize with the `className` prop:
+
+```tsx
+<DataTable columns={columns} data={data} className="shadow-md border-border/50" />
+```
+
+---
+
 ## Do's and Don'ts
 
 ### Do
+
 - Use the chart color palette for visual variety
 - Add subtle hover states to all interactive elements
 - Use consistent spacing from the scale
@@ -301,6 +394,7 @@ The app automatically supports dark mode via the `.dark` class. All color tokens
 - Reference `@app/app.css` for all colors
 
 ### Don't
+
 - Use hardcoded color values
 - Overuse gradients (reserve for headings and CTAs)
 - Skip transition effects on interactive elements

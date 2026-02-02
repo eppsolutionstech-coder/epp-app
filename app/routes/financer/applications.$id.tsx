@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -14,32 +15,43 @@ import {
 	CheckCircle,
 	XCircle,
 	Clock,
+	AlertCircle,
 } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export default function ApplicationDetail() {
 	const { id } = useParams();
-	const application = MOCK_LOAN_APPLICATIONS.find((app) => app.id === id);
+	const initialApplication = MOCK_LOAN_APPLICATIONS.find((app) => app.id === id);
 
-	if (!application) {
+	// Local state to simulate status changes
+	const [status, setStatus] = useState<string>(initialApplication?.status || "pending");
+	const [reviewDate, setReviewDate] = useState<string | null>(
+		initialApplication?.reviewedDate || null,
+	);
+
+	if (!initialApplication) {
 		return (
-			<div className="space-y-6">
+			<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
 				<Button variant="ghost" asChild>
-					<Link to="/financer/applications">
+					<Link
+						to="/financer/applications"
+						className="hover:text-primary transition-colors">
 						<ArrowLeft className="h-4 w-4 mr-2" />
 						Back to Applications
 					</Link>
 				</Button>
-				<Card>
+				<Card className="shadow-md border-border/50">
 					<CardContent className="py-12 text-center">
-						<p className="text-muted-foreground">Application not found</p>
+						<AlertCircle className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-50" />
+						<p className="text-muted-foreground text-lg">Application not found</p>
 					</CardContent>
 				</Card>
 			</div>
 		);
 	}
 
-	const getStatusBadge = (status: string) => {
-		switch (status) {
+	const getStatusBadge = (currentStatus: string) => {
+		switch (currentStatus) {
 			case "pending":
 				return (
 					<Badge variant="secondary" className="text-base px-3 py-1">
@@ -48,13 +60,13 @@ export default function ApplicationDetail() {
 				);
 			case "under_review":
 				return (
-					<Badge className="bg-amber-100 text-amber-700 text-base px-3 py-1">
+					<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 text-base px-3 py-1">
 						Under Review
 					</Badge>
 				);
 			case "approved":
 				return (
-					<Badge className="bg-green-100 text-green-700 text-base px-3 py-1">
+					<Badge className="bg-green-100 text-green-700 hover:bg-green-100 text-base px-3 py-1">
 						Approved
 					</Badge>
 				);
@@ -65,116 +77,174 @@ export default function ApplicationDetail() {
 					</Badge>
 				);
 			default:
-				return <Badge variant="outline">{status}</Badge>;
+				return <Badge variant="outline">{currentStatus}</Badge>;
 		}
 	};
 
-	const canReview = application.status === "pending" || application.status === "under_review";
+	const handleAction = (newStatus: "approved" | "rejected" | "under_review") => {
+		setStatus(newStatus);
+		if (newStatus === "approved" || newStatus === "rejected") {
+			setReviewDate(
+				new Date().toLocaleDateString("en-US", {
+					year: "numeric",
+					month: "long",
+					day: "numeric",
+				}),
+			);
+		}
+	};
+
+	const canReview = status === "pending" || status === "under_review";
 
 	return (
-		<div className="space-y-6">
+		<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
 			<div className="flex items-center justify-between">
-				<Button variant="ghost" asChild>
+				<Button variant="ghost" asChild className="hover:text-primary transition-colors">
 					<Link to="/financer/applications">
 						<ArrowLeft className="h-4 w-4 mr-2" />
 						Back to Applications
 					</Link>
 				</Button>
-				{getStatusBadge(application.status)}
+				<div className="flex items-center gap-3">
+					<span className="text-sm text-muted-foreground">Current Status:</span>
+					{getStatusBadge(status)}
+				</div>
 			</div>
 
 			<div>
-				<h1 className="text-3xl font-bold tracking-tight">Application {application.id}</h1>
-				<p className="text-muted-foreground">Submitted on {application.appliedDate}</p>
+				<h1 className="text-4xl font-bold tracking-tight mb-1">
+					Application {initialApplication.id}
+				</h1>
+				<p className="text-muted-foreground">
+					Submitted on {initialApplication.appliedDate}
+				</p>
 			</div>
 
 			<div className="grid gap-6 md:grid-cols-2">
-				<Card>
+				<Card className="shadow-md border-border/50 transition-all duration-300 hover:shadow-lg">
 					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<User className="h-5 w-5" />
+						<CardTitle className="flex items-center gap-3 text-xl font-semibold">
+							<div className="p-2 rounded-full bg-blue-100 text-blue-600">
+								<User className="h-5 w-5" />
+							</div>
 							Customer Information
 						</CardTitle>
 					</CardHeader>
-					<CardContent className="space-y-4">
+					<CardContent className="space-y-6">
 						<div className="flex items-center gap-4">
-							<div className="h-16 w-16 rounded-full bg-emerald-500/10 flex items-center justify-center">
+							<div className="h-16 w-16 rounded-full bg-emerald-500/10 flex items-center justify-center ring-4 ring-background shadow-sm">
 								<User className="h-8 w-8 text-emerald-600" />
 							</div>
 							<div>
-								<p className="text-lg font-semibold">{application.customerName}</p>
-								<Badge variant="outline">
-									{application.customerType.charAt(0).toUpperCase() +
-										application.customerType.slice(1)}
+								<p className="text-lg font-bold text-foreground">
+									{initialApplication.customerName}
+								</p>
+								<Badge variant="outline" className="mt-1">
+									{initialApplication.customerType.charAt(0).toUpperCase() +
+										initialApplication.customerType.slice(1)}
 								</Badge>
 							</div>
 						</div>
 						<Separator />
-						<div className="grid gap-3">
-							<div className="flex items-center gap-2 text-sm">
-								<Mail className="h-4 w-4 text-muted-foreground" />
-								<span>{application.customerEmail}</span>
-							</div>
-							<div className="flex items-center gap-2 text-sm">
-								<CreditCard className="h-4 w-4 text-muted-foreground" />
-								<span>
-									Credit Score:{" "}
-									<strong>{application.creditScore || "N/A"}</strong>
+						<div className="grid gap-4">
+							<div className="flex items-center gap-3 text-sm group">
+								<div className="p-2 rounded-full bg-muted group-hover:bg-primary/10 transition-colors">
+									<Mail className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+								</div>
+								<span className="font-medium">
+									{initialApplication.customerEmail}
 								</span>
 							</div>
-							<div className="flex items-center gap-2 text-sm">
-								<Calendar className="h-4 w-4 text-muted-foreground" />
-								<span>Applied: {application.appliedDate}</span>
+							<div className="flex items-center gap-3 text-sm group">
+								<div className="p-2 rounded-full bg-muted group-hover:bg-primary/10 transition-colors">
+									<CreditCard className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+								</div>
+								<span>
+									Credit Score:{" "}
+									<span
+										className={cn(
+											"font-bold",
+											(initialApplication.creditScore || 0) > 700
+												? "text-green-600"
+												: "text-amber-600",
+										)}>
+										{initialApplication.creditScore || "N/A"}
+									</span>
+								</span>
+							</div>
+							<div className="flex items-center gap-3 text-sm group">
+								<div className="p-2 rounded-full bg-muted group-hover:bg-primary/10 transition-colors">
+									<Calendar className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
+								</div>
+								<span>Applied: {initialApplication.appliedDate}</span>
 							</div>
 						</div>
 					</CardContent>
 				</Card>
 
-				<Card>
+				<Card className="shadow-md border-border/50 transition-all duration-300 hover:shadow-lg">
 					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<FileText className="h-5 w-5" />
+						<CardTitle className="flex items-center gap-3 text-xl font-semibold">
+							<div className="p-2 rounded-full bg-purple-100 text-purple-600">
+								<FileText className="h-5 w-5" />
+							</div>
 							Loan Details
 						</CardTitle>
 					</CardHeader>
-					<CardContent className="space-y-4">
+					<CardContent className="space-y-6">
 						<div className="flex items-center gap-4">
-							{application.productImage && (
+							{initialApplication.productImage ? (
 								<img
-									src={application.productImage}
-									alt={application.productName}
-									className="h-16 w-16 rounded-lg object-cover"
+									src={initialApplication.productImage}
+									alt={initialApplication.productName}
+									className="h-20 w-20 rounded-xl object-cover shadow-sm border"
 								/>
+							) : (
+								<div className="h-20 w-20 rounded-xl bg-muted flex items-center justify-center">
+									<FileText className="h-8 w-8 text-muted-foreground" />
+								</div>
 							)}
 							<div>
-								<p className="font-semibold">{application.productName}</p>
+								<p className="font-bold text-lg">
+									{initialApplication.productName}
+								</p>
 								<p className="text-sm text-muted-foreground">
 									Product to be financed
 								</p>
 							</div>
 						</div>
 						<Separator />
-						<div className="grid grid-cols-2 gap-4">
-							<div>
-								<p className="text-sm text-muted-foreground">Requested Amount</p>
-								<p className="text-xl font-bold">
-									₱{application.requestedAmount.toLocaleString()}
+						<div className="grid grid-cols-2 gap-6">
+							<div className="space-y-1">
+								<p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+									Requested Amount
+								</p>
+								<p className="text-2xl font-bold tracking-tight text-primary">
+									₱{initialApplication.requestedAmount.toLocaleString()}
 								</p>
 							</div>
-							<div>
-								<p className="text-sm text-muted-foreground">Interest Rate</p>
-								<p className="text-xl font-bold">{application.interestRate}%</p>
-							</div>
-							<div>
-								<p className="text-sm text-muted-foreground">Loan Term</p>
-								<p className="text-xl font-bold">
-									{application.requestedTerm} months
+							<div className="space-y-1">
+								<p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+									Monthly Payment
+								</p>
+								<p className="text-2xl font-bold tracking-tight">
+									₱{initialApplication.monthlyPayment.toFixed(2)}
 								</p>
 							</div>
-							<div>
-								<p className="text-sm text-muted-foreground">Monthly Payment</p>
-								<p className="text-xl font-bold">
-									₱{application.monthlyPayment.toFixed(2)}
+							<div className="space-y-1">
+								<p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+									Interest Rate
+								</p>
+								<p className="text-lg font-semibold">
+									{initialApplication.interestRate}%
+								</p>
+							</div>
+							<div className="space-y-1">
+								<p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+									Loan Term
+								</p>
+								<p className="text-lg font-semibold">
+									{initialApplication.requestedTerm} months
 								</p>
 							</div>
 						</div>
@@ -182,76 +252,96 @@ export default function ApplicationDetail() {
 				</Card>
 			</div>
 
-			{application.notes && (
-				<Card>
+			{initialApplication.notes && (
+				<Card className="shadow-md border-border/50">
 					<CardHeader>
-						<CardTitle>Notes</CardTitle>
+						<CardTitle className="text-lg font-semibold">Notes</CardTitle>
 					</CardHeader>
 					<CardContent>
-						<p className="text-sm text-muted-foreground">{application.notes}</p>
+						<p className="text-sm text-muted-foreground bg-muted/30 p-4 rounded-lg italic">
+							"{initialApplication.notes}"
+						</p>
 					</CardContent>
 				</Card>
 			)}
 
-			{canReview && (
-				<Card>
-					<CardHeader>
-						<CardTitle>Review Actions</CardTitle>
-						<CardDescription>Take action on this loan application.</CardDescription>
-					</CardHeader>
-					<CardContent>
-						<div className="flex flex-wrap gap-4">
-							<Button className="bg-green-600 hover:bg-green-700">
-								<CheckCircle className="h-4 w-4 mr-2" />
-								Approve Application
-							</Button>
-							<Button variant="destructive">
-								<XCircle className="h-4 w-4 mr-2" />
-								Reject Application
-							</Button>
-							{application.status === "pending" && (
-								<Button variant="outline">
-									<Clock className="h-4 w-4 mr-2" />
-									Mark Under Review
+			<div className="grid gap-6 md:grid-cols-3">
+				{canReview && (
+					<Card className="md:col-span-3 shadow-md border-border/50 border-t-4 border-t-primary">
+						<CardHeader>
+							<CardTitle className="flex items-center gap-2">
+								<CheckCircle className="h-5 w-5 text-primary" />
+								Review Actions
+							</CardTitle>
+							<CardDescription>
+								Please review the application details carefully before taking
+								action.
+							</CardDescription>
+						</CardHeader>
+						<CardContent>
+							<div className="flex flex-wrap gap-4">
+								<Button
+									onClick={() => handleAction("approved")}
+									className="bg-green-600 hover:bg-green-700 text-white shadow-sm hover:shadow-md transition-all duration-200">
+									<CheckCircle className="h-4 w-4 mr-2" />
+									Approve Application
 								</Button>
-							)}
-						</div>
-					</CardContent>
-				</Card>
-			)}
-
-			{application.reviewedDate && (
-				<Card>
-					<CardHeader>
-						<CardTitle>Review History</CardTitle>
-					</CardHeader>
-					<CardContent>
-						<div className="flex items-center gap-4">
-							<div
-								className={`h-10 w-10 rounded-full flex items-center justify-center ${
-									application.status === "approved"
-										? "bg-green-100"
-										: "bg-red-100"
-								}`}>
-								{application.status === "approved" ? (
-									<CheckCircle className="h-5 w-5 text-green-600" />
-								) : (
-									<XCircle className="h-5 w-5 text-red-600" />
+								<Button
+									onClick={() => handleAction("rejected")}
+									variant="destructive"
+									className="shadow-sm hover:shadow-md transition-all duration-200">
+									<XCircle className="h-4 w-4 mr-2" />
+									Reject Application
+								</Button>
+								{status === "pending" && (
+									<Button
+										onClick={() => handleAction("under_review")}
+										variant="outline"
+										className="hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200 transition-all duration-200">
+										<Clock className="h-4 w-4 mr-2" />
+										Mark Under Review
+									</Button>
 								)}
 							</div>
-							<div>
-								<p className="font-medium">
-									Application{" "}
-									{application.status === "approved" ? "Approved" : "Rejected"}
-								</p>
-								<p className="text-sm text-muted-foreground">
-									Reviewed on {application.reviewedDate}
-								</p>
+						</CardContent>
+					</Card>
+				)}
+
+				{reviewDate && (
+					<Card
+						className={cn(
+							"md:col-span-3 shadow-md border-border/50 border-t-4",
+							status === "approved" ? "border-t-green-500" : "border-t-red-500",
+						)}>
+						<CardHeader>
+							<CardTitle>Review History</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="flex items-center gap-4 animate-in zoom-in-95 duration-300">
+								<div
+									className={`h-12 w-12 rounded-full flex items-center justify-center shadow-sm ${
+										status === "approved" ? "bg-green-100" : "bg-red-100"
+									}`}>
+									{status === "approved" ? (
+										<CheckCircle className="h-6 w-6 text-green-600" />
+									) : (
+										<XCircle className="h-6 w-6 text-red-600" />
+									)}
+								</div>
+								<div>
+									<p className="font-bold text-lg">
+										Application{" "}
+										{status === "approved" ? "Approved" : "Rejected"}
+									</p>
+									<p className="text-sm text-muted-foreground">
+										Action taken on {reviewDate}
+									</p>
+								</div>
 							</div>
-						</div>
-					</CardContent>
-				</Card>
-			)}
+						</CardContent>
+					</Card>
+				)}
+			</div>
 		</div>
 	);
 }

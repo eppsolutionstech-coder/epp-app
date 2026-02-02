@@ -25,9 +25,6 @@ export function StatsOverview({
 					<CardTitle className="text-sm font-medium text-muted-foreground">
 						Total Portfolio
 					</CardTitle>
-					<div className="p-2 rounded-full bg-emerald-500/10 text-emerald-600">
-						<DollarSign className="h-4 w-4" />
-					</div>
 				</CardHeader>
 				<CardContent>
 					<div className="text-2xl font-bold">
@@ -48,9 +45,6 @@ export function StatsOverview({
 					<CardTitle className="text-sm font-medium text-muted-foreground">
 						Interest Earned
 					</CardTitle>
-					<div className="p-2 rounded-full bg-green-500/10 text-green-600">
-						<TrendingUp className="h-4 w-4" />
-					</div>
 				</CardHeader>
 				<CardContent>
 					<div className="text-2xl font-bold text-green-600">
@@ -74,9 +68,6 @@ export function StatsOverview({
 					<CardTitle className="text-sm font-medium text-muted-foreground">
 						Principal Collected
 					</CardTitle>
-					<div className="p-2 rounded-full bg-blue-500/10 text-blue-600">
-						<DollarSign className="h-4 w-4" />
-					</div>
 				</CardHeader>
 				<CardContent>
 					<div className="text-2xl font-bold text-blue-600">
@@ -98,9 +89,6 @@ export function StatsOverview({
 					<CardTitle className="text-sm font-medium text-muted-foreground">
 						Default Rate
 					</CardTitle>
-					<div className="p-2 rounded-full bg-red-500/10 text-red-600">
-						<TrendingDown className="h-4 w-4" />
-					</div>
 				</CardHeader>
 				<CardContent>
 					<div className="text-2xl font-bold">{MOCK_FINANCER_STATS.defaultRate}%</div>
