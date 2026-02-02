@@ -35,7 +35,6 @@ export default function CheckoutPage() {
 	const locationState = location.state as LocationState | null;
 	const checkoutItems = locationState?.items ?? [];
 	const source = locationState?.source ?? "direct"; // Default to direct if not specified
-	console.log(checkoutItems, source);
 
 	// Check if we have items to checkout
 	if (checkoutItems.length === 0) {
@@ -65,7 +64,7 @@ export default function CheckoutPage() {
 		if (!user?.id) return;
 
 		const orderPayload = {
-			employeeId: user.id,
+			userId: user.id,
 			installmentMonths: selectedInstallments,
 			total: total,
 			subtotal: subtotal,

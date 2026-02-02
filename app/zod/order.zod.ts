@@ -71,7 +71,7 @@ export type OrderItem = z.infer<typeof OrderItemSchema>;
 export const OrderSchema = z.object({
 	id: z.string(),
 	orderNumber: z.string().min(1, "Order number is required"),
-	employeeId: z.string(),
+	userId: z.string(),
 	status: OrderStatusEnum.default("PENDING_APPROVAL"),
 	items: z.array(OrderItemSchema).min(1, "Order must have at least one item"),
 	subtotal: decimalSchema,
@@ -102,7 +102,7 @@ export type Order = z.infer<typeof OrderSchema>;
 // All calculated fields (subtotal, discount, tax, total) are optional
 export const CreateOrderSchema = z.object({
 	orderNumber: z.string().min(1, "Order number is required").optional(),
-	employeeId: z.string(),
+	userId: z.string(),
 	status: OrderStatusEnum.optional(),
 	items: z.array(OrderItemInputSchema).min(1, "Order must have at least one item"),
 	subtotal: decimalSchema.optional(), // Will be calculated
