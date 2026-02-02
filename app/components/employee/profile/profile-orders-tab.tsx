@@ -15,7 +15,7 @@ export function ProfileOrdersTab({ purchases }: ProfileOrdersTabProps) {
 	const { user } = useAuth();
 	const { data: ordersResponse } = useGetOrders({
 		fields: "id, orderNumber, userId, status, orderItems.item.images, subtotal, tax, total, paymentType, installmentMonths, installmentCount, installmentAmount, paymentMethod, paymentStatus, orderDate, installments.status",
-		filter: `employeeId:${user?.id}`,
+		filter: `userId:${user?.id}`,
 	});
 
 	const orders = ordersResponse?.orders ?? [];

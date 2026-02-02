@@ -11,14 +11,14 @@ import {
 } from "@/components/ui/select";
 import { Package, LayoutGrid, List, SlidersHorizontal, Search } from "lucide-react";
 import { DataTable, type DataTableColumn } from "~/components/molecule/data-table-updated";
-import { ProductGrid } from "~/components/organism/product-grid";
+import { ProductCard } from "~/components/molecule/product-card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetItems } from "~/hooks/use-item";
 import { useGetCategories } from "~/hooks/use-category";
 import { useGetVendors } from "~/hooks/use-vendor";
 import type { Category } from "~/zod/category.zod";
 import type { Vendor } from "~/zod/vendor.zod";
-import type { ItemWithRelation } from "~/zod/item.zod";
+import type { Item, ItemWithRelation } from "~/zod/item.zod";
 import { useApiParams } from "~/hooks/util-hooks/use-api-params";
 import { cn } from "~/lib/utils";
 
@@ -68,7 +68,7 @@ export default function OrganizationProductsPage() {
 	});
 	const vendors: Vendor[] = vendorsResponse?.vendors || [];
 
-	const handleRowClick = (product: ItemWithRelation) => {
+	const handleRowClick = (product: Item | ItemWithRelation) => {
 		navigate(`/admin/products/${product.id}`);
 	};
 
@@ -259,7 +259,22 @@ export default function OrganizationProductsPage() {
 
 				<div className="space-y-4">
 					{viewMode === "grid" ? (
-						<ProductGrid products={products} />
+						products.length === 0 ? (
+							<div className="flex flex-col items-center justify-center py-10 text-center">
+								<p className="text-muted-foreground">No products found.</p>
+							</div>
+						) : (
+							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+								{products.map((product) => (
+									<ProductCard
+										key={product.id}
+										product={product}
+										variant="admin"
+										onClick={handleRowClick}
+									/>
+								))}
+							</div>
+						)
 					) : (
 						<div className="rounded-md border bg-card">
 							<DataTable
