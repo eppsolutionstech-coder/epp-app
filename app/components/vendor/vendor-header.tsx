@@ -24,6 +24,7 @@ const navItems = [
 	{ href: "/vendor/dashboard", icon: LayoutDashboard, label: "Dashboard", end: true },
 	{ href: "/vendor/products", icon: Package, label: "Products" },
 	{ href: "/vendor/orders", icon: ShoppingCart, label: "Orders" },
+	{ href: "/vendor/reports", icon: BarChart3, label: "Reports" },
 ];
 
 // Mock vendor data

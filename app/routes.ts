@@ -23,6 +23,7 @@ const vendorRoutes: RouteConfig = [
 	route("categories", "routes/vendor/categories.tsx"),
 	route("orders", "routes/vendor/orders.tsx"),
 	route("orders/:id", "routes/vendor/orders.$id.tsx"),
+	route("reports", "routes/vendor/reports.tsx"),
 	route("profile/:tab?", "routes/vendor/profile.tsx"),
 ];
 
