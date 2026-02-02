@@ -22,8 +22,8 @@ interface AdminSidebarProps {
 const navItems = [
 	{ href: "/admin", icon: LayoutDashboard, label: "Dashboard", end: true },
 	{ href: "/admin/organizations", icon: Users, label: "Organizations" },
-	{ href: "/admin/orders", icon: ShoppingCart, label: "Orders" },
-	{ href: "/admin/products", icon: Package, label: "Products" },
+	{ href: "/admin/orders", icon: ShoppingCart, label: "Orders", count: 12 },
+	{ href: "/admin/products", icon: Package, label: "Products", count: 5 },
 	{ href: "/admin/vendors", icon: Store, label: "Vendors" },
 	{ href: "/admin/employees", icon: Users, label: "Employees" },
 	{ href: "/admin/reports", icon: PieChart, label: "Reports" },
@@ -85,7 +85,16 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 									)
 								}>
 								<item.icon className="h-4 w-4" />
-								{item.label}
+								<span className="flex-1">{item.label}</span>
+								{item.count && (
+									<span
+										className={cn(
+											"flex h-5 w-5 items-center justify-center rounded-full text-xs",
+											"bg-primary/20 text-primary dark:bg-primary/30",
+										)}>
+										{item.count}
+									</span>
+								)}
 							</NavLink>
 						))}
 					</div>
