@@ -3,14 +3,15 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Package, ChevronLeft, ChevronRight } from "lucide-react";
-import type { Item } from "~/zod/item.zod";
+import type { Item, ItemWithRelation } from "~/zod/item.zod";
 
-interface ProductCardProps {
-	product: Item;
+export interface ProductCardProps {
+	product: Item | ItemWithRelation;
 	variant?: "admin" | "employee" | "vendor" | "landing";
+	onClick?: (product: Item | ItemWithRelation) => void;
 }
 
-export function ProductCard({ product, variant = "admin" }: ProductCardProps) {
+export function ProductCard({ product, variant = "admin", onClick }: ProductCardProps) {
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
 	// Get images array, filter out nulls
@@ -204,7 +205,12 @@ export function ProductCard({ product, variant = "admin" }: ProductCardProps) {
 
 	// Admin/Vendor variant (default)
 	return (
-		<Card className="group overflow-hidden border-border/40 bg-card/50 transition-all hover:bg-card hover:shadow-sm py-0 gap-0">
+		<Card
+			className="group overflow-hidden border-border/40 bg-card/50 transition-all hover:bg-card hover:shadow-sm py-0 gap-0 cursor-pointer"
+			onClick={(e) => {
+				e.stopPropagation();
+				onClick?.(product);
+			}}>
 			<div className="relative aspect-[4/3] overflow-hidden bg-muted/20">
 				{currentImage ? (
 					<img
