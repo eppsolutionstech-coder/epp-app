@@ -15,7 +15,9 @@ import { OrderTimeline } from "@/components/organism/order/order-timeline";
 export default function VendorOrderDetailsPage() {
 	const { id } = useParams();
 
-	const { data: orderResponse, isLoading } = useGetOrderById(id!);
+	const { data: orderResponse, isLoading } = useGetOrderById(id!, {
+		fields: "id, orderNumber, userId, status, orderDate, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.name, orderItems.item.sku, orderItems.item.images",
+	});
 
 	const order = orderResponse as any;
 
