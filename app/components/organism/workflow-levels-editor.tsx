@@ -24,6 +24,7 @@ import { useCreateWorkflowApprovalLevel } from "~/hooks/use-workflow-approval-le
 import { queryClient } from "~/lib/query-client";
 import type { ApprovalWorkflow } from "~/zod/approval-workflow.zod";
 import type { ApprovalLevel } from "../../zod/approval-level.zod";
+import { useGetUsers } from "~/hooks/use-user";
 
 interface WorkflowLevelsEditorProps {
 	workflow: ApprovalWorkflow | null;
@@ -31,15 +32,12 @@ interface WorkflowLevelsEditorProps {
 	onOpenChange: (open: boolean) => void;
 }
 
-const MOCK_APPROVERS = [
-	{ id: "6969ceb5a1037f2809f62ce7", name: "Boss rey jhon", email: "naolsm8@gmail.com" },
-	{ id: "7878ceb5a1037f2809f62ce8", name: "Manager Ken", email: "ken@example.com" },
-	{ id: "8989ceb5a1037f2809f62ce9", name: "Director Sarah", email: "sarah@example.com" },
-];
-
 export function WorkflowLevelsEditor({ workflow, open, onOpenChange }: WorkflowLevelsEditorProps) {
 	const { data: levelsData } = useGetApprovalLevels({ limit: 100 });
 	const { mutate: addLevel, isPending } = useCreateWorkflowApprovalLevel();
+	const { data: users, isLoading } = useGetUsers({
+		fields: "id, userName, email, metadata, role",
+	});
 
 	// Cast data to expected type
 	const availableLevels =
@@ -52,10 +50,17 @@ export function WorkflowLevelsEditor({ workflow, open, onOpenChange }: WorkflowL
 
 	const handleApproverChange = (id: string) => {
 		setSelectedApproverId(id);
-		const approver = MOCK_APPROVERS.find((a) => a.id === id);
-		if (approver) {
-			setApproverName(approver.name);
-			setApproverEmail(approver.email);
+		const approverUser = users?.users?.find((u: any) => u.id === id);
+
+		if (approverUser) {
+			const personalInfo = approverUser.metadata?.employee?.personalInfo;
+			const displayName =
+				personalInfo?.firstName && personalInfo?.lastName
+					? `${personalInfo.firstName} ${personalInfo.lastName}`
+					: approverUser.userName;
+
+			setApproverName(displayName);
+			setApproverEmail(approverUser.email);
 		}
 	};
 
@@ -115,11 +120,18 @@ export function WorkflowLevelsEditor({ workflow, open, onOpenChange }: WorkflowL
 									<SelectValue placeholder="Select an approval level" />
 								</SelectTrigger>
 								<SelectContent>
-									{availableLevels.map((level) => (
-										<SelectItem key={level.id} value={level.id}>
-											{level.role} - {level.description || "No description"}
-										</SelectItem>
-									))}
+									{availableLevels.map((level) => {
+										// Handle potentially expanded role object
+										const roleName =
+											typeof level.role === "object" && level.role !== null
+												? (level.role as any).name
+												: level.role;
+										return (
+											<SelectItem key={level.id} value={level.id}>
+												{roleName} - {level.description || "No description"}
+											</SelectItem>
+										);
+									})}
 								</SelectContent>
 							</Select>
 						</div>
@@ -131,11 +143,25 @@ export function WorkflowLevelsEditor({ workflow, open, onOpenChange }: WorkflowL
 									<SelectValue placeholder="Select an approver" />
 								</SelectTrigger>
 								<SelectContent>
-									{MOCK_APPROVERS.map((approver) => (
-										<SelectItem key={approver.id} value={approver.id}>
-											{approver.name}
-										</SelectItem>
-									))}
+									{users?.users?.map((user: any) => {
+										const personalInfo = user.metadata?.employee?.personalInfo;
+										const displayName =
+											personalInfo?.firstName && personalInfo?.lastName
+												? `${personalInfo.firstName} ${personalInfo.lastName}`
+												: user.userName;
+										return (
+											<SelectItem key={user.id} value={user.id}>
+												<div className="flex flex-col items-start gap-1">
+													<span className="font-medium text-sm">
+														{displayName}
+													</span>
+													<span className="text-xs text-muted-foreground">
+														{user.email}
+													</span>
+												</div>
+											</SelectItem>
+										);
+									})}
 								</SelectContent>
 							</Select>
 						</div>

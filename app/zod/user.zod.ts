@@ -52,6 +52,7 @@ export type User = z.infer<typeof userSchema>;
 
 export type UserWithRelation = User & {
 	person: Person;
+	metadata: any;
 };
 
 export type GetAllUsers = {
@@ -59,3 +60,6 @@ export type GetAllUsers = {
 	pagination: Pagination;
 	count: number;
 };
+
+export type CreateUser = z.infer<typeof createUserSchema>;
+export type UpdateUser = z.infer<typeof updateUserSchema>;

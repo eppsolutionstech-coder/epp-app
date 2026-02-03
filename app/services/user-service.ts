@@ -11,7 +11,7 @@ const authClient = new ApiClient(AUTH_URL);
 class UserService extends APIService {
 	getAllUsers = async () => {
 		try {
-			const response: ApiResponse<GetAllUsers> = await apiClient.get(
+			const response: ApiResponse<GetAllUsers> = await authClient.get(
 				`${USER.GET_ALL}${this.getQueryString()}`,
 			);
 			return response.data;
@@ -25,7 +25,7 @@ class UserService extends APIService {
 
 	getUserById = async (userId: string) => {
 		try {
-			const response = await apiClient.get(
+			const response = await authClient.get(
 				`${USER.GET_BY_ID.replace(":id", userId)}${this.getQueryString()}`,
 			);
 			return response.data;
@@ -53,9 +53,9 @@ class UserService extends APIService {
 		try {
 			let response;
 			if (data instanceof FormData) {
-				response = await apiClient.postFormData(USER.CREATE, data);
+				response = await authClient.postFormData(USER.CREATE, data);
 			} else {
-				response = await apiClient.post(USER.CREATE, data);
+				response = await authClient.post(USER.CREATE, data);
 			}
 			return response.data;
 		} catch (error: any) {
@@ -71,9 +71,9 @@ class UserService extends APIService {
 		try {
 			let response;
 			if (data instanceof FormData) {
-				response = await apiClient.patchFormData(USER.UPDATE.replace(":id", userId), data);
+				response = await authClient.patchFormData(USER.UPDATE.replace(":id", userId), data);
 			} else {
-				response = await apiClient.patch(USER.UPDATE.replace(":id", userId), data);
+				response = await authClient.patch(USER.UPDATE.replace(":id", userId), data);
 			}
 			return response.data;
 		} catch (error: any) {
