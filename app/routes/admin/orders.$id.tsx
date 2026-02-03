@@ -30,103 +30,17 @@ import {
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-// Mock data for the order details
-const MOCK_ORDER_DETAILS = {
-	id: "69787c6951f10f46a05d4202",
-	orderNumber: "ORD-20260127-A0001",
-	employeeId: "EMP-001",
-	status: "PENDING_APPROVAL",
-	orderDate: "2026-01-27T08:50:49.239Z",
-	paymentType: "INSTALLMENT",
-	paymentMethod: "PAYROLL_DEDUCTION",
-	installmentMonths: 6,
-	installmentCount: 12,
-	installmentAmount: 1339.25,
-	subtotal: 14610,
-	tax: 1461,
-	total: 16071,
-	employee: {
-		id: "EMP-001",
-		firstName: "Alice",
-		lastName: "Johnson",
-		username: "alice.j",
-		email: "alice.j@techcorp.com",
-	},
-	shippingAddress: {
-		street: "123 Innovation Drive",
-		city: "Makati City",
-		province: "Metro Manila",
-		zipCode: "1200",
-	},
-	orderItems: [
-		{
-			id: "1",
-			item: {
-				name: "Ergonomic Office Chair",
-				sku: "CH-001",
-				images: [
-					{
-						url: "https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=1000&auto=format&fit=crop",
-					},
-				],
-			},
-			unitPrice: 8500,
-			quantity: 1,
-			subtotal: 8500,
-		},
-		{
-			id: "2",
-			item: {
-				name: "Wireless Mechanical Keyboard",
-				sku: "KB-045",
-				images: [
-					{
-						url: "https://images.unsplash.com/photo-1587829741301-356364971915?q=80&w=1000&auto=format&fit=crop",
-					},
-				],
-			},
-			unitPrice: 3500,
-			quantity: 1,
-			subtotal: 3500,
-		},
-		{
-			id: "3",
-			item: {
-				name: "USB-C Hub Multiport Adapter",
-				sku: "AC-102",
-				images: [
-					{
-						url: "https://images.unsplash.com/photo-1625842268584-8f3296236761?q=80&w=1000&auto=format&fit=crop",
-					},
-				],
-			},
-			unitPrice: 2610,
-			quantity: 1,
-			subtotal: 2610,
-		},
-	],
-	installments: Array(12)
-		.fill(null)
-		.map((_, i) => ({
-			cutoffDate: new Date(2026, 1 + Math.floor(i / 2), i % 2 === 0 ? 15 : 30).toISOString(),
-			amount: 1339.25,
-			status: "PENDING",
-		})),
-	timeline: [
-		{
-			date: "2026-01-27T08:50:49.239Z",
-			title: "Order Placed",
-			description: "Order has been created and is pending approval.",
-		},
-	],
-};
+import { useGetOrderById } from "~/hooks/use-order";
 
 export default function AdminOrderDetailsPage() {
 	const { id } = useParams();
 
-	// Using mock data as requested
-	const order = MOCK_ORDER_DETAILS;
-	const isLoading = false;
+	// Cast to any to handle relations not in the base Zod schema
+	const { data: orderResponse, isLoading } = useGetOrderById(id!, {
+		fields: "id, orderNumber, userId, status, orderDate, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.name, orderItems.item.sku, orderItems.item.images, installments.amount, installments.status",
+	});
+
+	const order = orderResponse as any;
 
 	const formatCurrency = (amount: number) => {
 		return new Intl.NumberFormat("en-PH", {
@@ -263,19 +177,19 @@ export default function AdminOrderDetailsPage() {
 	);
 
 	const getEmployeeName = () => {
-		if (order.employee?.firstName && order.employee?.lastName) {
-			return `${order.employee.firstName} ${order.employee.lastName}`;
+		if (order.user?.firstName && order.user?.lastName) {
+			return `${order.user.firstName} ${order.user.lastName}`;
 		}
-		return order.employee?.username || order.employeeId || "Unknown Customer";
+		return order.user?.username || "Unknown Customer";
 	};
 
 	return (
-		<div className="max-w-7xl mx-auto p-4 sm:p-6 space-y-6">
+		<div className="max-w-7xl mx-auto sm:p-6 space-y-6">
 			<PageHeader />
 
-			<div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+			<div className="grid grid-cols-1 md:grid-cols-12 gap-4">
 				{/* MAIN CONTENT - Left Side (8 cols) */}
-				<div className="md:col-span-8 flex flex-col gap-6">
+				<div className="md:col-span-8 flex flex-col gap-4">
 					{/* ORDER ITEMS LIST */}
 					<Card className="rounded-xl border-none shadow-sm bg-card ring-1 ring-border/50">
 						<CardHeader>
@@ -335,81 +249,42 @@ export default function AdminOrderDetailsPage() {
 					</Card>
 
 					{/* 2. DETAILS GRID - Wrapped in Bento */}
-					<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-						{/* Customer */}
-						<Card className="rounded-xl border-none shadow-sm bg-card ring-1 ring-border/50 flex flex-col">
-							<CardHeader className="pb-3">
-								<CardTitle className="text-base font-semibold flex items-center gap-2 text-muted-foreground">
-									<User className="h-4 w-4" />
-									Customer Details
-								</CardTitle>
-							</CardHeader>
-							<CardContent className="flex-1 space-y-4">
-								<div className="flex items-center gap-4">
-									<div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary font-bold text-lg shadow-inner uppercase">
-										{getEmployeeName().charAt(0)}
-									</div>
-									<div>
-										<p className="font-bold text-foreground">
-											{getEmployeeName()}
-										</p>
-										<div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
-											<Mail className="h-3 w-3" />
-											{order.employee?.email || "No email"}
-										</div>
+					{/* Customer */}
+					<Card className="rounded-xl border-none shadow-sm bg-card ring-1 ring-border/50 flex flex-col">
+						<CardHeader className="pb-3">
+							<CardTitle className="text-base font-semibold flex items-center gap-2 text-muted-foreground">
+								<User className="h-4 w-4" />
+								Customer Details
+							</CardTitle>
+						</CardHeader>
+						<CardContent className="flex-1 space-y-4">
+							<div className="flex items-center gap-4">
+								<div className="h-12 w-12 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center text-primary font-bold text-lg shadow-inner uppercase">
+									{getEmployeeName().charAt(0)}
+								</div>
+								<div>
+									<p className="font-bold text-foreground">{getEmployeeName()}</p>
+									<div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
+										<Mail className="h-3 w-3" />
+										{order.user?.email || "No email"}
 									</div>
 								</div>
-								<Separator className="bg-border/50" />
-								<div className="flex justify-between items-center text-sm">
-									<div className="flex items-center gap-2 text-muted-foreground">
-										<Building className="h-3.5 w-3.5" />
-										<span>Company</span>
-									</div>
-									<span className="font-medium">TechCorp Inc.</span>
+							</div>
+							<Separator className="bg-border/50" />
+							<div className="flex justify-between items-center text-sm">
+								<div className="flex items-center gap-2 text-muted-foreground">
+									<Building className="h-3.5 w-3.5" />
+									<span>Company</span>
 								</div>
-							</CardContent>
-							<CardFooter className="pt-0 pb-4">
-								<Button
-									variant="secondary"
-									size="sm"
-									className="w-full text-xs h-8">
-									View Profile
-								</Button>
-							</CardFooter>
-						</Card>
-
-						{/* Shipping */}
-						<Card className="rounded-xl border-none shadow-sm bg-card ring-1 ring-border/50 flex flex-col">
-							<CardHeader className="pb-3">
-								<CardTitle className="text-base font-semibold flex items-center gap-2 text-muted-foreground">
-									<MapPin className="h-4 w-4" />
-									Delivery Address
-								</CardTitle>
-							</CardHeader>
-							<CardContent className="flex-1">
-								<div className="p-3 rounded-lg bg-muted/30 border border-muted/50 space-y-1">
-									<p className="font-medium text-sm text-foreground">
-										{getEmployeeName()}
-									</p>
-									<p className="text-sm text-muted-foreground leading-relaxed">
-										123 Innovation Drive,
-										<br />
-										Makati City, Metro Manila 1200
-										<br />
-										Philippines
-									</p>
-								</div>
-							</CardContent>
-							<CardFooter className="pt-0 pb-4">
-								<Button
-									variant="ghost"
-									size="sm"
-									className="w-full text-xs h-8 hover:bg-muted/50">
-									Show on Map <ArrowRight className="ml-1 h-3 w-3" />
-								</Button>
-							</CardFooter>
-						</Card>
-					</div>
+								<span className="font-medium">TechCorp Inc.</span>
+							</div>
+						</CardContent>
+						<CardFooter className="pt-0 pb-4">
+							<Button variant="secondary" size="sm" className="w-full text-xs h-8">
+								View Profile
+							</Button>
+						</CardFooter>
+					</Card>
 
 					{/* 3. PAYMENT (Full Width in Left Col) */}
 					<Card className="rounded-xl border-none shadow-sm bg-card ring-1 ring-border/50">
@@ -455,7 +330,7 @@ export default function AdminOrderDetailsPage() {
 				</div>
 
 				{/* RIGHT SIDEBAR (4 cols) */}
-				<div className="md:col-span-4 flex flex-col gap-6">
+				<div className="md:col-span-4 flex flex-col gap-4">
 					{/* STATUS & ACTIONS CARD (Sticky-ish logic could be applied here) */}
 					<div className="space-y-6">
 						{/* Order Details & Status Card */}
@@ -613,7 +488,7 @@ export default function AdminOrderDetailsPage() {
 								<div className="pt-2">
 									<TimelineItem
 										title="Order Placed"
-										date={order.orderDate}
+										date={new Date(order.orderDate).toLocaleDateString()}
 										description="Customer placed the order."
 										isCompleted={true}
 									/>
