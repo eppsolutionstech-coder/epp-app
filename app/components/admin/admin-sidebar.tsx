@@ -1,4 +1,5 @@
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
+import { useAuth } from "~/hooks/use-auth";
 import {
 	LayoutDashboard,
 	Users,
@@ -31,6 +32,9 @@ const navItems = [
 ];
 
 export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
+	const navigate = useNavigate();
+	const { logout } = useAuth();
+
 	return (
 		<>
 			{/* Mobile Sidebar Overlay */}
@@ -105,11 +109,12 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 					<Button
 						variant="outline"
 						className="w-full justify-start gap-3 border-0 bg-gray-100"
-						asChild>
-						<a href="/">
-							<LogOut className="h-4 w-4" />
-							Sign Out
-						</a>
+						onClick={async () => {
+							await logout();
+							navigate("/login");
+						}}>
+						<LogOut className="h-4 w-4" />
+						Sign Out
 					</Button>
 				</div>
 			</aside>

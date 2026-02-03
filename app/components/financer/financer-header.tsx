@@ -1,4 +1,5 @@
-import { NavLink, Link } from "react-router";
+import { NavLink, Link, useNavigate } from "react-router";
+import { useAuth } from "~/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import {
 	Bell,
@@ -37,6 +38,9 @@ const currentFinancer = {
 };
 
 export function FinancerHeader() {
+	const navigate = useNavigate();
+	const { logout } = useAuth();
+
 	const initials = currentFinancer.name
 		.split(" ")
 		.map((n) => n[0])
@@ -140,12 +144,13 @@ export function FinancerHeader() {
 							</DropdownMenuItem>
 							<DropdownMenuSeparator className="my-1" />
 							<DropdownMenuItem
-								asChild
+								onClick={async () => {
+									await logout();
+									navigate("/login");
+								}}
 								className="text-red-600 focus:text-red-600 cursor-pointer gap-2 p-2 focus:bg-red-50 dark:focus:bg-red-950/30">
-								<Link to="/login">
-									<LogOut className="h-4 w-4" />
-									<span>Sign out</span>
-								</Link>
+								<LogOut className="h-4 w-4" />
+								<span>Sign out</span>
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>

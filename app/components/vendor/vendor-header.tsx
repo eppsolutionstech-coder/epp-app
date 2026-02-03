@@ -1,4 +1,5 @@
-import { NavLink, Link } from "react-router";
+import { NavLink, Link, useNavigate } from "react-router";
+import { useAuth } from "~/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import {
 	Bell,
@@ -33,6 +34,9 @@ const currentVendor = {
 };
 
 export function VendorHeader() {
+	const navigate = useNavigate();
+	const { logout } = useAuth();
+
 	const initials = currentVendor.name
 		.split(" ")
 		.map((n) => n[0])
@@ -118,12 +122,13 @@ export function VendorHeader() {
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem
-							asChild
+							onClick={async () => {
+								await logout();
+								navigate("/login");
+							}}
 							className="text-red-600 focus:text-red-600 cursor-pointer">
-							<Link to="/login">
-								<LogOut className="mr-2 h-4 w-4" />
-								<span>Sign out</span>
-							</Link>
+							<LogOut className="mr-2 h-4 w-4" />
+							<span>Sign out</span>
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>

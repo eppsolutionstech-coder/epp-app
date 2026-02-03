@@ -10,6 +10,7 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useGetCartItems } from "~/hooks/use-cart-item";
+import { useAuth } from "~/hooks/use-auth";
 
 // Mock employee data
 const currentEmployee = {
@@ -19,6 +20,7 @@ const currentEmployee = {
 
 export function EmployeeHeader() {
 	const navigate = useNavigate();
+	const { logout } = useAuth();
 	const initials = `${currentEmployee.firstName[0]}${currentEmployee.lastName[0]}`;
 	const {
 		data: cartItemsCount,
@@ -135,12 +137,13 @@ export function EmployeeHeader() {
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem
-							asChild
+							onClick={async () => {
+								await logout();
+								navigate("/login");
+							}}
 							className="text-red-600 focus:text-red-600 cursor-pointer">
-							<Link to="/login">
-								<LogOut className="mr-2 h-4 w-4" />
-								<span>Sign out</span>
-							</Link>
+							<LogOut className="mr-2 h-4 w-4" />
+							<span>Sign out</span>
 						</DropdownMenuItem>
 					</DropdownMenuContent>
 				</DropdownMenu>
