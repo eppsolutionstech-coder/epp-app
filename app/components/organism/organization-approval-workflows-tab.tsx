@@ -13,7 +13,7 @@ import { ManageApprovalLevelsDialog } from "./manage-approval-levels-dialog";
 export function OrganizationApprovalWorkflowsTab() {
 	const { data, isLoading } = useGetApprovalWorkflows({
 		limit: 100,
-		fields: "id, name, description, isActive, minOrderAmount, maxOrderAmount, requiresInstallment, workflowLevels.level, workflowLevels.approvalLevel.role, workflowLevels.approvalLevel.timeoutDays, createdAt, updatedAt",
+	fields: "id, name, description, isActive, minOrderAmount, maxOrderAmount, requiresInstallment, workflowLevels.level, workflowLevels.approverName, workflowLevels.approverEmail, workflowLevels.approvalLevel.role, workflowLevels.approvalLevel.isRequired, workflowLevels.approvalLevel.autoApproveUnder, workflowLevels.approvalLevel.timeoutDays, createdAt, updatedAt",
 	});
 
 	const workflows = data?.approvalWorkflows || [];

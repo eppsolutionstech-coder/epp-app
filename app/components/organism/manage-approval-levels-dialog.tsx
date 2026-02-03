@@ -138,7 +138,7 @@ export function ManageApprovalLevelsDialog({
 												isRequired: editingLevel.isRequired,
 												autoApproveUnder: editingLevel.autoApproveUnder,
 												timeoutDays: editingLevel.timeoutDays,
-										  }
+											}
 										: undefined
 								}
 								onSuccess={() => setView("list")}
@@ -177,6 +177,7 @@ export function ManageApprovalLevelsDialog({
 									<TableRow>
 										<TableHead className="w-[150px]">Role</TableHead>
 										<TableHead>Description</TableHead>
+										<TableHead>Required</TableHead>
 										<TableHead>Auto-approve Under</TableHead>
 										<TableHead>Timeout</TableHead>
 										<TableHead>Created</TableHead>
@@ -193,6 +194,19 @@ export function ManageApprovalLevelsDialog({
 												<span className="text-muted-foreground text-sm">
 													{level.description || "—"}
 												</span>
+											</TableCell>
+											<TableCell>
+												{level.isRequired ? (
+													<Badge
+														variant="secondary"
+														className="font-normal text-xs">
+														Yes
+													</Badge>
+												) : (
+													<span className="text-muted-foreground text-xs">
+														No
+													</span>
+												)}
 											</TableCell>
 											<TableCell>
 												{level.autoApproveUnder ? (
@@ -247,9 +261,7 @@ export function ManageApprovalLevelsDialog({
 														</DropdownMenuItem>
 														<DropdownMenuItem
 															className="text-destructive focus:text-destructive"
-															onClick={() =>
-																handleDelete(level.id)
-															}>
+															onClick={() => handleDelete(level.id)}>
 															<Trash className="mr-2 h-4 w-4" />
 															Delete
 														</DropdownMenuItem>

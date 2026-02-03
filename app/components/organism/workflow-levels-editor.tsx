@@ -16,6 +16,8 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+
+import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useGetApprovalLevels } from "~/hooks/use-approval-level";
 import { useCreateWorkflowApprovalLevel } from "~/hooks/use-workflow-approval-level";
@@ -29,6 +31,12 @@ interface WorkflowLevelsEditorProps {
 	onOpenChange: (open: boolean) => void;
 }
 
+const MOCK_APPROVERS = [
+	{ id: "6969ceb5a1037f2809f62ce7", name: "Boss rey jhon", email: "naolsm8@gmail.com" },
+	{ id: "7878ceb5a1037f2809f62ce8", name: "Manager Ken", email: "ken@example.com" },
+	{ id: "8989ceb5a1037f2809f62ce9", name: "Director Sarah", email: "sarah@example.com" },
+];
+
 export function WorkflowLevelsEditor({ workflow, open, onOpenChange }: WorkflowLevelsEditorProps) {
 	const { data: levelsData } = useGetApprovalLevels({ limit: 100 });
 	const { mutate: addLevel, isPending } = useCreateWorkflowApprovalLevel();
@@ -38,6 +46,18 @@ export function WorkflowLevelsEditor({ workflow, open, onOpenChange }: WorkflowL
 		(levelsData as { approvalLevels: ApprovalLevel[] })?.approvalLevels || [];
 
 	const [selectedLevelId, setSelectedLevelId] = useState<string>("");
+	const [selectedApproverId, setSelectedApproverId] = useState<string>("");
+	const [approverName, setApproverName] = useState<string>("");
+	const [approverEmail, setApproverEmail] = useState<string>("");
+
+	const handleApproverChange = (id: string) => {
+		setSelectedApproverId(id);
+		const approver = MOCK_APPROVERS.find((a) => a.id === id);
+		if (approver) {
+			setApproverName(approver.name);
+			setApproverEmail(approver.email);
+		}
+	};
 
 	if (!workflow) return null;
 
@@ -51,14 +71,18 @@ export function WorkflowLevelsEditor({ workflow, open, onOpenChange }: WorkflowL
 				workflowId: workflow.id,
 				approvalLevelId: selectedLevelId,
 				level: currentLevels.length + 1,
-				approverId: "6969ceb5a1037f2809f62ce7", // Mock data as requested
-				approverName: "Boss rey jhon",
-				approverEmail: "naolsm8@gmail.com",
+
+				approverId: selectedApproverId,
+				approverName: approverName,
+				approverEmail: approverEmail,
 			},
 			{
 				onSuccess: () => {
 					toast.success("Approval level added successfully");
 					setSelectedLevelId("");
+					setSelectedApproverId("");
+					setApproverName("");
+					setApproverEmail("");
 					// Invalidate workflows query to refresh the list and show the new level
 					queryClient.invalidateQueries({ queryKey: ["approval-workflows"] });
 				},
@@ -80,14 +104,14 @@ export function WorkflowLevelsEditor({ workflow, open, onOpenChange }: WorkflowL
 					</DialogDescription>
 				</DialogHeader>
 
-				<div className="space-y-6">
-					<div className="flex items-end gap-4 border-b pb-6">
+				<div className="space-y-2">
+					<div className="flex items-end gap-4">
 						<div className="flex-1 space-y-2">
 							<label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
 								Add Level
 							</label>
 							<Select value={selectedLevelId} onValueChange={setSelectedLevelId}>
-								<SelectTrigger>
+								<SelectTrigger className="w-full">
 									<SelectValue placeholder="Select an approval level" />
 								</SelectTrigger>
 								<SelectContent>
@@ -99,13 +123,40 @@ export function WorkflowLevelsEditor({ workflow, open, onOpenChange }: WorkflowL
 								</SelectContent>
 							</Select>
 						</div>
-						<Button disabled={!selectedLevelId || isPending} onClick={handleAdd}>
+
+						<div className="flex-1 space-y-2">
+							<Label>Approver</Label>
+							<Select value={selectedApproverId} onValueChange={handleApproverChange}>
+								<SelectTrigger className="w-full">
+									<SelectValue placeholder="Select an approver" />
+								</SelectTrigger>
+								<SelectContent>
+									{MOCK_APPROVERS.map((approver) => (
+										<SelectItem key={approver.id} value={approver.id}>
+											{approver.name}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
+					</div>
+
+					<div className="flex justify-end pt-2">
+						<Button
+							disabled={
+								!selectedLevelId ||
+								!selectedApproverId ||
+								!approverName ||
+								!approverEmail ||
+								isPending
+							}
+							onClick={handleAdd}>
 							{isPending ? (
 								<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 							) : (
 								<Plus className="mr-2 h-4 w-4" />
 							)}
-							Add
+							Add Level
 						</Button>
 					</div>
 
@@ -136,15 +187,18 @@ export function WorkflowLevelsEditor({ workflow, open, onOpenChange }: WorkflowL
 											{index + 1}
 										</div>
 										<div className="flex-1">
-											<div className="font-medium flex items-center gap-2">
-												{level.approvalLevel?.role || "Unknown Role"}
-												<Badge variant="outline" className="text-xs">
-													{level.approvalLevel?.timeoutDays
-														? `${level.approvalLevel.timeoutDays}d timeout`
-														: "No timeout"}
+											<div className="flex items-center gap-2">
+												<div className="font-medium">
+													{level.approverName || "Unknown Approver"}
+												</div>
+												<Badge variant="secondary" className="text-xs">
+													{level.approvalLevel?.role || "Unknown Role"}
 												</Badge>
 											</div>
-											<div className="text-xs text-muted-foreground">
+											<div className="text-sm text-muted-foreground">
+												{level.approverEmail || "No email"}
+											</div>
+											<div className="text-xs text-muted-foreground/80 pt-1">
 												{level.approvalLevel?.description}
 											</div>
 										</div>
