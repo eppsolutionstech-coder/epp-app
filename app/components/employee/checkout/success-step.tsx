@@ -47,10 +47,14 @@ export function SuccessStep({ orderNumber }: SuccessStepProps) {
 
 					<div className="flex gap-4 justify-center pt-4">
 						<Button variant="outline" size="lg" className="rounded-full" asChild>
-							<Link to="/employee/orders">View My Orders</Link>
+							<Link to="/employee/profile/orders" replace>
+								View My Orders
+							</Link>
 						</Button>
 						<Button size="lg" className="rounded-full" asChild>
-							<Link to="/employee">Continue Shopping</Link>
+							<Link to="/employee" replace>
+								Continue Shopping
+							</Link>
 						</Button>
 					</div>
 				</div>

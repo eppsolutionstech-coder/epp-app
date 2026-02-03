@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router";
+import { useNavigate, useLocation, useSearchParams } from "react-router";
 import {
 	CheckoutEmpty,
 	CheckoutHeader,
@@ -24,7 +24,8 @@ interface LocationState {
 export default function CheckoutPage() {
 	const navigate = useNavigate();
 	const location = useLocation();
-	const [currentStep, setCurrentStep] = useState<CheckoutStep>("summary");
+	const [searchParams, setSearchParams] = useSearchParams();
+	const currentStep = (searchParams.get("step") as CheckoutStep) || "summary";
 	const [selectedInstallments, setSelectedInstallments] = useState(6);
 	const [orderNumber, setOrderNumber] = useState<string>();
 	const { user } = useAuth();
@@ -48,7 +49,7 @@ export default function CheckoutPage() {
 		const steps: CheckoutStep[] = ["summary", "installment", "confirmation", "success"];
 		const currentIndex = steps.indexOf(currentStep);
 		if (currentIndex < steps.length - 1) {
-			setCurrentStep(steps[currentIndex + 1]);
+			setSearchParams({ step: steps[currentIndex + 1] }, { state: location.state });
 		}
 	};
 
@@ -56,7 +57,7 @@ export default function CheckoutPage() {
 		const steps: CheckoutStep[] = ["summary", "installment", "confirmation", "success"];
 		const currentIndex = steps.indexOf(currentStep);
 		if (currentIndex > 0) {
-			setCurrentStep(steps[currentIndex - 1]);
+			setSearchParams({ step: steps[currentIndex - 1] }, { state: location.state });
 		}
 	};
 
@@ -79,7 +80,7 @@ export default function CheckoutPage() {
 		const callbacks = {
 			onSuccess: (response: any) => {
 				setOrderNumber(response.order?.orderNumber || "PENDING"); // Handle potential missing orderNumber if checkout endpoint differs
-				setCurrentStep("success");
+				setSearchParams({ step: "success" }, { state: location.state });
 			},
 			onError: (error: any) => {
 				console.error("Failed to create order:", error);

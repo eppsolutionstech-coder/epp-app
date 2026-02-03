@@ -13,7 +13,7 @@ export default function VendorOrdersPage() {
 	const [searchParams] = useSearchParams();
 
 	const { data: ordersResponse, isLoading } = useGetOrders({
-		fields: "id, orderNumber, employeeId, status, orderItems.id, total, orderDate",
+		fields: "id, orderNumber, userId, status, orderItems.id, total, orderDate",
 		count: true,
 	});
 
