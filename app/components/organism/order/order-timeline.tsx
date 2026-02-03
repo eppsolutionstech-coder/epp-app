@@ -63,7 +63,9 @@ export function OrderTimeline({ order }: OrderTimelineProps) {
 				<div className="pt-2">
 					<TimelineItem
 						title="Order Placed"
-						date={new Date(order.orderDate).toLocaleDateString()}
+						date={
+							order.orderDate ? new Date(order.orderDate).toLocaleDateString() : "N/A"
+						}
 						description="Customer placed the order."
 						isCompleted={true}
 					/>

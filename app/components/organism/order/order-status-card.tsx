@@ -38,7 +38,9 @@ export function OrderStatusCard({ order, getStatusColor }: OrderStatusCardProps)
 					<div className="flex items-center gap-2">
 						<Calendar className="h-4 w-4 text-muted-foreground" />
 						<span className="font-medium text-foreground">
-							{new Date(order.orderDate).toLocaleDateString()}
+							{order.orderDate
+								? new Date(order.orderDate).toLocaleDateString()
+								: "N/A"}
 						</span>
 					</div>
 				</div>
@@ -68,10 +70,10 @@ export function OrderStatusCard({ order, getStatusColor }: OrderStatusCardProps)
 							<Badge
 								className={cn(
 									"w-fit text-sm py-0.5 px-3 h-auto shadow-none",
-									getStatusColor(order.status),
+									getStatusColor(order.status || ""),
 									"border-none text-white",
 								)}>
-								{order.status.replace("_", " ")}
+								{order.status?.replace("_", " ") || "Unknown Status"}
 							</Badge>
 							{isPending && (
 								<p className="text-xs text-muted-foreground leading-tight">
