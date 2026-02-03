@@ -108,4 +108,12 @@ export const API_ENDPOINTS = {
 		UPDATE: "/financierConfig/:id",
 		DELETE: "/financierConfig/:id", // Soft delete
 	},
+
+	ORDER_APPROVAL: {
+		GET_ALL: "/orderApproval",
+		GET_BY_ID: "/orderApproval/:id",
+		CREATE: "/orderApproval",
+		UPDATE: "/orderApproval/:id",
+		DELETE: "/orderApproval/:id", // Soft delete
+	},
 };
