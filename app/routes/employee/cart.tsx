@@ -16,7 +16,7 @@ export default function EmployeeCart() {
 		isLoading,
 		isError,
 	} = useGetCartItems({
-		fields: "id, userId, item.id, item.sku, item.name, item.retailPrice, item.costPrice, item.stockQuantity, item.images, quantity, item.supplier.name, createdAt, updatedAt",
+		fields: "id, userId, itemId, item.id, item.sku, item.name, item.retailPrice, item.costPrice, item.stockQuantity, item.images, quantity, item.supplier.name, createdAt, updatedAt",
 		limit: 50,
 	});
 	const updateCartItem = useUpdateCartItem();
@@ -128,25 +128,8 @@ export default function EmployeeCart() {
 				</div>
 
 				{/* Order Summary */}
-				<OrderSummary
-					selectedItems={selectedItems}
-					checkoutItems={selectedCartItems.map((item) => {
-						const coverImage = item.item.images?.find((img) => img.type === "COVER");
-						const imageUrl =
-							coverImage?.url || item.item.images?.[0]?.url || "/placeholder.png";
-						return {
-							itemId: item.id,
-							productName: item.item.name,
-							productSku: item.item.sku,
-							productImage: imageUrl,
-							costPrice: item.item.costPrice ?? 0,
-							retailPrice: item.item.retailPrice,
-							quantity: item.quantity,
-						};
-					})}
-				/>
+				<OrderSummary selectedItems={selectedItems} cartItems={selectedCartItems} />
 			</div>
 		</div>
 	);
 }
-

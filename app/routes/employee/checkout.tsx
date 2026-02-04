@@ -70,7 +70,7 @@ export default function CheckoutPage() {
 			total: total,
 			subtotal: subtotal,
 			items: checkoutItems.map((item) => ({
-				itemId: item.itemId,
+				itemId: item.item.id,
 				quantity: item.quantity,
 			})),
 			paymentType: "INSTALLMENT" as const,

@@ -5,21 +5,22 @@ import { Separator } from "@/components/ui/separator";
 import { formatPrice } from "./cart-utils";
 import { calculateTotals } from "../checkout/checkout-utils";
 import type { CheckoutItem } from "../checkout/checkout-utils";
+import type { CartItemWithRelation } from "~/zod/cartItem.zod";
 
 interface OrderSummaryProps {
 	selectedItems: Set<string>;
-	checkoutItems: CheckoutItem[];
+	cartItems: CartItemWithRelation[];
 }
 
-export function OrderSummary({ selectedItems, checkoutItems }: OrderSummaryProps) {
+export function OrderSummary({ selectedItems, cartItems }: OrderSummaryProps) {
 	const navigate = useNavigate();
 	const hasSelectedItems = selectedItems.size > 0;
 
-	const { totalItems, subtotal, totalSavings, total } = calculateTotals(checkoutItems);
+	const { totalItems, subtotal, totalSavings, total } = calculateTotals(cartItems);
 
 	const handleCheckout = () => {
 		navigate("/employee/checkout", {
-			state: { items: checkoutItems, source: "cart" },
+			state: { items: cartItems, source: "cart" },
 		});
 	};
 

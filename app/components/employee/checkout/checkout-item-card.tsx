@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import type { CheckoutItem } from "./checkout-utils";
-import { formatPrice } from "./checkout-utils";
+import { formatPrice, getItemImage } from "./checkout-utils";
 
 interface CheckoutItemCardProps {
 	item: CheckoutItem;
@@ -9,8 +9,12 @@ interface CheckoutItemCardProps {
 }
 
 export function CheckoutItemCard({ item, compact = false }: CheckoutItemCardProps) {
-	const hasDiscount = item.retailPrice > item.costPrice;
-	const savings = item.retailPrice - item.costPrice;
+	const product = item.item;
+	const costPrice = product.costPrice ?? 0;
+	const retailPrice = product.retailPrice;
+	const hasDiscount = retailPrice > costPrice;
+	const savings = retailPrice - costPrice;
+	const imageUrl = getItemImage(product);
 
 	if (compact) {
 		return (
@@ -20,8 +24,8 @@ export function CheckoutItemCard({ item, compact = false }: CheckoutItemCardProp
 						<Link to={`/employee/product/${item.itemId}`} className="shrink-0">
 							<div className="h-16 w-16 rounded-lg bg-muted overflow-hidden">
 								<img
-									src={item.productImage}
-									alt={item.productName}
+									src={imageUrl}
+									alt={product.name}
 									className="h-full w-full object-cover"
 								/>
 							</div>
@@ -31,14 +35,14 @@ export function CheckoutItemCard({ item, compact = false }: CheckoutItemCardProp
 								<Link
 									to={`/employee/product/${item.itemId}`}
 									className="font-medium text-sm hover:text-primary transition-colors line-clamp-1">
-									{item.productName}
+									{product.name}
 								</Link>
 								<p className="text-xs text-muted-foreground">
 									Qty: {item.quantity}
 								</p>
 							</div>
 							<span className="font-semibold shrink-0">
-								{formatPrice(item.costPrice * item.quantity)}
+								{formatPrice(costPrice * item.quantity)}
 							</span>
 						</div>
 					</div>
@@ -55,8 +59,8 @@ export function CheckoutItemCard({ item, compact = false }: CheckoutItemCardProp
 					<Link to={`/employee/product/${item.itemId}`} className="shrink-0">
 						<div className="h-28 w-28 rounded-xl bg-muted overflow-hidden">
 							<img
-								src={item.productImage}
-								alt={item.productName}
+								src={imageUrl}
+								alt={product.name}
 								className="h-full w-full object-cover transition-transform hover:scale-105"
 							/>
 						</div>
@@ -68,9 +72,9 @@ export function CheckoutItemCard({ item, compact = false }: CheckoutItemCardProp
 							<Link
 								to={`/employee/product/${item.itemId}`}
 								className="font-medium text-base hover:text-primary transition-colors line-clamp-2">
-								{item.productName}
+								{product.name}
 							</Link>
-							<p className="text-xs text-muted-foreground">SKU: {item.productSku}</p>
+							<p className="text-xs text-muted-foreground">SKU: {product.sku}</p>
 						</div>
 
 						<div className="mt-auto pt-3 flex items-end justify-between">
@@ -78,11 +82,11 @@ export function CheckoutItemCard({ item, compact = false }: CheckoutItemCardProp
 							<div>
 								<div className="flex items-baseline gap-2">
 									<span className="text-lg font-semibold">
-										{formatPrice(item.costPrice)}
+										{formatPrice(costPrice)}
 									</span>
 									{hasDiscount && (
 										<span className="text-sm text-muted-foreground line-through">
-											{formatPrice(item.retailPrice)}
+											{formatPrice(retailPrice)}
 										</span>
 									)}
 								</div>
