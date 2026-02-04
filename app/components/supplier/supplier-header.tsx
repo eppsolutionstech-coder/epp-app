@@ -33,7 +33,7 @@ const currentsupplier = {
 	name: "TechWorld Electronics",
 };
 
-export function supplierHeader() {
+export function SupplierHeader() {
 	const navigate = useNavigate();
 	const { logout } = useAuth();
 

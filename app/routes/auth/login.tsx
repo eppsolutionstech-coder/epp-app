@@ -43,7 +43,7 @@ const roleOptions: RoleOption[] = [
 		color: "text-emerald-600 dark:text-emerald-400",
 		bgColor:
 			"bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border-emerald-200 dark:border-emerald-800",
-		email: "epp-supplier@gmail.com",
+		email: "epp-vendor@gmail.com",
 	},
 	{
 		id: "financer",
