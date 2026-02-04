@@ -1,5 +1,9 @@
 import { z } from "zod";
 import type { Pagination } from "~/types/pagination";
+import type { Installment } from "./installment.zod";
+import type { ApprovalWorkflow } from "./approval-workflow.zod";
+import type { OrderApproval } from "./order-approval.zod";
+import type { PurchaseOrder } from "./purchaseOrder.zod";
 
 // Enums
 export const OrderStatusEnum = z.enum([
@@ -143,4 +147,10 @@ export type GetAllOrders = {
 };
 
 // Order with populated relations (employee, product details)
-export type OrderWithRelation = Order;
+export interface OrderWithRelation extends Order {
+	installments: Installment[];
+	orderItems: OrderItem[];
+	workflow: ApprovalWorkflow;
+	approvals: OrderApproval[];
+	purchaseOrders: PurchaseOrder[];
+}

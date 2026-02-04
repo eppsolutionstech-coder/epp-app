@@ -3,97 +3,58 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DataTable, type DataTableColumn } from "@/components/molecule/data-table-updated";
-import { MOCK_LOAN_APPLICATIONS } from "~/data/mock-financer-data";
 import { Eye, FileText } from "lucide-react";
-
-type LoanApplication = (typeof MOCK_LOAN_APPLICATIONS)[number];
+import { useGetOrders } from "~/hooks/use-order";
+import { useAuth } from "~/hooks/use-auth";
+import type { OrderWithRelation } from "~/zod/order.zod";
 
 const getStatusBadge = (status: string) => {
 	switch (status) {
-		case "pending":
+		case "PENDING":
 			return <Badge variant="secondary">Pending</Badge>;
-		case "under_review":
+		case "UNDER_REVIEW":
 			return (
 				<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100">
 					Under Review
 				</Badge>
 			);
-		case "approved":
+		case "APPROVED":
 			return (
 				<Badge className="bg-green-100 text-green-700 hover:bg-green-100">Approved</Badge>
 			);
-		case "rejected":
+		case "REJECTED":
 			return <Badge variant="destructive">Rejected</Badge>;
 		default:
 			return <Badge variant="outline">{status}</Badge>;
 	}
 };
 
-const getCustomerTypeBadge = (type: string) => {
-	const colors: Record<string, string> = {
-		employee: "bg-blue-100 text-blue-700",
-		retailer: "bg-purple-100 text-purple-700",
-		wholesaler: "bg-cyan-100 text-cyan-700",
-		regular: "bg-gray-100 text-gray-700",
-	};
-	return (
-		<Badge className={`${colors[type] || "bg-gray-100 text-gray-700"} hover:opacity-80`}>
-			{type.charAt(0).toUpperCase() + type.slice(1)}
-		</Badge>
-	);
-};
-
-const columns: DataTableColumn<LoanApplication>[] = [
+const columns: DataTableColumn<OrderWithRelation>[] = [
 	{
-		key: "id",
-		label: "Application ID",
+		key: "orderNumber",
+		label: "Order Number",
 		sortable: true,
 		searchable: true,
-		render: (value) => <span className="font-medium">{value}</span>,
+		render: (value) => <span className="font-medium">{value as string}</span>,
 	},
 	{
-		key: "customerName",
+		key: "userId",
 		label: "Customer",
 		sortable: true,
 		searchable: true,
-		render: (_, row) => (
+		render: (value) => (
 			<div>
-				<p className="font-medium">{row.customerName}</p>
-				<p className="text-xs text-muted-foreground">{row.customerEmail}</p>
+				<p className="font-medium text-xs font-mono">{value as string}</p>
 			</div>
 		),
 	},
 	{
-		key: "customerType",
-		label: "Type",
-		filterable: true,
-		filterOptions: [
-			{ value: "employee", label: "Employee" },
-			{ value: "retailer", label: "Retailer" },
-			{ value: "wholesaler", label: "Wholesaler" },
-			{ value: "regular", label: "Regular" },
-		],
-		render: (value) => getCustomerTypeBadge(value as string),
+		key: "orderItems",
+		label: "Items",
+		render: (_, row) => <span className="font-medium">{row.orderItems?.length || 0}</span>,
 	},
 	{
-		key: "productName",
-		label: "Product",
-		searchable: true,
-		render: (_, row) => (
-			<div className="flex items-center gap-2">
-				{row.productImage && (
-					<img
-						src={row.productImage}
-						alt={row.productName}
-						className="h-8 w-8 rounded object-cover"
-					/>
-				)}
-				<span className="text-sm truncate max-w-[150px]">{row.productName}</span>
-			</div>
-		),
-	},
-	{
-		key: "requestedAmount",
+		key: "total",
 		label: "Amount",
 		sortable: true,
 		className: "text-right",
@@ -102,7 +63,7 @@ const columns: DataTableColumn<LoanApplication>[] = [
 		),
 	},
 	{
-		key: "requestedTerm",
+		key: "installmentMonths",
 		label: "Term",
 		sortable: true,
 		render: (value) => `${value} mo`,
@@ -112,18 +73,22 @@ const columns: DataTableColumn<LoanApplication>[] = [
 		label: "Status",
 		filterable: true,
 		filterOptions: [
-			{ value: "pending", label: "Pending" },
-			{ value: "under_review", label: "Under Review" },
-			{ value: "approved", label: "Approved" },
-			{ value: "rejected", label: "Rejected" },
+			{ value: "PENDING", label: "Pending" },
+			{ value: "UNDER_REVIEW", label: "Under Review" },
+			{ value: "APPROVED", label: "Approved" },
+			{ value: "REJECTED", label: "Rejected" },
 		],
 		render: (value) => getStatusBadge(value as string),
 	},
 	{
-		key: "appliedDate",
+		key: "orderDate",
 		label: "Date",
 		sortable: true,
-		render: (value) => <span className="text-sm text-muted-foreground">{value as string}</span>,
+		render: (value) => (
+			<span className="text-sm text-muted-foreground">
+				{new Date(value as string).toLocaleDateString()}
+			</span>
+		),
 	},
 	{
 		key: "id",
@@ -141,6 +106,13 @@ const columns: DataTableColumn<LoanApplication>[] = [
 ];
 
 export default function FinancerApplications() {
+	const { user } = useAuth();
+	const { data: orders, isLoading } = useGetOrders({
+		fields: "id, orderNumber, userId, status, orderDate, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, approvals.id, approvals.approverId, approvals.approverEmail",
+		// filter: `approvals.approverId=${user?.id}`,
+		filter: `approvals.approverId=6969ceb5a1037f2809f62ce7`,
+	});
+
 	return (
 		<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
 			<div>
@@ -158,12 +130,14 @@ export default function FinancerApplications() {
 						</div>
 						Applications
 					</CardTitle>
-					<CardDescription>
-						{MOCK_LOAN_APPLICATIONS.length} application(s) found
-					</CardDescription>
+					<CardDescription>{orders?.count || 0} application(s) found</CardDescription>
 				</CardHeader>
 				<CardContent>
-					<DataTable columns={columns} data={MOCK_LOAN_APPLICATIONS} />
+					<DataTable
+						columns={columns}
+						data={(orders?.orders as unknown as OrderWithRelation[]) || []}
+						isLoading={isLoading}
+					/>
 				</CardContent>
 			</Card>
 		</div>
