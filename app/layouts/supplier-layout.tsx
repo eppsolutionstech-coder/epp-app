@@ -1,10 +1,10 @@
-import { Outlet } from "react-router";
-import { VendorHeader } from "@/components/vendor/vendor-header";
+﻿import { Outlet } from "react-router";
+import { supplierHeader } from "@/components/supplier/supplier-header";
 
-export default function VendorLayout() {
+export default function supplierLayout() {
 	return (
 		<div className="flex flex-col h-screen overflow-hidden bg-muted/40 dark:bg-muted/10">
-			<VendorHeader />
+			<supplierHeader />
 
 			{/* Main Content */}
 			<main className="flex-1 p-6 overflow-y-auto">
@@ -15,3 +15,4 @@ export default function VendorLayout() {
 		</div>
 	);
 }
+

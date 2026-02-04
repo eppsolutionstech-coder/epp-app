@@ -1,30 +1,30 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import { ChevronRight } from "lucide-react";
 import { ProductCard } from "~/components/molecule/product-card";
-import type { VendorWithRelations } from "~/zod/vendor.zod";
+import type { supplierWithRelations } from "~/zod/supplier.zod";
 
-interface VendorProductListProps {
-	vendors: VendorWithRelations[];
+interface supplierProductListProps {
+	suppliers: supplierWithRelations[];
 }
 
-export function VendorProductList({ vendors }: VendorProductListProps) {
-	// Filter vendors that actually have items
-	const vendorsWithItems = vendors.filter((vendor) => vendor.items && vendor.items.length > 0);
+export function supplierProductList({ suppliers }: supplierProductListProps) {
+	// Filter suppliers that actually have items
+	const suppliersWithItems = suppliers.filter((supplier) => supplier.items && supplier.items.length > 0);
 
-	if (vendorsWithItems.length === 0) {
+	if (suppliersWithItems.length === 0) {
 		return null;
 	}
 
 	return (
 		<div className="space-y-12">
-			{vendorsWithItems.map((vendor) => (
-				<section key={vendor.id} className="space-y-4">
+			{suppliersWithItems.map((supplier) => (
+				<section key={supplier.id} className="space-y-4">
 					<div className="flex items-center justify-between px-1">
 						<div className="space-y-1">
-							<h2 className="text-2xl font-bold tracking-tight">{vendor.name}</h2>
+							<h2 className="text-2xl font-bold tracking-tight">{supplier.name}</h2>
 						</div>
 						<Link
-							to={`/employee/catalog?vendorId=${vendor.id}`}
+							to={`/employee/catalog?supplierId=${supplier.id}`}
 							className="group flex items-center text-sm font-medium text-primary hover:underline">
 							View all
 							<ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -33,7 +33,7 @@ export function VendorProductList({ vendors }: VendorProductListProps) {
 
 					<div className="relative">
 						<div className="flex overflow-x-auto gap-4 pb-6 -mx-4 px-4 sm:px-0 sm:mx-0 snap-x snap-mandatory hide-scrollbar">
-							{vendor.items?.map((item) => (
+							{supplier.items?.map((item) => (
 								<div
 									key={item.id}
 									className="flex-none w-[280px] snap-start transition-opacity hover:opacity-100">
@@ -61,3 +61,4 @@ export function VendorProductList({ vendors }: VendorProductListProps) {
 		</div>
 	);
 }
+

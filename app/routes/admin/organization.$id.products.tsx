@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { SearchInput } from "@/components/ui/search-input";
@@ -15,9 +15,9 @@ import { ProductCard } from "~/components/molecule/product-card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetItems } from "~/hooks/use-item";
 import { useGetCategories } from "~/hooks/use-category";
-import { useGetVendors } from "~/hooks/use-vendor";
+import { useGetsuppliers } from "~/hooks/use-supplier";
 import type { Category } from "~/zod/category.zod";
-import type { Vendor } from "~/zod/vendor.zod";
+import type { supplier } from "~/zod/supplier.zod";
 import type { Item, ItemWithRelation } from "~/zod/item.zod";
 import { useApiParams } from "~/hooks/util-hooks/use-api-params";
 import { cn } from "~/lib/utils";
@@ -26,23 +26,23 @@ export default function OrganizationProductsPage() {
 	const navigate = useNavigate();
 	const [viewMode, setViewMode] = useState<"grid" | "table">("table");
 	const [categoryFilter, setCategoryFilter] = useState<string>("all");
-	const [vendorFilter, setVendorFilter] = useState<string>("all");
+	const [supplierFilter, setsupplierFilter] = useState<string>("all");
 
-	// Helper to build filter string from category and vendor
+	// Helper to build filter string from category and supplier
 	const buildFilterString = (catFilter: string, venFilter: string) => {
 		const parts: string[] = [];
 		if (catFilter !== "all") {
 			parts.push(`categoryId:${catFilter}`);
 		}
 		if (venFilter !== "all") {
-			parts.push(`vendorId:${venFilter}`);
+			parts.push(`supplierId:${venFilter}`);
 		}
 		return parts.join(",");
 	};
 
 	const { apiParams, searchTerm, handleSearchChange, handleFilterChange } = useApiParams({
 		limit: 100,
-		fields: "id, sku, name, description, category.id, category.name, vendor.id, vendor.name, retailPrice, sellingPrice, costPrice, stockQuantity, isActive, status, imageUrl, images",
+		fields: "id, sku, name, description, category.id, category.name, supplier.id, supplier.name, retailPrice, sellingPrice, costPrice, stockQuantity, isActive, status, imageUrl, images",
 		filter: "status:APPROVED",
 	});
 
@@ -61,12 +61,12 @@ export default function OrganizationProductsPage() {
 	});
 	const categories: Category[] = categoriesResponse?.categorys || [];
 
-	// Fetch vendors for filter dropdown
-	const { data: vendorsResponse } = useGetVendors({
+	// Fetch suppliers for filter dropdown
+	const { data: suppliersResponse } = useGetsuppliers({
 		limit: 100,
 		fields: "id, name",
 	});
-	const vendors: Vendor[] = vendorsResponse?.vendors || [];
+	const suppliers: supplier[] = suppliersResponse?.suppliers || [];
 
 	const handleRowClick = (product: Item | ItemWithRelation) => {
 		navigate(`/admin/products/${product.id}`);
@@ -110,37 +110,37 @@ export default function OrganizationProductsPage() {
 				value: cat.id,
 				label: cat.name,
 			})),
-			render: (_, row) => row.category?.name || "—",
+			render: (_, row) => row.category?.name || "â€”",
 		},
 		{
-			key: "vendor" as keyof ItemWithRelation,
-			label: "Vendor",
+			key: "supplier" as keyof ItemWithRelation,
+			label: "supplier",
 			sortable: true,
 			filterable: true,
-			filterOptions: vendors.map((ven) => ({
-				key: "vendorId",
+			filterOptions: suppliers.map((ven) => ({
+				key: "supplierId",
 				value: ven.id,
 				label: ven.name,
 			})),
-			render: (_, row) => row.vendor?.name || "—",
+			render: (_, row) => row.supplier?.name || "â€”",
 		},
 		{
 			key: "retailPrice",
 			label: "Retail Price",
 			sortable: true,
-			render: (value) => <div className="text-right">₱{Number(value).toLocaleString()}</div>,
+			render: (value) => <div className="text-right">â‚±{Number(value).toLocaleString()}</div>,
 		},
 		{
 			key: "sellingPrice",
 			label: "Selling Price",
 			sortable: true,
-			render: (value) => <div className="text-right">₱{Number(value).toLocaleString()}</div>,
+			render: (value) => <div className="text-right">â‚±{Number(value).toLocaleString()}</div>,
 		},
 		{
 			key: "costPrice",
 			label: "Cost Price",
 			sortable: true,
-			render: (value) => <div className="text-right">₱{Number(value).toLocaleString()}</div>,
+			render: (value) => <div className="text-right">â‚±{Number(value).toLocaleString()}</div>,
 		},
 		{
 			key: "stockQuantity",
@@ -200,7 +200,7 @@ export default function OrganizationProductsPage() {
 							value={categoryFilter}
 							onValueChange={(value) => {
 								setCategoryFilter(value);
-								handleFilterChange(buildFilterString(value, vendorFilter));
+								handleFilterChange(buildFilterString(value, supplierFilter));
 							}}>
 							<SelectTrigger className="w-[180px]">
 								<SelectValue placeholder="All Categories" />
@@ -216,31 +216,31 @@ export default function OrganizationProductsPage() {
 						</Select>
 
 						<Select
-							value={vendorFilter}
+							value={supplierFilter}
 							onValueChange={(value) => {
-								setVendorFilter(value);
+								setsupplierFilter(value);
 								handleFilterChange(buildFilterString(categoryFilter, value));
 							}}>
 							<SelectTrigger className="w-[180px]">
-								<SelectValue placeholder="All Vendors" />
+								<SelectValue placeholder="All suppliers" />
 							</SelectTrigger>
 							<SelectContent>
-								<SelectItem value="all">All Vendors</SelectItem>
-								{vendors.map((vendor) => (
-									<SelectItem key={vendor.id} value={vendor.id}>
-										{vendor.name}
+								<SelectItem value="all">All suppliers</SelectItem>
+								{suppliers.map((supplier) => (
+									<SelectItem key={supplier.id} value={supplier.id}>
+										{supplier.name}
 									</SelectItem>
 								))}
 							</SelectContent>
 						</Select>
 
-						{(categoryFilter !== "all" || vendorFilter !== "all") && (
+						{(categoryFilter !== "all" || supplierFilter !== "all") && (
 							<Button
 								variant="ghost"
 								size="sm"
 								onClick={() => {
 									setCategoryFilter("all");
-									setVendorFilter("all");
+									setsupplierFilter("all");
 									handleFilterChange("status:APPROVED");
 								}}>
 								Clear Filters
@@ -291,3 +291,4 @@ export default function OrganizationProductsPage() {
 		</div>
 	);
 }
+

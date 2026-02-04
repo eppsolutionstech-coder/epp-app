@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useGetCartItems, useUpdateCartItem, useDeleteCartItem } from "~/hooks/use-cart-item";
 import {
@@ -16,7 +16,7 @@ export default function EmployeeCart() {
 		isLoading,
 		isError,
 	} = useGetCartItems({
-		fields: "id, userId, item.id, item.sku, item.name, item.retailPrice, item.costPrice, item.stockQuantity, item.images, quantity, item.vendor.name, createdAt, updatedAt",
+		fields: "id, userId, item.id, item.sku, item.name, item.retailPrice, item.costPrice, item.stockQuantity, item.images, quantity, item.supplier.name, createdAt, updatedAt",
 		limit: 50,
 	});
 	const updateCartItem = useUpdateCartItem();
@@ -149,3 +149,4 @@ export default function EmployeeCart() {
 		</div>
 	);
 }
+

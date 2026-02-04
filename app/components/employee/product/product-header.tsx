@@ -1,25 +1,25 @@
-import { Button } from "@/components/ui/button";
+﻿import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Heart, Check } from "lucide-react";
 
 interface ProductHeaderProps {
 	name: string;
-	vendorName?: string;
+	supplierName?: string;
 	categoryName?: string;
 	stockQuantity: number;
 }
 
 export function ProductHeader({
 	name,
-	vendorName = "EPP Store",
+	supplierName = "EPP Store",
 	categoryName = "General",
 	stockQuantity,
 }: ProductHeaderProps) {
 	return (
 		<div>
 			<div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-				<span>{vendorName}</span>
-				<span>•</span>
+				<span>{supplierName}</span>
+				<span>â€¢</span>
 				<span>{categoryName}</span>
 			</div>
 			<h1 className="text-2xl lg:text-3xl font-semibold tracking-tight mb-3">{name}</h1>
@@ -43,3 +43,4 @@ export function ProductHeader({
 		</div>
 	);
 }
+

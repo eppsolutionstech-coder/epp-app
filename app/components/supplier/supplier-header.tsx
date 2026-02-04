@@ -1,4 +1,4 @@
-import { NavLink, Link, useNavigate } from "react-router";
+﻿import { NavLink, Link, useNavigate } from "react-router";
 import { useAuth } from "~/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,22 +22,22 @@ import {
 import { cn } from "@/lib/utils";
 
 const navItems = [
-	{ href: "/vendor/dashboard", icon: LayoutDashboard, label: "Dashboard", end: true },
-	{ href: "/vendor/products", icon: Package, label: "Products" },
-	{ href: "/vendor/orders", icon: ShoppingCart, label: "Orders" },
-	{ href: "/vendor/reports", icon: BarChart3, label: "Reports" },
+	{ href: "/supplier/dashboard", icon: LayoutDashboard, label: "Dashboard", end: true },
+	{ href: "/supplier/products", icon: Package, label: "Products" },
+	{ href: "/supplier/orders", icon: ShoppingCart, label: "Orders" },
+	{ href: "/supplier/reports", icon: BarChart3, label: "Reports" },
 ];
 
-// Mock vendor data
-const currentVendor = {
+// Mock supplier data
+const currentsupplier = {
 	name: "TechWorld Electronics",
 };
 
-export function VendorHeader() {
+export function supplierHeader() {
 	const navigate = useNavigate();
 	const { logout } = useAuth();
 
-	const initials = currentVendor.name
+	const initials = currentsupplier.name
 		.split(" ")
 		.map((n) => n[0])
 		.join("")
@@ -95,7 +95,7 @@ export function VendorHeader() {
 								</span>
 							</div>
 							<span className="hidden sm:inline text-sm font-medium">
-								{currentVendor.name}
+								{currentsupplier.name}
 							</span>
 						</Button>
 					</DropdownMenuTrigger>
@@ -103,19 +103,19 @@ export function VendorHeader() {
 						<DropdownMenuLabel>My Account</DropdownMenuLabel>
 						<DropdownMenuSeparator />
 						<DropdownMenuItem asChild>
-							<Link to="/vendor/profile/about" className="cursor-pointer">
+							<Link to="/supplier/profile/about" className="cursor-pointer">
 								<Store className="mr-2 h-4 w-4" />
 								<span>Profile</span>
 							</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem asChild>
-							<Link to="/vendor/profile/analytics" className="cursor-pointer">
+							<Link to="/supplier/profile/analytics" className="cursor-pointer">
 								<BarChart3 className="mr-2 h-4 w-4" />
 								<span>Analytics</span>
 							</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem asChild>
-							<Link to="/vendor/profile/settings" className="cursor-pointer">
+							<Link to="/supplier/profile/settings" className="cursor-pointer">
 								<Settings className="mr-2 h-4 w-4" />
 								<span>Settings</span>
 							</Link>
@@ -136,3 +136,4 @@ export function VendorHeader() {
 		</header>
 	);
 }
+

@@ -1,4 +1,4 @@
-import { NavLink, useNavigate } from "react-router";
+﻿import { NavLink, useNavigate } from "react-router";
 import { useAuth } from "~/hooks/use-auth";
 import {
 	LayoutDashboard,
@@ -25,7 +25,7 @@ const navItems = [
 	{ href: "/admin/organizations", icon: Users, label: "Organizations" },
 	{ href: "/admin/orders", icon: ShoppingCart, label: "Orders", count: 12 },
 	{ href: "/admin/products", icon: Package, label: "Products", count: 5 },
-	{ href: "/admin/vendors", icon: Store, label: "Vendors" },
+	{ href: "/admin/suppliers", icon: Store, label: "suppliers" },
 	{ href: "/admin/employees", icon: Users, label: "Employees" },
 	{ href: "/admin/reports", icon: PieChart, label: "Reports" },
 	{ href: "/admin/settings", icon: Settings, label: "Settings" },
@@ -121,3 +121,4 @@ export function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 		</>
 	);
 }
+

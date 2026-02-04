@@ -1,15 +1,15 @@
-import { Card, CardContent } from "@/components/ui/card";
+﻿import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Mail, MapPin, Phone, Globe } from "lucide-react";
-import type { Vendor, Product } from "~/data/mock-admin-data";
+import type { supplier, Product } from "~/data/mock-admin-data";
 
-interface VendorAboutTabProps {
-	vendor: Vendor;
+interface supplierAboutTabProps {
+	supplier: supplier;
 	products: Product[];
 }
 
-export function VendorAboutTab({ vendor, products }: VendorAboutTabProps) {
+export function supplierAboutTab({ supplier, products }: supplierAboutTabProps) {
 	const activeProducts = products.filter((p) => p.status === "active").length;
 	const totalRevenue = products.reduce((sum, p) => sum + p.price * (p.stock || 0), 0);
 
@@ -29,7 +29,7 @@ export function VendorAboutTab({ vendor, products }: VendorAboutTabProps) {
 						{/* Logo */}
 						<div className="h-20 w-20 rounded-lg bg-emerald-600 flex items-center justify-center shrink-0">
 							<span className="text-2xl font-bold text-white">
-								{vendor.name
+								{supplier.name
 									.split(" ")
 									.map((n) => n[0])
 									.join("")
@@ -40,26 +40,26 @@ export function VendorAboutTab({ vendor, products }: VendorAboutTabProps) {
 						{/* Info */}
 						<div className="space-y-4 flex-1">
 							<div>
-								<h3 className="text-xl font-semibold">{vendor.name}</h3>
-								<p className="text-muted-foreground">Vendor Partner</p>
+								<h3 className="text-xl font-semibold">{supplier.name}</h3>
+								<p className="text-muted-foreground">supplier Partner</p>
 							</div>
 
 							<div className="grid gap-3 sm:grid-cols-2">
 								<div className="flex items-center gap-2 text-sm">
 									<Mail className="h-4 w-4 text-muted-foreground" />
-									{vendor.email}
+									{supplier.email}
 								</div>
 								<div className="flex items-center gap-2 text-sm">
 									<Phone className="h-4 w-4 text-muted-foreground" />
-									{vendor.phone || "+1 (555) 123-4567"}
+									{supplier.phone || "+1 (555) 123-4567"}
 								</div>
 								<div className="flex items-center gap-2 text-sm">
 									<MapPin className="h-4 w-4 text-muted-foreground" />
-									{vendor.address || "123 Business Street, City"}
+									{supplier.address || "123 Business Street, City"}
 								</div>
 								<div className="flex items-center gap-2 text-sm">
 									<Badge variant="default" className="capitalize">
-										{vendor.status}
+										{supplier.status}
 									</Badge>
 								</div>
 							</div>
@@ -85,7 +85,7 @@ export function VendorAboutTab({ vendor, products }: VendorAboutTabProps) {
 				<Card>
 					<CardContent className=" text-center">
 						<div className="text-3xl font-bold text-emerald-600">
-							₱{totalRevenue.toLocaleString()}
+							â‚±{totalRevenue.toLocaleString()}
 						</div>
 						<p className="text-sm text-muted-foreground">Total Sales</p>
 					</CardContent>
@@ -94,3 +94,4 @@ export function VendorAboutTab({ vendor, products }: VendorAboutTabProps) {
 		</div>
 	);
 }
+

@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+﻿import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MOCK_PRODUCTS, MOCK_ORDERS, MOCK_VENDORS } from "~/data/mock-admin-data";
+import { MOCK_PRODUCTS, MOCK_ORDERS, MOCK_suppliers } from "~/data/mock-admin-data";
 import {
 	Package,
 	ShoppingCart,
@@ -15,23 +15,23 @@ import {
 import { Link } from "react-router";
 import { StatsCard } from "~/components/molecule/stats-card";
 
-export default function VendorDashboard() {
-	// Using TechWorld Electronics as the current vendor
-	const currentVendor = MOCK_VENDORS[0];
+export default function supplierDashboard() {
+	// Using TechWorld Electronics as the current supplier
+	const currentsupplier = MOCK_suppliers[0];
 
-	// Filter data for current vendor
-	const vendorProducts = MOCK_PRODUCTS.filter((p) => p.vendorId === currentVendor.id);
-	const vendorOrders = MOCK_ORDERS.filter((o) => o.vendorId === currentVendor.id);
+	// Filter data for current supplier
+	const supplierProducts = MOCK_PRODUCTS.filter((p) => p.supplierId === currentsupplier.id);
+	const supplierOrders = MOCK_ORDERS.filter((o) => o.supplierId === currentsupplier.id);
 
-	const activeProducts = vendorProducts.filter((p) => p.status === "active").length;
-	const pendingProducts = vendorProducts.filter(
+	const activeProducts = supplierProducts.filter((p) => p.status === "active").length;
+	const pendingProducts = supplierProducts.filter(
 		(p) => p.status === "pending" || p.status === "draft",
 	).length;
-	const pendingOrders = vendorOrders.filter((o) =>
+	const pendingOrders = supplierOrders.filter((o) =>
 		["pending", "approved", "processing"].includes(o.status),
 	).length;
-	const lowStockItems = vendorProducts.filter((p) => p.stock < 10).length;
-	const totalRevenue = vendorOrders
+	const lowStockItems = supplierProducts.filter((p) => p.stock < 10).length;
+	const totalRevenue = supplierOrders
 		.filter((o) => o.status === "delivered")
 		.reduce((sum, o) => sum + o.amount, 0);
 
@@ -62,7 +62,7 @@ export default function VendorDashboard() {
 		},
 		{
 			title: "Total Sales",
-			value: `₱${totalRevenue.toLocaleString()}`,
+			value: `â‚±${totalRevenue.toLocaleString()}`,
 			description: "From delivered orders",
 			icon: DollarSign,
 			color: "text-purple-600",
@@ -93,14 +93,14 @@ export default function VendorDashboard() {
 			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 				<div>
 					<h1 className="text-3xl font-bold tracking-tight">
-						Welcome, {currentVendor.name}!
+						Welcome, {currentsupplier.name}!
 					</h1>
 					<p className="text-muted-foreground">
 						Here's an overview of your products and orders.
 					</p>
 				</div>
 				<Button asChild>
-					<Link to="/vendor/products">
+					<Link to="/supplier/products">
 						<Package className="mr-2 h-4 w-4" />
 						Manage Products
 					</Link>
@@ -123,14 +123,14 @@ export default function VendorDashboard() {
 							<CardDescription>Latest orders from employees</CardDescription>
 						</div>
 						<Button variant="outline" size="sm" asChild>
-							<Link to="/vendor/orders">
+							<Link to="/supplier/orders">
 								View All
 								<ArrowRight className="ml-2 h-4 w-4" />
 							</Link>
 						</Button>
 					</CardHeader>
 					<CardContent className="space-y-4">
-						{vendorOrders.slice(0, 4).map((order) => (
+						{supplierOrders.slice(0, 4).map((order) => (
 							<div key={order.id} className="flex items-center gap-4">
 								{order.productImage && (
 									<img
@@ -144,7 +144,7 @@ export default function VendorDashboard() {
 										{order.productName}
 									</p>
 									<p className="text-xs text-muted-foreground">
-										{order.employeeName} • ₱{order.amount.toLocaleString()}
+										{order.employeeName} â€¢ â‚±{order.amount.toLocaleString()}
 									</p>
 								</div>
 								<Badge className={getStatusColor(order.status)}>
@@ -163,14 +163,14 @@ export default function VendorDashboard() {
 							<CardDescription>Your best performing listings</CardDescription>
 						</div>
 						<Button variant="outline" size="sm" asChild>
-							<Link to="/vendor/products">
+							<Link to="/supplier/products">
 								View All
 								<ArrowRight className="ml-2 h-4 w-4" />
 							</Link>
 						</Button>
 					</CardHeader>
 					<CardContent className="space-y-4">
-						{vendorProducts
+						{supplierProducts
 							.filter((p) => p.status === "active")
 							.slice(0, 4)
 							.map((product) => (
@@ -187,7 +187,7 @@ export default function VendorDashboard() {
 											{product.name}
 										</p>
 										<p className="text-xs text-muted-foreground">
-											{product.category} • ₱{product.price.toLocaleString()}
+											{product.category} â€¢ â‚±{product.price.toLocaleString()}
 										</p>
 									</div>
 									<div className="flex items-center gap-1 text-sm text-muted-foreground">
@@ -208,10 +208,10 @@ export default function VendorDashboard() {
 				</CardHeader>
 				<CardContent className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
 					{[
-						{ label: "Add New Product", icon: Package, href: "/vendor/products" },
-						{ label: "View Pending Orders", icon: Clock, href: "/vendor/orders" },
-						{ label: "Update Inventory", icon: ShoppingCart, href: "/vendor/products" },
-						{ label: "View Analytics", icon: TrendingUp, href: "/vendor/dashboard" },
+						{ label: "Add New Product", icon: Package, href: "/supplier/products" },
+						{ label: "View Pending Orders", icon: Clock, href: "/supplier/orders" },
+						{ label: "Update Inventory", icon: ShoppingCart, href: "/supplier/products" },
+						{ label: "View Analytics", icon: TrendingUp, href: "/supplier/dashboard" },
 					].map((action) => (
 						<Link
 							key={action.label}
@@ -226,3 +226,4 @@ export default function VendorDashboard() {
 		</div>
 	);
 }
+

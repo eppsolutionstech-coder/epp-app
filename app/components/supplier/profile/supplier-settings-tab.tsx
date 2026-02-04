@@ -1,8 +1,8 @@
-import { Card, CardContent } from "@/components/ui/card";
+﻿import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LogOut } from "lucide-react";
 
-export function VendorSettingsTab() {
+export function suppliersettingsTab() {
 	return (
 		<div className="space-y-6">
 			<h2 className="text-2xl font-semibold">Settings</h2>
@@ -87,3 +87,4 @@ export function VendorSettingsTab() {
 		</div>
 	);
 }
+

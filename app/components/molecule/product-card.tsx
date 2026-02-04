@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,7 @@ import type { Item, ItemWithRelation } from "~/zod/item.zod";
 
 export interface ProductCardProps {
 	product: Item | ItemWithRelation;
-	variant?: "admin" | "employee" | "vendor" | "landing";
+	variant?: "admin" | "employee" | "supplier" | "landing";
 	onClick?: (product: Item | ItemWithRelation) => void;
 }
 
@@ -112,16 +112,16 @@ export function ProductCard({ product, variant = "admin", onClick }: ProductCard
 								{product.name}
 							</h3>
 							<p className="text-sm text-muted-foreground">
-								₱{monthlyPayment.toLocaleString()}/mo • {minInstallment} mos
+								â‚±{monthlyPayment.toLocaleString()}/mo â€¢ {minInstallment} mos
 							</p>
 						</div>
 						<div className="flex flex-col items-end shrink-0">
 							<span className="font-bold text-base">
-								₱{(product.costPrice || product.retailPrice).toLocaleString()}
+								â‚±{(product.costPrice || product.retailPrice).toLocaleString()}
 							</span>
 							{product.costPrice && product.costPrice < product.retailPrice && (
 								<span className="text-xs text-muted-foreground line-through">
-									₱{product.retailPrice.toLocaleString()}
+									â‚±{product.retailPrice.toLocaleString()}
 								</span>
 							)}
 						</div>
@@ -185,16 +185,16 @@ export function ProductCard({ product, variant = "admin", onClick }: ProductCard
 							{product.name}
 						</h3>
 						<p className="text-[11px] text-muted-foreground">
-							₱{monthlyPayment.toLocaleString()}/mo • {minInstallment} mos
+							â‚±{monthlyPayment.toLocaleString()}/mo â€¢ {minInstallment} mos
 						</p>
 					</div>
 					<div className="flex flex-col items-end">
 						<span className="font-bold text-primary">
-							₱{(product.costPrice || product.retailPrice).toLocaleString()}
+							â‚±{(product.costPrice || product.retailPrice).toLocaleString()}
 						</span>
 						{product.costPrice && product.costPrice < product.retailPrice && (
 							<span className="text-[11px] text-gray-400 line-through">
-								₱{product.retailPrice.toLocaleString()}
+								â‚±{product.retailPrice.toLocaleString()}
 							</span>
 						)}
 					</div>
@@ -203,7 +203,7 @@ export function ProductCard({ product, variant = "admin", onClick }: ProductCard
 		);
 	}
 
-	// Admin/Vendor variant (default)
+	// Admin/supplier variant (default)
 	return (
 		<Card
 			className="group overflow-hidden border-border/40 bg-card/50 transition-all hover:bg-card hover:shadow-sm py-0 gap-0 cursor-pointer"
@@ -297,7 +297,7 @@ export function ProductCard({ product, variant = "admin", onClick }: ProductCard
 						{product.name}
 					</h3>
 					<span className="shrink-0 font-semibold text-sm">
-						₱{product.retailPrice.toLocaleString()}
+						â‚±{product.retailPrice.toLocaleString()}
 					</span>
 				</div>
 				<div className="flex items-center justify-between text-xs text-muted-foreground">
@@ -312,3 +312,4 @@ export function ProductCard({ product, variant = "admin", onClick }: ProductCard
 		</Card>
 	);
 }
+

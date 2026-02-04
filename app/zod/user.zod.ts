@@ -1,4 +1,4 @@
-import { z } from "zod";
+﻿import { z } from "zod";
 import type { Person } from "./person.zod";
 import type { Pagination } from "~/types/pagination";
 
@@ -8,7 +8,7 @@ export type Role = z.infer<typeof RoleEnum>;
 export const SubRoleEnum = z.enum([
 	"staff",
 	"guard",
-	"vendor",
+	"supplier",
 	"operator",
 	"manager",
 	"guest",
@@ -63,3 +63,4 @@ export type GetAllUsers = {
 
 export type CreateUser = z.infer<typeof createUserSchema>;
 export type UpdateUser = z.infer<typeof updateUserSchema>;
+

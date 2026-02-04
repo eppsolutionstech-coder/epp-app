@@ -1,12 +1,12 @@
-import { z } from "zod";
+﻿import { z } from "zod";
 import type { Pagination } from "~/types/pagination";
 import type { ItemWithRelation } from "./item.zod";
 
-// Vendor Schema (full, including ID)
-export const VendorSchema = z.object({
+// supplier Schema (full, including ID)
+export const supplierschema = z.object({
 	id: z.string(),
-	name: z.string().min(1, "Vendor name is required"),
-	code: z.string().min(1, "Vendor code is required"),
+	name: z.string().min(1, "supplier name is required"),
+	code: z.string().min(1, "supplier code is required"),
 	description: z.string().optional().nullable(),
 	contactName: z.string().optional().nullable(),
 	email: z.string().email("Invalid email format").optional().nullable(),
@@ -17,10 +17,10 @@ export const VendorSchema = z.object({
 	updatedAt: z.coerce.date(),
 });
 
-export type Vendor = z.infer<typeof VendorSchema>;
+export type supplier = z.infer<typeof supplierschema>;
 
-// Create Vendor Schema (excluding ID, createdAt, updatedAt)
-export const CreateVendorSchema = VendorSchema.omit({
+// Create supplier Schema (excluding ID, createdAt, updatedAt)
+export const Createsupplierschema = supplierschema.omit({
 	id: true,
 	createdAt: true,
 	updatedAt: true,
@@ -33,23 +33,24 @@ export const CreateVendorSchema = VendorSchema.omit({
 	isActive: true,
 });
 
-export type CreateVendor = z.infer<typeof CreateVendorSchema>;
+export type Createsupplier = z.infer<typeof Createsupplierschema>;
 
-// Update Vendor Schema (partial, excluding immutable fields)
-export const UpdateVendorSchema = VendorSchema.omit({
+// Update supplier Schema (partial, excluding immutable fields)
+export const Updatesupplierschema = supplierschema.omit({
 	id: true,
 	createdAt: true,
 	updatedAt: true,
 }).partial();
 
-export type UpdateVendor = z.infer<typeof UpdateVendorSchema>;
+export type Updatesupplier = z.infer<typeof Updatesupplierschema>;
 
-export interface VendorWithRelations extends Vendor {
+export interface supplierWithRelations extends supplier {
 	items: ItemWithRelation[];
 }
 
-export type GetAllVendors = {
-	vendors: VendorWithRelations[];
+export type GetAllsuppliers = {
+	suppliers: supplierWithRelations[];
 	pagination: Pagination;
 	count: number;
 };
+

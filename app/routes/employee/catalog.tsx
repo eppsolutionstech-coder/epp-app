@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link } from "react-router";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,32 +15,32 @@ import { ProductCard } from "~/components/molecule/product-card";
 import { CatalogSidebar } from "~/components/employee/catalog-sidebar";
 import { useGetItems } from "~/hooks/use-item";
 import { useGetCategories } from "~/hooks/use-category";
-import { useGetVendors } from "~/hooks/use-vendor";
+import { useGetsuppliers } from "~/hooks/use-supplier";
 import { useApiParams } from "~/hooks/util-hooks/use-api-params";
 import type { Category } from "~/zod/category.zod";
-import type { Vendor } from "~/zod/vendor.zod";
+import type { supplier } from "~/zod/supplier.zod";
 
 export default function EmployeeCatalog() {
 	const [categoryFilter, setCategoryFilter] = useState<string>("all");
-	const [vendorFilter, setVendorFilter] = useState<string>("all");
+	const [supplierFilter, setsupplierFilter] = useState<string>("all");
 	const [priceRange, setPriceRange] = useState<string>("all");
 	const [sortBy, setSortBy] = useState<string>("popular");
 
-	// Helper to build filter string from category and vendor
+	// Helper to build filter string from category and supplier
 	const buildFilterString = (catFilter: string, venFilter: string) => {
 		const parts: string[] = [];
 		if (catFilter !== "all") {
 			parts.push(`categoryId:${catFilter}`);
 		}
 		if (venFilter !== "all") {
-			parts.push(`vendorId:${venFilter}`);
+			parts.push(`supplierId:${venFilter}`);
 		}
 		return parts.join(",");
 	};
 
 	const { apiParams, searchTerm, handleSearchChange, handleFilterChange } = useApiParams({
 		limit: 100,
-		fields: "id, sku, name, description, category.id, category.name, vendor.id, vendor.name, retailPrice, costPrice, stockQuantity, isActive, status, imageUrl, images",
+		fields: "id, sku, name, description, category.id, category.name, supplier.id, supplier.name, retailPrice, costPrice, stockQuantity, isActive, status, imageUrl, images",
 		filter: "status:APPROVED",
 	});
 
@@ -58,12 +58,12 @@ export default function EmployeeCatalog() {
 	});
 	const categories: Category[] = categoriesResponse?.categorys || [];
 
-	// Fetch vendors for filter
-	const { data: vendorsResponse } = useGetVendors({
+	// Fetch suppliers for filter
+	const { data: suppliersResponse } = useGetsuppliers({
 		limit: 100,
 		fields: "id, name",
 	});
-	const vendors: Vendor[] = vendorsResponse?.vendors || [];
+	const suppliers: supplier[] = suppliersResponse?.suppliers || [];
 
 	// Client-side price filtering (since API might not support price ranges)
 	const filteredProducts = itemsResponse?.items.filter((product) => {
@@ -90,11 +90,11 @@ export default function EmployeeCatalog() {
 		}
 	});
 
-	const hasFilters = categoryFilter !== "all" || vendorFilter !== "all" || priceRange !== "all";
+	const hasFilters = categoryFilter !== "all" || supplierFilter !== "all" || priceRange !== "all";
 
 	const clearFilters = () => {
 		setCategoryFilter("all");
-		setVendorFilter("all");
+		setsupplierFilter("all");
 		setPriceRange("all");
 		handleFilterChange("");
 	};
@@ -108,17 +108,17 @@ export default function EmployeeCatalog() {
 				categoryFilter={categoryFilter}
 				onCategoryChange={(newCategory: string) => {
 					setCategoryFilter(newCategory);
-					handleFilterChange(buildFilterString(newCategory, vendorFilter));
+					handleFilterChange(buildFilterString(newCategory, supplierFilter));
 				}}
-				vendorFilter={vendorFilter}
-				onVendorChange={(newVendor: string) => {
-					setVendorFilter(newVendor);
-					handleFilterChange(buildFilterString(categoryFilter, newVendor));
+				supplierFilter={supplierFilter}
+				onsupplierChange={(newsupplier: string) => {
+					setsupplierFilter(newsupplier);
+					handleFilterChange(buildFilterString(categoryFilter, newsupplier));
 				}}
 				priceRange={priceRange}
 				onPriceChange={setPriceRange}
 				categories={categories}
-				vendors={vendors}
+				suppliers={suppliers}
 				hasFilters={hasFilters}
 				onClearFilters={clearFilters}
 			/>
@@ -161,7 +161,7 @@ export default function EmployeeCatalog() {
 							className="px-4 py-1.5 h-8 text-sm font-medium rounded-full cursor-pointer hover:opacity-90 transition-all active:scale-95 select-none"
 							onClick={() => {
 								setCategoryFilter("all");
-								handleFilterChange(buildFilterString("all", vendorFilter));
+								handleFilterChange(buildFilterString("all", supplierFilter));
 							}}>
 							All
 						</Badge>
@@ -174,7 +174,7 @@ export default function EmployeeCatalog() {
 									const newFilter =
 										categoryFilter === category.id ? "all" : category.id;
 									setCategoryFilter(newFilter);
-									handleFilterChange(buildFilterString(newFilter, vendorFilter));
+									handleFilterChange(buildFilterString(newFilter, supplierFilter));
 								}}>
 								{category.name}
 							</Badge>
@@ -227,7 +227,7 @@ export default function EmployeeCatalog() {
 										imageUrl: product.images?.[0]?.url || product.imageUrl,
 										isActive: product.isActive,
 										itemType: product.itemType,
-										vendorId: product.vendorId,
+										supplierId: product.supplierId,
 										categoryId: product.categoryId,
 										images: product.images,
 										specifications: product.specifications,
@@ -262,3 +262,4 @@ export default function EmployeeCatalog() {
 		</div>
 	);
 }
+

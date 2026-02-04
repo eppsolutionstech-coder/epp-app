@@ -1,4 +1,4 @@
-import { z } from "zod";
+﻿import { z } from "zod";
 
 export const PurchaseOrderStatusEnum = z.enum([
 	"PENDING",
@@ -22,12 +22,12 @@ export const PurchaseOrderSchema = z.object({
 	id: z.string(),
 	poNumber: z.string(),
 	orderId: z.string(),
-	vendorId: z.string(),
+	supplierId: z.string(),
 	status: PurchaseOrderStatusEnum,
 	items: z.array(PurchaseOrderItemSchema).optional().nullable(),
 	approvedBy: z.string().optional().nullable(),
 	approvedAt: z.coerce.date().optional().nullable(),
-	sentToVendorAt: z.coerce.date().optional().nullable(),
+	sentTosupplierAt: z.coerce.date().optional().nullable(),
 	notes: z.string().optional().nullable(),
 	organizationId: z.string().optional().nullable(),
 	createdAt: z.coerce.date(),
@@ -51,9 +51,10 @@ export const UpdatePurchaseOrderSchema = PurchaseOrderSchema.omit({
 	id: true,
 	poNumber: true,
 	orderId: true,
-	vendorId: true,
+	supplierId: true,
 	createdAt: true,
 	updatedAt: true,
 }).partial();
 
 export type UpdatePurchaseOrder = z.infer<typeof UpdatePurchaseOrderSchema>;
+

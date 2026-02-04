@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+﻿import { Link } from "react-router";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -99,7 +99,7 @@ export function CartItemCard({
 									{item.item.name}
 								</Link>
 								<p className="text-xs text-muted-foreground">
-									{item.item.vendor.name}
+									{item.item.supplier.name}
 								</p>
 							</div>
 							<Button
@@ -163,3 +163,4 @@ export function CartItemCard({
 		</Card>
 	);
 }
+

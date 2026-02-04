@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,36 +11,36 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Plus, MoreHorizontal, Store, Loader2, Mail, Phone, User, Calendar } from "lucide-react";
-import { VendorUpsertDialog } from "~/components/organism/vendor-upsert-dialog";
-import { useGetVendors, useDeleteVendor } from "~/hooks/use-vendor";
+import { supplierUpsertDialog } from "~/components/organism/supplier-upsert-dialog";
+import { useGetsuppliers, useDeletesupplier } from "~/hooks/use-supplier";
 import { useApiParams } from "~/hooks/util-hooks/use-api-params";
 
-export default function AdminVendorsPage() {
+export default function AdminsuppliersPage() {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
-	const [selectedVendorId, setSelectedVendorId] = useState<string | null>(null);
+	const [selectedsupplierId, setSelectedsupplierId] = useState<string | null>(null);
 
 	const { apiParams, searchTerm, handleSearchChange } = useApiParams({
 		limit: 100,
 	});
 
-	const { data: vendorsResponse, isLoading, isError } = useGetVendors(apiParams);
-	const deleteVendor = useDeleteVendor();
+	const { data: suppliersResponse, isLoading, isError } = useGetsuppliers(apiParams);
+	const deletesupplier = useDeletesupplier();
 
-	const vendors = vendorsResponse?.vendors || [];
+	const suppliers = suppliersResponse?.suppliers || [];
 
 	const handleOpenCreateDialog = () => {
-		setSelectedVendorId(null);
+		setSelectedsupplierId(null);
 		setIsDialogOpen(true);
 	};
 
-	const handleOpenEditDialog = (vendorId: string) => {
-		setSelectedVendorId(vendorId);
+	const handleOpenEditDialog = (supplierId: string) => {
+		setSelectedsupplierId(supplierId);
 		setIsDialogOpen(true);
 	};
 
-	const handleDeleteVendor = async (vendorId: string) => {
-		if (confirm("Are you sure you want to deactivate this vendor?")) {
-			await deleteVendor.mutateAsync(vendorId);
+	const handleDeletesupplier = async (supplierId: string) => {
+		if (confirm("Are you sure you want to deactivate this supplier?")) {
+			await deletesupplier.mutateAsync(supplierId);
 		}
 	};
 
@@ -48,20 +48,20 @@ export default function AdminVendorsPage() {
 		<div className="space-y-6">
 			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 				<div>
-					<h1 className="text-3xl font-bold tracking-tight">Vendors</h1>
+					<h1 className="text-3xl font-bold tracking-tight">suppliers</h1>
 					<p className="text-muted-foreground">
-						Manage your vendor partnerships and listings.
+						Manage your supplier partnerships and listings.
 					</p>
 				</div>
 				<div className="flex items-center gap-2">
 					<SearchInput
 						value={searchTerm}
 						onChange={handleSearchChange}
-						placeholder="Search vendors..."
+						placeholder="Search suppliers..."
 					/>
 					<Button onClick={handleOpenCreateDialog}>
 						<Plus className="mr-2 h-4 w-4" />
-						Add Vendor
+						Add supplier
 					</Button>
 				</div>
 			</div>
@@ -72,26 +72,26 @@ export default function AdminVendorsPage() {
 				</div>
 			) : isError ? (
 				<div className="flex items-center justify-center py-16 text-muted-foreground">
-					Failed to load vendors. Please try again.
+					Failed to load suppliers. Please try again.
 				</div>
 			) : (
 				<div className="space-y-4">
-					{vendors.length === 0 ? (
+					{suppliers.length === 0 ? (
 						<div className="flex flex-col items-center justify-center py-12 text-center border rounded-lg bg-card border-dashed">
 							<Store className="h-10 w-10 text-muted-foreground mb-4" />
-							<h3 className="font-semibold text-lg">No vendors found</h3>
+							<h3 className="font-semibold text-lg">No suppliers found</h3>
 							<p className="text-muted-foreground max-w-sm mb-4">
-								Get started by adding your first vendor partnership to the platform.
+								Get started by adding your first supplier partnership to the platform.
 							</p>
 							<Button onClick={handleOpenCreateDialog} variant="outline">
 								<Plus className="mr-2 h-4 w-4" />
-								Add Vendor
+								Add supplier
 							</Button>
 						</div>
 					) : (
-						vendors.map((vendor) => (
+						suppliers.map((supplier) => (
 							<Card
-								key={vendor.id}
+								key={supplier.id}
 								className="hover:shadow-md transition-shadow duration-200">
 								<CardContent className="px-6">
 									<div className="flex flex-col lg:flex-row lg:items-center gap-6">
@@ -103,24 +103,24 @@ export default function AdminVendorsPage() {
 											<div className="space-y-1">
 												<div className="flex items-center gap-2">
 													<h3 className="font-semibold text-lg hover:text-primary transition-colors cursor-pointer">
-														{vendor.name}
+														{supplier.name}
 													</h3>
 													<Badge
 														variant={
-															vendor.isActive
+															supplier.isActive
 																? "default"
 																: "secondary"
 														}
 														className={
-															vendor.isActive
+															supplier.isActive
 																? "bg-emerald-500 hover:bg-emerald-600"
 																: ""
 														}>
-														{vendor.isActive ? "Active" : "Inactive"}
+														{supplier.isActive ? "Active" : "Inactive"}
 													</Badge>
 												</div>
 												<p className="text-sm text-muted-foreground font-mono">
-													{vendor.code}
+													{supplier.code}
 												</p>
 											</div>
 										</div>
@@ -134,8 +134,8 @@ export default function AdminVendorsPage() {
 												</p>
 												<p
 													className="text-sm font-medium truncate"
-													title={vendor.email || undefined}>
-													{vendor.email || "-"}
+													title={supplier.email || undefined}>
+													{supplier.email || "-"}
 												</p>
 											</div>
 											<div className="space-y-1">
@@ -144,7 +144,7 @@ export default function AdminVendorsPage() {
 													Phone
 												</p>
 												<p className="text-sm font-medium">
-													{vendor.phone || "-"}
+													{supplier.phone || "-"}
 												</p>
 											</div>
 											<div className="space-y-1">
@@ -153,7 +153,7 @@ export default function AdminVendorsPage() {
 													Contact Person
 												</p>
 												<p className="text-sm font-medium">
-													{vendor.contactName || "-"}
+													{supplier.contactName || "-"}
 												</p>
 											</div>
 											<div className="space-y-1">
@@ -163,7 +163,7 @@ export default function AdminVendorsPage() {
 												</p>
 												<p className="text-sm font-medium">
 													{new Date(
-														vendor.createdAt,
+														supplier.createdAt,
 													).toLocaleDateString()}
 												</p>
 											</div>
@@ -182,9 +182,9 @@ export default function AdminVendorsPage() {
 													<DropdownMenuLabel>Actions</DropdownMenuLabel>
 													<DropdownMenuItem
 														onClick={() =>
-															handleOpenEditDialog(vendor.id)
+															handleOpenEditDialog(supplier.id)
 														}>
-														Edit Vendor
+														Edit supplier
 													</DropdownMenuItem>
 													<DropdownMenuItem>
 														View Products
@@ -192,9 +192,9 @@ export default function AdminVendorsPage() {
 													<DropdownMenuItem
 														className="text-red-600"
 														onClick={() =>
-															handleDeleteVendor(vendor.id)
+															handleDeletesupplier(supplier.id)
 														}>
-														Deactivate Vendor
+														Deactivate supplier
 													</DropdownMenuItem>
 												</DropdownMenuContent>
 											</DropdownMenu>
@@ -207,11 +207,12 @@ export default function AdminVendorsPage() {
 				</div>
 			)}
 
-			<VendorUpsertDialog
+			<supplierUpsertDialog
 				open={isDialogOpen}
 				onOpenChange={setIsDialogOpen}
-				vendorId={selectedVendorId}
+				supplierId={selectedsupplierId}
 			/>
 		</div>
 	);
 }
+

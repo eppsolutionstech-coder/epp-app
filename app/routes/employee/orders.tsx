@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -115,7 +115,7 @@ export default function EmployeeOrdersPage() {
 														{purchase.productName}
 													</h3>
 													<p className="text-sm text-muted-foreground">
-														{purchase.vendorName}
+														{purchase.supplierName}
 													</p>
 												</div>
 												<Badge className={getStatusColor(purchase.status)}>
@@ -243,7 +243,7 @@ export default function EmployeeOrdersPage() {
 															{order.productName}
 														</p>
 														<p className="text-xs text-muted-foreground">
-															{order.vendorName}
+															{order.supplierName}
 														</p>
 													</div>
 												</div>
@@ -283,7 +283,7 @@ export default function EmployeeOrdersPage() {
 								<TableHeader>
 									<TableRow>
 										<TableHead>Product</TableHead>
-										<TableHead>Vendor</TableHead>
+										<TableHead>supplier</TableHead>
 										<TableHead>Total Paid</TableHead>
 										<TableHead>Completed</TableHead>
 										<TableHead className="text-right">Documents</TableHead>
@@ -307,7 +307,7 @@ export default function EmployeeOrdersPage() {
 												</div>
 											</TableCell>
 											<TableCell className="text-muted-foreground">
-												{purchase.vendorName}
+												{purchase.supplierName}
 											</TableCell>
 											<TableCell>
 												${purchase.totalAmount.toLocaleString()}
@@ -352,8 +352,8 @@ export default function EmployeeOrdersPage() {
 								<div>
 									<h3 className="font-semibold">{selectedOrder.productName}</h3>
 									<p className="text-sm text-muted-foreground">
-										{"vendorName" in selectedOrder
-											? selectedOrder.vendorName
+										{"supplierName" in selectedOrder
+											? selectedOrder.supplierName
 											: ""}
 									</p>
 								</div>
@@ -412,3 +412,4 @@ export default function EmployeeOrdersPage() {
 		</div>
 	);
 }
+

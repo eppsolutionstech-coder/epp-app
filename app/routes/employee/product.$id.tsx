@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+﻿import { useState, useRef, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -36,7 +36,7 @@ export default function EmployeeProductDetailsPage() {
 		isLoading,
 		isError,
 	} = useGetItemById(id!, {
-		fields: "id, sku, name, status, description, category.name, vendor.name, retailPrice, costPrice, stockQuantity, lowStockThreshold, images, specifications, isActive, isFeatured, isAvailable, createdAt, updatedAt",
+		fields: "id, sku, name, status, description, category.name, supplier.name, retailPrice, costPrice, stockQuantity, lowStockThreshold, images, specifications, isActive, isFeatured, isAvailable, createdAt, updatedAt",
 	});
 
 	const images = item?.images?.filter((img: ItemImage) => img.url) || [];
@@ -173,7 +173,7 @@ export default function EmployeeProductDetailsPage() {
 					<div className="space-y-6">
 						<ProductHeader
 							name={item.name}
-							vendorName={(item as any).vendor?.name}
+							supplierName={(item as any).supplier?.name}
 							categoryName={(item as any).category?.name}
 							stockQuantity={item.stockQuantity}
 						/>
@@ -230,3 +230,4 @@ export default function EmployeeProductDetailsPage() {
 		</>
 	);
 }
+

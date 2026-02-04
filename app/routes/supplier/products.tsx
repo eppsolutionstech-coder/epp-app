@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -27,15 +27,15 @@ import { DataTable, type DataTableColumn } from "~/components/molecule/data-tabl
 import { Link, useNavigate } from "react-router";
 import { useGetItems, useCreateItem, useUpdateItem } from "~/hooks/use-item";
 import { useGetCategories } from "~/hooks/use-category";
-import { ProductUpsertModal } from "~/components/vendor/product-upsert-modal";
+import { ProductUpsertModal } from "~/components/supplier/product-upsert-modal";
 import type { Item } from "~/zod/item.zod";
 import type { CategoryWithRelation } from "~/zod/category.zod";
 import { toast } from "sonner";
-import { useGetVendors } from "~/hooks/use-vendor";
+import { useGetsuppliers } from "~/hooks/use-supplier";
 
 import { useApiParams } from "~/hooks/util-hooks/use-api-params";
 
-export default function VendorProductsPage() {
+export default function supplierProductsPage() {
 	const navigate = useNavigate();
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [editingProduct, setEditingProduct] = useState<Item | null>(null);
@@ -55,7 +55,7 @@ export default function VendorProductsPage() {
 		fields: "id, name",
 	});
 
-	const { data: vendorsResponse } = useGetVendors({
+	const { data: suppliersResponse } = useGetsuppliers({
 		limit: 100,
 		fields: "id",
 	});
@@ -93,15 +93,15 @@ export default function VendorProductsPage() {
 	};
 
 	const handleSubmit = async (formData: FormData) => {
-		const vendorId = vendorsResponse?.vendors?.[0]?.id;
+		const supplierId = suppliersResponse?.suppliers?.[0]?.id;
 
-		if (!vendorId) {
-			toast.error("Unable to determine vendor. Please try again.");
+		if (!supplierId) {
+			toast.error("Unable to determine supplier. Please try again.");
 			return;
 		}
 
-		// Add vendorId to the FormData
-		formData.append("vendorId", vendorId);
+		// Add supplierId to the FormData
+		formData.append("supplierId", supplierId);
 
 		try {
 			if (editingProduct) {
@@ -124,7 +124,7 @@ export default function VendorProductsPage() {
 	const isMutating = createItem.isPending || updateItem.isPending;
 
 	const handleRowClick = (product: Item) => {
-		navigate(`/vendor/products/${product.id}`);
+		navigate(`/supplier/products/${product.id}`);
 	};
 
 	// Define columns for DataTable
@@ -161,19 +161,19 @@ export default function VendorProductsPage() {
 			key: "categoryId",
 			label: "Category",
 			sortable: true,
-			render: (_, row) => (row as any).category?.name || "—",
+			render: (_, row) => (row as any).category?.name || "â€”",
 		},
 		{
 			key: "retailPrice",
 			label: "Retail Price",
 			sortable: true,
-			render: (value) => `₱${Number(value).toLocaleString()}`,
+			render: (value) => `â‚±${Number(value).toLocaleString()}`,
 		},
 		{
 			key: "sellingPrice",
 			label: "Selling Price",
 			sortable: true,
-			render: (value) => `₱${Number(value).toLocaleString()}`,
+			render: (value) => `â‚±${Number(value).toLocaleString()}`,
 		},
 		{
 			key: "stockQuantity",
@@ -299,7 +299,7 @@ export default function VendorProductsPage() {
 						</TabsList>
 					</Tabs>
 					<Button variant="outline" asChild>
-						<Link to="/vendor/categories">
+						<Link to="/supplier/categories">
 							<FolderOpen className="mr-2 h-4 w-4" />
 							Manage Categories
 						</Link>
@@ -319,8 +319,8 @@ export default function VendorProductsPage() {
 			) : viewMode === "grid" ? (
 				<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
 					{products.map((product) => (
-						<Link key={product.id} to={`/vendor/products/${product.id}`}>
-							<ProductCard product={product} variant="vendor" />
+						<Link key={product.id} to={`/supplier/products/${product.id}`}>
+							<ProductCard product={product} variant="supplier" />
 						</Link>
 					))}
 				</div>
@@ -342,3 +342,4 @@ export default function VendorProductsPage() {
 		</div>
 	);
 }
+

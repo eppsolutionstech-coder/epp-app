@@ -14,17 +14,17 @@ const employeeRoutes: RouteConfig = [
 	route("loans", "routes/employee/loans.tsx"),
 ];
 
-// Vendor routes
-const vendorRoutes: RouteConfig = [
-	index("routes/vendor/index.tsx"),
-	route("dashboard", "routes/vendor/dashboard.tsx"),
-	route("products", "routes/vendor/products.tsx"),
-	route("products/:id", "routes/vendor/product.$id.tsx"),
-	route("categories", "routes/vendor/categories.tsx"),
-	route("orders", "routes/vendor/orders.tsx"),
-	route("orders/:id", "routes/vendor/orders.$id.tsx"),
-	route("reports", "routes/vendor/reports.tsx"),
-	route("profile/:tab?", "routes/vendor/profile.tsx"),
+// Supplier routes
+const supplierRoutes: RouteConfig = [
+	index("routes/supplier/index.tsx"),
+	route("dashboard", "routes/supplier/dashboard.tsx"),
+	route("products", "routes/supplier/products.tsx"),
+	route("products/:id", "routes/supplier/product.$id.tsx"),
+	route("categories", "routes/supplier/categories.tsx"),
+	route("orders", "routes/supplier/orders.tsx"),
+	route("orders/:id", "routes/supplier/orders.$id.tsx"),
+	route("reports", "routes/supplier/reports.tsx"),
+	route("profile/:tab?", "routes/supplier/profile.tsx"),
 ];
 
 // Admin routes
@@ -45,7 +45,7 @@ const adminRoutes: RouteConfig = [
 		route("approvals", "routes/admin/organization.$id.approvals.tsx"),
 		route("settings", "routes/admin/organization.$id.settings.tsx"),
 	]),
-	route("vendors", "routes/admin/vendors.tsx"),
+	route("suppliers", "routes/admin/suppliers.tsx"),
 	route("reports", "routes/admin/reports.tsx"),
 ];
 
@@ -68,7 +68,7 @@ export default [
 	index("routes/landing.tsx"),
 	layout("layouts/auth-layout.tsx", authRoutes),
 	layout("layouts/employee-layout.tsx", prefix("employee", employeeRoutes)),
-	layout("layouts/vendor-layout.tsx", prefix("vendor", vendorRoutes)),
+	layout("layouts/supplier-layout.tsx", prefix("supplier", supplierRoutes)),
 	layout("layouts/admin-layout.tsx", prefix("admin", adminRoutes)),
 	layout("layouts/financer-layout.tsx", prefix("financer", financerRoutes)),
 ] satisfies RouteConfig;

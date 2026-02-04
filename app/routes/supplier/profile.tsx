@@ -1,10 +1,10 @@
-import { useParams, useNavigate } from "react-router";
+﻿import { useParams, useNavigate } from "react-router";
 import { Store, BarChart3, Settings } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { MOCK_VENDORS, MOCK_PRODUCTS } from "~/data/mock-admin-data";
-import { VendorAboutTab } from "~/components/vendor/profile/vendor-about-tab";
-import { VendorAnalyticsTab } from "~/components/vendor/profile/vendor-analytics-tab";
-import { VendorSettingsTab } from "~/components/vendor/profile/vendor-settings-tab";
+import { MOCK_suppliers, MOCK_PRODUCTS } from "~/data/mock-admin-data";
+import { supplierAboutTab } from "~/components/supplier/profile/supplier-about-tab";
+import { supplierAnalyticsTab } from "~/components/supplier/profile/supplier-analytics-tab";
+import { suppliersettingsTab } from "~/components/supplier/profile/supplier-settings-tab";
 
 const tabs = [
 	{ id: "about", label: "Profile", icon: Store },
@@ -14,17 +14,17 @@ const tabs = [
 
 const validTabs = tabs.map((t) => t.id);
 
-export default function VendorProfile() {
+export default function supplierProfile() {
 	const { tab } = useParams();
 	const navigate = useNavigate();
-	const currentVendor = MOCK_VENDORS[0];
-	const products = MOCK_PRODUCTS.filter((p) => p.vendorId === currentVendor.id);
+	const currentsupplier = MOCK_suppliers[0];
+	const products = MOCK_PRODUCTS.filter((p) => p.supplierId === currentsupplier.id);
 
 	// Default to "about" if no tab or invalid tab
 	const activeTab = tab && validTabs.includes(tab) ? tab : "about";
 
 	const handleTabChange = (tabId: string) => {
-		navigate(`/vendor/profile/${tabId}`);
+		navigate(`/supplier/profile/${tabId}`);
 	};
 
 	return (
@@ -70,14 +70,15 @@ export default function VendorProfile() {
 				{/* Right - Content */}
 				<div className="flex-1 min-w-0">
 					{activeTab === "about" && (
-						<VendorAboutTab vendor={currentVendor} products={products} />
+						<supplierAboutTab supplier={currentsupplier} products={products} />
 					)}
 
-					{activeTab === "analytics" && <VendorAnalyticsTab products={products} />}
+					{activeTab === "analytics" && <supplierAnalyticsTab products={products} />}
 
-					{activeTab === "settings" && <VendorSettingsTab />}
+					{activeTab === "settings" && <suppliersettingsTab />}
 				</div>
 			</div>
 		</div>
 	);
 }
+

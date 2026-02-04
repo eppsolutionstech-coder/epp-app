@@ -1,4 +1,4 @@
-import { Search } from "lucide-react";
+﻿import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,19 +12,19 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import type { Category } from "~/zod/category.zod";
-import type { Vendor } from "~/zod/vendor.zod";
+import type { supplier } from "~/zod/supplier.zod";
 
 interface CatalogSidebarProps {
 	searchTerm: string;
 	onSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	categoryFilter: string;
 	onCategoryChange: (categoryId: string) => void;
-	vendorFilter: string;
-	onVendorChange: (vendorId: string) => void;
+	supplierFilter: string;
+	onsupplierChange: (supplierId: string) => void;
 	priceRange: string;
 	onPriceChange: (range: string) => void;
 	categories: Category[];
-	vendors: Vendor[];
+	suppliers: supplier[];
 	hasFilters: boolean;
 	onClearFilters: () => void;
 }
@@ -34,20 +34,20 @@ export function CatalogSidebar({
 	onSearchChange,
 	categoryFilter,
 	onCategoryChange,
-	vendorFilter,
-	onVendorChange,
+	supplierFilter,
+	onsupplierChange,
 	priceRange,
 	onPriceChange,
 	categories,
-	vendors,
+	suppliers,
 	hasFilters,
 	onClearFilters,
 }: CatalogSidebarProps) {
 	const priceRanges = [
-		{ label: "Under ₱1,000", value: "0-1000" },
-		{ label: "₱1,000 - ₱5,000", value: "1000-5000" },
-		{ label: "₱5,000 - ₱10,000", value: "5000-10000" },
-		{ label: "₱10,000+", value: "10000-" },
+		{ label: "Under â‚±1,000", value: "0-1000" },
+		{ label: "â‚±1,000 - â‚±5,000", value: "1000-5000" },
+		{ label: "â‚±5,000 - â‚±10,000", value: "5000-10000" },
+		{ label: "â‚±10,000+", value: "10000-" },
 	];
 
 	return (
@@ -165,8 +165,8 @@ export function CatalogSidebar({
 
 						<Separator className="bg-border/60" />
 
-						{/* Vendors */}
-						<AccordionItem value="vendors" className="border-b-0 mt-2">
+						{/* suppliers */}
+						<AccordionItem value="suppliers" className="border-b-0 mt-2">
 							<AccordionTrigger className="text-sm font-medium py-3 hover:no-underline hover:text-primary transition-colors group">
 								<span className="group-hover:translate-x-0.5 transition-transform">
 									Brands
@@ -176,25 +176,25 @@ export function CatalogSidebar({
 								<div className="space-y-1.5 ml-1">
 									<label className="flex items-center space-x-3 cursor-pointer py-1 group/item">
 										<Checkbox
-											checked={vendorFilter === "all"}
-											onCheckedChange={() => onVendorChange("all")}
+											checked={supplierFilter === "all"}
+											onCheckedChange={() => onsupplierChange("all")}
 											className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
 										/>
 										<span className="text-sm text-muted-foreground group-hover/item:text-foreground transition-colors">
 											All brands
 										</span>
 									</label>
-									{vendors.map((vendor) => (
+									{suppliers.map((supplier) => (
 										<label
-											key={vendor.id}
+											key={supplier.id}
 											className="flex items-center space-x-3 cursor-pointer py-1 group/item">
 											<Checkbox
-												checked={vendorFilter === vendor.id}
-												onCheckedChange={() => onVendorChange(vendor.id)}
+												checked={supplierFilter === supplier.id}
+												onCheckedChange={() => onsupplierChange(supplier.id)}
 												className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
 											/>
 											<span className="text-sm text-muted-foreground group-hover/item:text-foreground transition-colors">
-												{vendor.name}
+												{supplier.name}
 											</span>
 										</label>
 									))}
@@ -207,3 +207,4 @@ export function CatalogSidebar({
 		</aside>
 	);
 }
+

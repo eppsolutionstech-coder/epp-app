@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+﻿import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatCard } from "~/components/stat-card";
 import {
@@ -53,7 +53,7 @@ const customerRetention = [
 	{ name: "Jun", new: 239, returning: 380 },
 ];
 
-export default function VendorReportsPage() {
+export default function supplierReportsPage() {
 	return (
 		<div className="space-y-6">
 			{/* Header */}
@@ -74,7 +74,7 @@ export default function VendorReportsPage() {
 			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 				<StatCard
 					title="Total Revenue"
-					value="₱124,500"
+					value="â‚±124,500"
 					description="+12.5% from last month"
 					trend="up"
 					icon={DollarSign}
@@ -152,11 +152,11 @@ export default function VendorReportsPage() {
 									fontSize={12}
 									tickLine={false}
 									axisLine={false}
-									tickFormatter={(value) => `₱${value / 1000}k`}
+									tickFormatter={(value) => `â‚±${value / 1000}k`}
 								/>
 								<Tooltip
 									formatter={(value: number) => [
-										`₱${value.toLocaleString()}`,
+										`â‚±${value.toLocaleString()}`,
 										"Revenue",
 									]}
 									contentStyle={{ borderRadius: "8px" }}
@@ -288,3 +288,4 @@ export default function VendorReportsPage() {
 		</div>
 	);
 }
+

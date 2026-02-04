@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+﻿import { useState, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,7 +8,7 @@ import { DataTable, type DataTableColumn } from "@/components/molecule/data-tabl
 import { useGetOrders } from "~/hooks/use-order";
 import type { Order } from "~/zod/order.zod";
 
-export default function VendorOrdersPage() {
+export default function supplierOrdersPage() {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 
@@ -40,7 +40,7 @@ export default function VendorOrdersPage() {
 	};
 
 	const handleViewDetails = (order: Order) => {
-		navigate(`/vendor/orders/${order.id}`);
+		navigate(`/supplier/orders/${order.id}`);
 	};
 
 	const columns: DataTableColumn<any>[] = [
@@ -68,7 +68,7 @@ export default function VendorOrdersPage() {
 			label: "Amount",
 			sortable: true,
 			render: (value) =>
-				`₱${Number(value || 0).toLocaleString("en-PH", { minimumFractionDigits: 2 })}`,
+				`â‚±${Number(value || 0).toLocaleString("en-PH", { minimumFractionDigits: 2 })}`,
 		},
 		{
 			key: "orderDate",
@@ -201,3 +201,4 @@ export default function VendorOrdersPage() {
 		</div>
 	);
 }
+

@@ -1,4 +1,4 @@
-import { z } from "zod";
+﻿import { z } from "zod";
 
 // Emergency Contact Schema - matches EmergencyContact type
 export const EmergencyContactSchema = z.object({
@@ -132,7 +132,7 @@ export const RegisterSchema = z.object({
 		),
 	role: z.enum(["user", "admin", "superadmin", "viewer"]),
 	subRole: z
-		.enum(["patient", "staff", "guard", "vendor", "operator", "manager", "guest"])
+		.enum(["patient", "staff", "guard", "supplier", "operator", "manager", "guest"])
 		.optional()
 		.nullable(),
 
@@ -162,3 +162,4 @@ export const UpdatePasswordSchema = z.object({
 	userId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId format"),
 	password: z.string().min(6, "Password must be at least 6 characters long"),
 });
+

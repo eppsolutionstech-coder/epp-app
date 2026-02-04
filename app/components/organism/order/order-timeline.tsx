@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+﻿import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Truck, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -71,7 +71,7 @@ export function OrderTimeline({ order }: OrderTimelineProps) {
 					/>
 					<TimelineItem
 						title="Verified & Approved"
-						description="Order approved by vendor."
+						description="Order approved by supplier."
 						isCompleted={["APPROVED", "PROCESSING", "SHIPPED", "DELIVERED"].includes(
 							order.status,
 						)}
@@ -100,3 +100,4 @@ export function OrderTimeline({ order }: OrderTimelineProps) {
 		</Card>
 	);
 }
+

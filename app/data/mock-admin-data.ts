@@ -1,4 +1,4 @@
-// =====================================================
+﻿// =====================================================
 // EPP MICROAPP - MOCK DATA
 // UI/Display Only - No Backend, No Real Authentication
 // =====================================================
@@ -43,8 +43,8 @@ export type Product = {
 	description: string;
 	category: string;
 	price: number;
-	vendor: string;
-	vendorId: string;
+	supplier: string;
+	supplierId: string;
 	status: "active" | "draft" | "pending" | "archived";
 	stock: number;
 	image?: string;
@@ -52,7 +52,7 @@ export type Product = {
 	specifications?: Record<string, string>;
 };
 
-export type Vendor = {
+export type supplier = {
 	id: string;
 	name: string;
 	email: string;
@@ -73,8 +73,8 @@ export type Order = {
 	employeeId: string;
 	employeeName: string;
 	employeeEmail: string;
-	vendorId: string;
-	vendorName: string;
+	supplierId: string;
+	supplierName: string;
 	amount: number;
 	installments: number;
 	monthlyPayment: number;
@@ -88,7 +88,7 @@ export type EmployeePurchase = {
 	orderId: string;
 	productName: string;
 	productImage?: string;
-	vendorName: string;
+	supplierName: string;
 	totalAmount: number;
 	paidAmount: number;
 	remainingAmount: number;
@@ -163,10 +163,10 @@ export const MOCK_EMPLOYEES: Employee[] = [
 ];
 
 // =====================================================
-// MOCK VENDORS
+// MOCK suppliers
 // =====================================================
 
-export const MOCK_VENDORS: Vendor[] = [
+export const MOCK_suppliers: supplier[] = [
 	{
 		id: "VND-001",
 		name: "TechWorld Electronics",
@@ -230,8 +230,8 @@ export const MOCK_PRODUCTS: Product[] = [
 			"Apple MacBook Pro with M3 chip, 14-inch Liquid Retina XDR display, 18GB unified memory, 512GB SSD. Perfect for professionals who need power and portability.",
 		category: "Electronics",
 		price: 2499.0,
-		vendor: "TechWorld Electronics",
-		vendorId: "VND-001",
+		supplier: "TechWorld Electronics",
+		supplierId: "VND-001",
 		status: "active",
 		stock: 45,
 		image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1000&auto=format&fit=crop",
@@ -250,8 +250,8 @@ export const MOCK_PRODUCTS: Product[] = [
 			"Premium ergonomic mesh office chair with lumbar support, adjustable armrests, headrest, and 4D adjustable design for all-day comfort.",
 		category: "Furniture",
 		price: 599.0,
-		vendor: "Office Essentials Co.",
-		vendorId: "VND-002",
+		supplier: "Office Essentials Co.",
+		supplierId: "VND-002",
 		status: "active",
 		stock: 12,
 		image: "https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=1000&auto=format&fit=crop",
@@ -270,8 +270,8 @@ export const MOCK_PRODUCTS: Product[] = [
 			"Apple iPhone 15 Pro with A17 Pro chip, 48MP camera system, titanium design, and Action button. The most powerful iPhone ever.",
 		category: "Electronics",
 		price: 1199.0,
-		vendor: "Gadget Hub",
-		vendorId: "VND-003",
+		supplier: "Gadget Hub",
+		supplierId: "VND-003",
 		status: "active",
 		stock: 8,
 		image: "https://images.unsplash.com/photo-1696426718956-8219488a0715?q=80&w=1000&auto=format&fit=crop",
@@ -290,8 +290,8 @@ export const MOCK_PRODUCTS: Product[] = [
 			"Industry-leading noise canceling wireless headphones with Auto NC Optimizer, crystal clear hands-free calling, and up to 30 hours battery life.",
 		category: "Electronics",
 		price: 349.0,
-		vendor: "TechWorld Electronics",
-		vendorId: "VND-001",
+		supplier: "TechWorld Electronics",
+		supplierId: "VND-001",
 		status: "active",
 		stock: 25,
 		image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1000&auto=format&fit=crop",
@@ -310,8 +310,8 @@ export const MOCK_PRODUCTS: Product[] = [
 			"Electric height-adjustable standing desk with memory presets, cable management, and premium bamboo desktop. Transform your workspace.",
 		category: "Furniture",
 		price: 799.0,
-		vendor: "Office Essentials Co.",
-		vendorId: "VND-002",
+		supplier: "Office Essentials Co.",
+		supplierId: "VND-002",
 		status: "active",
 		stock: 18,
 		image: "https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?q=80&w=1000&auto=format&fit=crop",
@@ -330,8 +330,8 @@ export const MOCK_PRODUCTS: Product[] = [
 			"Professional-grade 32-inch 4K monitor with USB-C hub, 100% sRGB, and HDR support. Perfect for creative professionals.",
 		category: "Electronics",
 		price: 899.0,
-		vendor: "TechWorld Electronics",
-		vendorId: "VND-001",
+		supplier: "TechWorld Electronics",
+		supplierId: "VND-001",
 		status: "active",
 		stock: 15,
 		image: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=1000&auto=format&fit=crop",
@@ -350,8 +350,8 @@ export const MOCK_PRODUCTS: Product[] = [
 			"Apple iPad Pro with M2 chip, 12.9-inch Liquid Retina XDR display, and Apple Pencil hover. The ultimate iPad experience.",
 		category: "Electronics",
 		price: 1299.0,
-		vendor: "Gadget Hub",
-		vendorId: "VND-003",
+		supplier: "Gadget Hub",
+		supplierId: "VND-003",
 		status: "active",
 		stock: 10,
 		image: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?q=80&w=1000&auto=format&fit=crop",
@@ -370,8 +370,8 @@ export const MOCK_PRODUCTS: Product[] = [
 			"Advanced wireless mouse with ultra-fast scrolling, 8K DPI tracking, quiet clicks, and USB-C quick charging.",
 		category: "Accessories",
 		price: 99.0,
-		vendor: "TechWorld Electronics",
-		vendorId: "VND-001",
+		supplier: "TechWorld Electronics",
+		supplierId: "VND-001",
 		status: "active",
 		stock: 50,
 		image: "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?q=80&w=1000&auto=format&fit=crop",
@@ -390,8 +390,8 @@ export const MOCK_PRODUCTS: Product[] = [
 			"Advanced health monitoring smartwatch with sleep tracking, body composition analysis, and sapphire crystal display.",
 		category: "Wearables",
 		price: 399.0,
-		vendor: "Gadget Hub",
-		vendorId: "VND-003",
+		supplier: "Gadget Hub",
+		supplierId: "VND-003",
 		status: "active",
 		stock: 20,
 		image: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?q=80&w=1000&auto=format&fit=crop",
@@ -410,8 +410,8 @@ export const MOCK_PRODUCTS: Product[] = [
 			"The iconic Aeron chair with PostureFit SL support, 8Z Pellicle suspension, and fully adjustable arms. The gold standard in ergonomic seating.",
 		category: "Furniture",
 		price: 1495.0,
-		vendor: "Premium Furnishings",
-		vendorId: "VND-004",
+		supplier: "Premium Furnishings",
+		supplierId: "VND-004",
 		status: "pending",
 		stock: 5,
 		image: "https://images.unsplash.com/photo-1580480055273-228ff5388ef8?q=80&w=1000&auto=format&fit=crop",
@@ -426,7 +426,7 @@ export const MOCK_PRODUCTS: Product[] = [
 ];
 
 // =====================================================
-// MOCK ORDERS (For Vendor & Employee views)
+// MOCK ORDERS (For supplier & Employee views)
 // =====================================================
 
 export const MOCK_ORDERS: Order[] = [
@@ -439,8 +439,8 @@ export const MOCK_ORDERS: Order[] = [
 		employeeId: "EMP-001",
 		employeeName: "Alice Johnson",
 		employeeEmail: "alice.j@techcorp.com",
-		vendorId: "VND-001",
-		vendorName: "TechWorld Electronics",
+		supplierId: "VND-001",
+		supplierName: "TechWorld Electronics",
 		amount: 2499.0,
 		installments: 12,
 		monthlyPayment: 208.25,
@@ -457,8 +457,8 @@ export const MOCK_ORDERS: Order[] = [
 		employeeId: "EMP-002",
 		employeeName: "Bob Smith",
 		employeeEmail: "bob.s@techcorp.com",
-		vendorId: "VND-003",
-		vendorName: "Gadget Hub",
+		supplierId: "VND-003",
+		supplierName: "Gadget Hub",
 		amount: 1199.0,
 		installments: 6,
 		monthlyPayment: 199.83,
@@ -474,8 +474,8 @@ export const MOCK_ORDERS: Order[] = [
 		employeeId: "EMP-004",
 		employeeName: "Diana Prince",
 		employeeEmail: "diana.p@techcorp.com",
-		vendorId: "VND-002",
-		vendorName: "Office Essentials Co.",
+		supplierId: "VND-002",
+		supplierName: "Office Essentials Co.",
 		amount: 599.0,
 		installments: 6,
 		monthlyPayment: 99.83,
@@ -491,8 +491,8 @@ export const MOCK_ORDERS: Order[] = [
 		employeeId: "EMP-001",
 		employeeName: "Alice Johnson",
 		employeeEmail: "alice.j@techcorp.com",
-		vendorId: "VND-002",
-		vendorName: "Office Essentials Co.",
+		supplierId: "VND-002",
+		supplierName: "Office Essentials Co.",
 		amount: 799.0,
 		installments: 12,
 		monthlyPayment: 66.58,
@@ -508,8 +508,8 @@ export const MOCK_ORDERS: Order[] = [
 		employeeId: "EMP-004",
 		employeeName: "Diana Prince",
 		employeeEmail: "diana.p@techcorp.com",
-		vendorId: "VND-001",
-		vendorName: "TechWorld Electronics",
+		supplierId: "VND-001",
+		supplierName: "TechWorld Electronics",
 		amount: 349.0,
 		installments: 3,
 		monthlyPayment: 116.33,
@@ -529,7 +529,7 @@ export const MOCK_EMPLOYEE_PURCHASES: EmployeePurchase[] = [
 		productName: 'MacBook Pro M3 14"',
 		productImage:
 			"https://images.unsplash.com/photo-1517336714731-489689fd1ca8?q=80&w=1000&auto=format&fit=crop",
-		vendorName: "TechWorld Electronics",
+		supplierName: "TechWorld Electronics",
 		totalAmount: 2499.0,
 		paidAmount: 1249.5,
 		remainingAmount: 1249.5,
@@ -546,7 +546,7 @@ export const MOCK_EMPLOYEE_PURCHASES: EmployeePurchase[] = [
 		productName: "iPhone 15 Pro 256GB",
 		productImage:
 			"https://images.unsplash.com/photo-1696426718956-8219488a0715?q=80&w=1000&auto=format&fit=crop",
-		vendorName: "Gadget Hub",
+		supplierName: "Gadget Hub",
 		totalAmount: 1199.0,
 		paidAmount: 399.66,
 		remainingAmount: 799.34,
@@ -563,7 +563,7 @@ export const MOCK_EMPLOYEE_PURCHASES: EmployeePurchase[] = [
 		productName: "Ergonomic Office Chair",
 		productImage:
 			"https://images.unsplash.com/photo-1592078615290-033ee584e267?q=80&w=1000&auto=format&fit=crop",
-		vendorName: "Office Essentials Co.",
+		supplierName: "Office Essentials Co.",
 		totalAmount: 599.0,
 		paidAmount: 599.0,
 		remainingAmount: 0,
@@ -673,7 +673,7 @@ export const MOCK_PLATFORM_ACTIVITY = [
 	},
 	{
 		id: "ACT-002",
-		type: "vendor",
+		type: "supplier",
 		message: "Premium Furnishings submitted for approval",
 		timestamp: "2024-06-13T14:20:00Z",
 	},
@@ -700,3 +700,4 @@ export const MOCK_PLATFORM_ACTIVITY = [
 // =====================================================
 // MOCK ORGANIZATIONS
 // =====================================================
+

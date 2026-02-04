@@ -1,6 +1,6 @@
-import { z } from "zod";
+﻿import { z } from "zod";
 import type { CategoryWithRelation } from "./category.zod";
-import type { Vendor } from "./vendor.zod";
+import type { supplier } from "./supplier.zod";
 import type { Pagination } from "~/types/pagination";
 
 // Enums
@@ -48,7 +48,7 @@ export const ItemSchema = z.object({
 	name: z.string().min(1, "Item name is required"),
 	description: z.string().optional().nullable(),
 	categoryId: z.string(),
-	vendorId: z.string(),
+	supplierId: z.string(),
 
 	// Item type
 	itemType: ItemTypeEnum.default("PRODUCT"),
@@ -111,7 +111,7 @@ export type UpdateItem = z.infer<typeof UpdateItemSchema>;
 
 export interface ItemWithRelation extends Item {
 	category: CategoryWithRelation;
-	vendor: Vendor;
+	supplier: supplier;
 }
 
 export type GetAllItems = {
@@ -119,3 +119,4 @@ export type GetAllItems = {
 	pagination: Pagination;
 	count: number;
 };
+

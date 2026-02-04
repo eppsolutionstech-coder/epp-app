@@ -1,14 +1,14 @@
-import { Card, CardContent } from "@/components/ui/card";
+﻿import { Card, CardContent } from "@/components/ui/card";
 import { TrendingUp, DollarSign, ShoppingCart, Package } from "lucide-react";
 import type { Product } from "~/data/mock-admin-data";
 
-interface VendorAnalyticsTabProps {
+interface supplierAnalyticsTabProps {
 	products: Product[];
 }
 
 
 /**U001-1 */
-export function VendorAnalyticsTab({ products }: VendorAnalyticsTabProps) {
+export function supplierAnalyticsTab({ products }: supplierAnalyticsTabProps) {
 	const totalProducts = products.length;
 	const activeProducts = products.filter((p) => p.status === "active").length;
 	const totalStock = products.reduce((sum, p) => sum + (p.stock || 0), 0);
@@ -88,3 +88,4 @@ export function VendorAnalyticsTab({ products }: VendorAnalyticsTabProps) {
 		</div>
 	);
 }
+

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -21,24 +21,24 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
-import { CreateVendorSchema, type CreateVendor, type Vendor } from "~/zod/vendor.zod";
-import { useCreateVendor, useUpdateVendor, useGetVendorById } from "~/hooks/use-vendor";
+import { Createsupplierschema, type Createsupplier, type supplier } from "~/zod/supplier.zod";
+import { useCreatesupplier, useUpdatesupplier, useGetsupplierById } from "~/hooks/use-supplier";
 
-interface VendorUpsertDialogProps {
+interface supplierUpsertDialogProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	vendorId?: string | null;
+	supplierId?: string | null;
 }
 
-export function VendorUpsertDialog({ open, onOpenChange, vendorId }: VendorUpsertDialogProps) {
-	const isEditMode = !!vendorId;
+export function supplierUpsertDialog({ open, onOpenChange, supplierId }: supplierUpsertDialogProps) {
+	const isEditMode = !!supplierId;
 
-	const { data: vendorData, isLoading: isLoadingVendor } = useGetVendorById(vendorId || "", {});
-	const createVendor = useCreateVendor();
-	const updateVendor = useUpdateVendor();
+	const { data: supplierData, isLoading: isLoadingsupplier } = useGetsupplierById(supplierId || "", {});
+	const createsupplier = useCreatesupplier();
+	const updatesupplier = useUpdatesupplier();
 
-	const form = useForm<CreateVendor>({
-		resolver: zodResolver(CreateVendorSchema),
+	const form = useForm<Createsupplier>({
+		resolver: zodResolver(Createsupplierschema),
 		defaultValues: {
 			name: "",
 			code: "",
@@ -53,16 +53,16 @@ export function VendorUpsertDialog({ open, onOpenChange, vendorId }: VendorUpser
 
 	// Populate form when editing
 	useEffect(() => {
-		if (isEditMode && vendorData) {
+		if (isEditMode && supplierData) {
 			form.reset({
-				name: vendorData.name || "",
-				code: vendorData.code || "",
-				description: vendorData.description || "",
-				contactName: vendorData.contactName || "",
-				email: vendorData.email || "",
-				phone: vendorData.phone || "",
-				website: vendorData.website || "",
-				isActive: vendorData.isActive ?? true,
+				name: supplierData.name || "",
+				code: supplierData.code || "",
+				description: supplierData.description || "",
+				contactName: supplierData.contactName || "",
+				email: supplierData.email || "",
+				phone: supplierData.phone || "",
+				website: supplierData.website || "",
+				isActive: supplierData.isActive ?? true,
 			});
 		} else if (!isEditMode) {
 			form.reset({
@@ -76,37 +76,37 @@ export function VendorUpsertDialog({ open, onOpenChange, vendorId }: VendorUpser
 				isActive: true,
 			});
 		}
-	}, [vendorData, isEditMode, form]);
+	}, [supplierData, isEditMode, form]);
 
-	const handleSubmit = async (data: CreateVendor) => {
+	const handleSubmit = async (data: Createsupplier) => {
 		try {
-			if (isEditMode && vendorId) {
-				await updateVendor.mutateAsync({ vendorId, data });
+			if (isEditMode && supplierId) {
+				await updatesupplier.mutateAsync({ supplierId, data });
 			} else {
-				await createVendor.mutateAsync(data);
+				await createsupplier.mutateAsync(data);
 			}
 			onOpenChange(false);
 			form.reset();
 		} catch (error) {
-			console.error("Failed to save vendor:", error);
+			console.error("Failed to save supplier:", error);
 		}
 	};
 
-	const isSubmitting = createVendor.isPending || updateVendor.isPending;
+	const isSubmitting = createsupplier.isPending || updatesupplier.isPending;
 
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="sm:max-w-[550px]">
 				<DialogHeader>
-					<DialogTitle>{isEditMode ? "Edit Vendor" : "Add New Vendor"}</DialogTitle>
+					<DialogTitle>{isEditMode ? "Edit supplier" : "Add New supplier"}</DialogTitle>
 					<DialogDescription>
 						{isEditMode
-							? "Update the vendor details below."
-							: "Fill in the details to create a new vendor."}
+							? "Update the supplier details below."
+							: "Fill in the details to create a new supplier."}
 					</DialogDescription>
 				</DialogHeader>
 
-				{isEditMode && isLoadingVendor ? (
+				{isEditMode && isLoadingsupplier ? (
 					<div className="flex items-center justify-center py-8">
 						<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
 					</div>
@@ -119,7 +119,7 @@ export function VendorUpsertDialog({ open, onOpenChange, vendorId }: VendorUpser
 									name="name"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Vendor Name *</FormLabel>
+											<FormLabel>supplier Name *</FormLabel>
 											<FormControl>
 												<Input
 													placeholder="e.g. TechWorld Electronics"
@@ -136,7 +136,7 @@ export function VendorUpsertDialog({ open, onOpenChange, vendorId }: VendorUpser
 									name="code"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Vendor Code *</FormLabel>
+											<FormLabel>supplier Code *</FormLabel>
 											<FormControl>
 												<Input placeholder="e.g. TWE-001" {...field} />
 											</FormControl>
@@ -154,7 +154,7 @@ export function VendorUpsertDialog({ open, onOpenChange, vendorId }: VendorUpser
 										<FormLabel>Description</FormLabel>
 										<FormControl>
 											<Textarea
-												placeholder="Brief description of the vendor..."
+												placeholder="Brief description of the supplier..."
 												className="min-h-[80px]"
 												{...field}
 												value={field.value || ""}
@@ -213,7 +213,7 @@ export function VendorUpsertDialog({ open, onOpenChange, vendorId }: VendorUpser
 											<FormControl>
 												<Input
 													type="email"
-													placeholder="e.g. contact@vendor.com"
+													placeholder="e.g. contact@supplier.com"
 													{...field}
 													value={field.value || ""}
 												/>
@@ -231,7 +231,7 @@ export function VendorUpsertDialog({ open, onOpenChange, vendorId }: VendorUpser
 											<FormLabel>Website</FormLabel>
 											<FormControl>
 												<Input
-													placeholder="e.g. https://vendor.com"
+													placeholder="e.g. https://supplier.com"
 													{...field}
 													value={field.value || ""}
 												/>
@@ -250,7 +250,7 @@ export function VendorUpsertDialog({ open, onOpenChange, vendorId }: VendorUpser
 										<div className="space-y-0.5">
 											<FormLabel>Active Status</FormLabel>
 											<p className="text-sm text-muted-foreground">
-												Enable or disable this vendor
+												Enable or disable this supplier
 											</p>
 										</div>
 										<FormControl>
@@ -277,9 +277,9 @@ export function VendorUpsertDialog({ open, onOpenChange, vendorId }: VendorUpser
 											Saving...
 										</>
 									) : isEditMode ? (
-										"Update Vendor"
+										"Update supplier"
 									) : (
-										"Create Vendor"
+										"Create supplier"
 									)}
 								</Button>
 							</div>
@@ -290,3 +290,4 @@ export function VendorUpsertDialog({ open, onOpenChange, vendorId }: VendorUpser
 		</Dialog>
 	);
 }
+

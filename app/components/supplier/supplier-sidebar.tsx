@@ -1,20 +1,20 @@
-import { NavLink } from "react-router";
+﻿import { NavLink } from "react-router";
 import { LayoutDashboard, Package, ShoppingCart, LogOut, X, Store } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-interface VendorSidebarProps {
+interface suppliersidebarProps {
 	isOpen: boolean;
 	onClose: () => void;
 }
 
 const navItems = [
-	{ href: "/vendor/dashboard", icon: LayoutDashboard, label: "Dashboard", end: true },
-	{ href: "/vendor/products", icon: Package, label: "Products" },
-	{ href: "/vendor/orders", icon: ShoppingCart, label: "Orders" },
+	{ href: "/supplier/dashboard", icon: LayoutDashboard, label: "Dashboard", end: true },
+	{ href: "/supplier/products", icon: Package, label: "Products" },
+	{ href: "/supplier/orders", icon: ShoppingCart, label: "Orders" },
 ];
 
-export function VendorSidebar({ isOpen, onClose }: VendorSidebarProps) {
+export function suppliersidebar({ isOpen, onClose }: suppliersidebarProps) {
 	return (
 		<>
 			{/* Mobile Sidebar Overlay */}
@@ -41,7 +41,7 @@ export function VendorSidebar({ isOpen, onClose }: VendorSidebarProps) {
 						<div className="h-8 w-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600">
 							<Store className="h-4 w-4" />
 						</div>
-						<span>Vendor</span>
+						<span>supplier</span>
 					</div>
 					<Button
 						variant="ghost"
@@ -88,3 +88,4 @@ export function VendorSidebar({ isOpen, onClose }: VendorSidebarProps) {
 		</>
 	);
 }
+

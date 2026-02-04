@@ -1,10 +1,10 @@
-import { useNavigate, useParams } from "react-router";
+﻿import { useNavigate, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
 import { useGetItemById } from "~/hooks/use-item";
 import { ProductDetailsView } from "~/components/organism/product-details-view";
 
-export default function VendorProductDetailsPage() {
+export default function supplierProductDetailsPage() {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 
@@ -13,7 +13,7 @@ export default function VendorProductDetailsPage() {
 		isLoading,
 		isError,
 	} = useGetItemById(id!, {
-		fields: "id, sku, name, status, description, category.name, vendor.name, retailPrice, sellingPrice, stockQuantity, lowStockThreshold, images, specifications, isActive, isFeatured, isAvailable, createdAt, updatedAt",
+		fields: "id, sku, name, status, description, category.name, supplier.name, retailPrice, sellingPrice, stockQuantity, lowStockThreshold, images, specifications, isActive, isFeatured, isAvailable, createdAt, updatedAt",
 	});
 
 	const headerActions = (
@@ -35,7 +35,8 @@ export default function VendorProductDetailsPage() {
 			isLoading={isLoading}
 			isError={isError}
 			headerActions={headerActions}
-			showVendorInfo={false}
+			showsupplierInfo={false}
 		/>
 	);
 }
+

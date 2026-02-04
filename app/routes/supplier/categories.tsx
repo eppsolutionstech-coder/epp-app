@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,11 +30,11 @@ import {
 } from "lucide-react";
 import { Link } from "react-router";
 import { useGetCategories, useCreateCategory, useUpdateCategory } from "~/hooks/use-category";
-import { CategoryUpsertModal } from "~/components/vendor/category-upsert-modal";
+import { CategoryUpsertModal } from "~/components/supplier/category-upsert-modal";
 import type { CategoryWithRelation } from "~/zod/category.zod";
 import { toast } from "sonner";
 
-export default function VendorCategoriesPage() {
+export default function supplierCategoriesPage() {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [editingCategory, setEditingCategory] = useState<CategoryWithRelation | null>(null);
@@ -107,7 +107,7 @@ export default function VendorCategoriesPage() {
 			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 				<div className="flex items-center gap-4">
 					<Button variant="ghost" size="icon" asChild>
-						<Link to="/vendor/products">
+						<Link to="/supplier/products">
 							<ArrowLeft className="h-4 w-4" />
 						</Link>
 					</Button>
@@ -191,7 +191,7 @@ export default function VendorCategoriesPage() {
 													{category.parent.name}
 												</Badge>
 											) : (
-												<span className="text-muted-foreground">—</span>
+												<span className="text-muted-foreground">â€”</span>
 											)}
 										</TableCell>
 										<TableCell>{category._count?.products ?? 0}</TableCell>
@@ -247,3 +247,4 @@ export default function VendorCategoriesPage() {
 		</div>
 	);
 }
+

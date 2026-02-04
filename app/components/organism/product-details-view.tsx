@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,10 +17,10 @@ interface ProductDetailsViewProps {
 	product: Item | null | undefined;
 	isLoading: boolean;
 	isError: boolean;
-	/** Optional header actions (e.g., Edit/Delete buttons for vendor) */
+	/** Optional header actions (e.g., Edit/Delete buttons for supplier) */
 	headerActions?: React.ReactNode;
-	/** Whether to show vendor info in additional details (for admin view) */
-	showVendorInfo?: boolean;
+	/** Whether to show supplier info in additional details (for admin view) */
+	showsupplierInfo?: boolean;
 }
 
 export function ProductDetailsView({
@@ -28,7 +28,7 @@ export function ProductDetailsView({
 	isLoading,
 	isError,
 	headerActions,
-	showVendorInfo = false,
+	showsupplierInfo = false,
 }: ProductDetailsViewProps) {
 	const navigate = useNavigate();
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -190,13 +190,13 @@ export function ProductDetailsView({
 								<div>
 									<p className="text-sm text-muted-foreground">Retail Price</p>
 									<p className="text-2xl font-bold">
-										₱{Number(product.retailPrice).toLocaleString()}
+										â‚±{Number(product.retailPrice).toLocaleString()}
 									</p>
 								</div>
 								<div>
 									<p className="text-sm text-muted-foreground">Selling Price</p>
 									<p className="text-2xl font-bold text-primary">
-										₱{Number(product.sellingPrice).toLocaleString()}
+										â‚±{Number(product.sellingPrice).toLocaleString()}
 									</p>
 								</div>
 							</div>
@@ -204,7 +204,7 @@ export function ProductDetailsView({
 								<div>
 									<p className="text-sm text-muted-foreground">Cost Price</p>
 									<p className="text-lg font-medium">
-										₱{Number(product.costPrice).toLocaleString()}
+										â‚±{Number(product.costPrice).toLocaleString()}
 									</p>
 								</div>
 							)} */}
@@ -259,13 +259,13 @@ export function ProductDetailsView({
 										{(product as any).category?.name || "Uncategorized"}
 									</span>
 								</div>
-								{showVendorInfo && (
+								{showsupplierInfo && (
 									<>
 										<Separator />
 										<div className="flex justify-between">
-											<span className="text-muted-foreground">Vendor</span>
+											<span className="text-muted-foreground">supplier</span>
 											<span className="font-medium">
-												{(product as any).vendor?.name || "Unknown"}
+												{(product as any).supplier?.name || "Unknown"}
 											</span>
 										</div>
 									</>
@@ -394,3 +394,4 @@ export function ProductDetailsView({
 		</div>
 	);
 }
+

@@ -28,14 +28,6 @@ export const API_ENDPOINTS = {
 		DELETE: "/supplier/:id", // Soft delete
 	},
 
-	VENDOR: {
-		GET_ALL: "/vendor",
-		GET_BY_ID: "/vendor/:id",
-		CREATE: "/vendor",
-		UPDATE: "/vendor/:id",
-		DELETE: "/vendor/:id", // Soft delete
-	},
-
 	ITEM: {
 		GET_ALL: "/items",
 		GET_BY_ID: "/items/:id",

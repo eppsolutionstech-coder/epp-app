@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Loader2, Users, Store, Shield, ArrowRight, Wallet } from "lucide-react";
@@ -35,15 +35,15 @@ const roleOptions: RoleOption[] = [
 		email: "epp-user@gmail.com",
 	},
 	{
-		id: "vendor",
-		title: "Login as Vendor",
+		id: "supplier",
+		title: "Login as Supplier",
 		description: "Manage your products and fulfill employee orders",
 		icon: Store,
-		route: "/vendor/dashboard",
+		route: "/supplier/dashboard",
 		color: "text-emerald-600 dark:text-emerald-400",
 		bgColor:
 			"bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border-emerald-200 dark:border-emerald-800",
-		email: "epp-vendor@gmail.com",
+		email: "epp-supplier@gmail.com",
 	},
 	{
 		id: "financer",
@@ -59,7 +59,7 @@ const roleOptions: RoleOption[] = [
 	{
 		id: "admin",
 		title: "Login as EPP Admin",
-		description: "Manage vendors, products, and program oversight",
+		description: "Manage suppliers, products, and program oversight",
 		icon: Shield,
 		route: "/admin",
 		color: "text-purple-600 dark:text-purple-400",
@@ -192,7 +192,7 @@ export default function LoginPage() {
 							</div>
 							<div>
 								<div className="text-3xl font-bold">50+</div>
-								<div className="text-sm text-gray-400">Vendors</div>
+								<div className="text-sm text-gray-400">Suppliers</div>
 							</div>
 							<div>
 								<div className="text-3xl font-bold">1000+</div>
@@ -205,3 +205,4 @@ export default function LoginPage() {
 		</div>
 	);
 }
+

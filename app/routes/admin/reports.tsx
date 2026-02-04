@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+﻿import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/select";
 import {
 	MOCK_PRODUCTS,
-	MOCK_VENDORS,
+	MOCK_suppliers,
 	MOCK_ORDERS,
 	PRODUCT_CATEGORIES,
 } from "~/data/mock-admin-data";
@@ -24,7 +24,7 @@ export default function AdminReportsPage() {
 	// Calculate stats
 	const totalProducts = MOCK_PRODUCTS.length;
 	const activeProducts = MOCK_PRODUCTS.filter((p) => p.status === "active").length;
-	const totalVendors = MOCK_VENDORS.filter((v) => v.status === "active").length;
+	const totalsuppliers = MOCK_suppliers.filter((v) => v.status === "active").length;
 	const totalOrders = MOCK_ORDERS.length;
 	const totalRevenue = MOCK_ORDERS.filter((o) => o.status === "delivered").reduce(
 		(sum, o) => sum + o.amount,
@@ -42,13 +42,13 @@ export default function AdminReportsPage() {
 		}).reduce((sum, o) => sum + o.amount, 0),
 	}));
 
-	// Vendor performance
-	const vendorStats = MOCK_VENDORS.filter((v) => v.status === "active")
-		.map((vendor) => ({
-			...vendor,
-			orders: MOCK_ORDERS.filter((o) => o.vendorId === vendor.id).length,
+	// supplier performance
+	const supplierstats = MOCK_suppliers.filter((v) => v.status === "active")
+		.map((supplier) => ({
+			...supplier,
+			orders: MOCK_ORDERS.filter((o) => o.supplierId === supplier.id).length,
 			revenue: MOCK_ORDERS.filter(
-				(o) => o.vendorId === vendor.id && o.status === "delivered",
+				(o) => o.supplierId === supplier.id && o.status === "delivered",
 			).reduce((sum, o) => sum + o.amount, 0),
 		}))
 		.sort((a, b) => b.revenue - a.revenue);
@@ -122,11 +122,11 @@ export default function AdminReportsPage() {
 				</Card>
 				<Card>
 					<CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-						<CardTitle className="text-sm font-medium">Active Vendors</CardTitle>
+						<CardTitle className="text-sm font-medium">Active suppliers</CardTitle>
 						<TrendingUp className="h-4 w-4 text-muted-foreground" />
 					</CardHeader>
 					<CardContent>
-						<div className="text-2xl font-bold">{totalVendors}</div>
+						<div className="text-2xl font-bold">{totalsuppliers}</div>
 						<p className="text-xs text-muted-foreground">
 							<span className="text-green-500">+2</span> new this month
 						</p>
@@ -174,37 +174,37 @@ export default function AdminReportsPage() {
 					</CardContent>
 				</Card>
 
-				{/* Vendor Performance */}
+				{/* supplier Performance */}
 				<Card>
 					<CardHeader>
-						<CardTitle>Top Vendors by Revenue</CardTitle>
-						<CardDescription>Performance ranking of active vendors</CardDescription>
+						<CardTitle>Top suppliers by Revenue</CardTitle>
+						<CardDescription>Performance ranking of active suppliers</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<div className="space-y-4">
-							{vendorStats.slice(0, 5).map((vendor, index) => (
-								<div key={vendor.id} className="flex items-center gap-4">
+							{supplierstats.slice(0, 5).map((supplier, index) => (
+								<div key={supplier.id} className="flex items-center gap-4">
 									<div className="flex-shrink-0 w-6 text-center">
 										<span className="text-sm font-medium text-muted-foreground">
 											#{index + 1}
 										</span>
 									</div>
-									{vendor.logo && (
+									{supplier.logo && (
 										<img
-											src={vendor.logo}
-											alt={vendor.name}
+											src={supplier.logo}
+											alt={supplier.name}
 											className="h-10 w-10 rounded-lg object-cover"
 										/>
 									)}
 									<div className="flex-1 min-w-0">
-										<p className="font-medium truncate">{vendor.name}</p>
+										<p className="font-medium truncate">{supplier.name}</p>
 										<p className="text-xs text-muted-foreground">
-											{vendor.orders} orders • {vendor.productsCount} products
+											{supplier.orders} orders â€¢ {supplier.productsCount} products
 										</p>
 									</div>
 									<div className="text-right">
 										<p className="font-semibold">
-											${vendor.revenue.toLocaleString()}
+											${supplier.revenue.toLocaleString()}
 										</p>
 									</div>
 								</div>
@@ -291,3 +291,4 @@ export default function AdminReportsPage() {
 		</div>
 	);
 }
+

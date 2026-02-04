@@ -1,4 +1,4 @@
-import { useParams } from "react-router";
+﻿import { useParams } from "react-router";
 import { useGetItemById } from "~/hooks/use-item";
 import { ProductDetailsView } from "~/components/organism/product-details-view";
 
@@ -11,7 +11,8 @@ export default function AdminProductDetailsPage() {
 			product={product}
 			isLoading={isLoading}
 			isError={isError}
-			showVendorInfo={true}
+			showsupplierInfo={true}
 		/>
 	);
 }
+

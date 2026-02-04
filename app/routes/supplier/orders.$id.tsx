@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router";
+﻿import { useParams, Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Printer, Loader2, Calendar } from "lucide-react";
 import { toast } from "sonner";
@@ -12,7 +12,7 @@ import { OrderStatusCard } from "@/components/organism/order/order-status-card";
 import { OrderActionsCard } from "@/components/organism/order/order-actions-card";
 import { OrderTimeline } from "@/components/organism/order/order-timeline";
 
-export default function VendorOrderDetailsPage() {
+export default function supplierOrderDetailsPage() {
 	const { id } = useParams();
 
 	const { data: orderResponse, isLoading } = useGetOrderById(id!, {
@@ -61,7 +61,7 @@ export default function VendorOrderDetailsPage() {
 					The order you are looking for does not exist.
 				</p>
 				<Button asChild>
-					<Link to="/vendor/orders">Back to Orders</Link>
+					<Link to="/supplier/orders">Back to Orders</Link>
 				</Button>
 			</div>
 		);
@@ -78,7 +78,7 @@ export default function VendorOrderDetailsPage() {
 					size="icon"
 					asChild
 					className="h-10 w-10 rounded-full hover:bg-muted/50 transition-colors">
-					<Link to="/vendor/orders">
+					<Link to="/supplier/orders">
 						<ArrowLeft className="h-5 w-5" />
 					</Link>
 				</Button>
@@ -125,3 +125,4 @@ export default function VendorOrderDetailsPage() {
 		</div>
 	);
 }
+
