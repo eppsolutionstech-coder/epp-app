@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Plus, Layers, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -8,12 +8,12 @@ import type { ApprovalWorkflow } from "~/zod/approval-workflow.zod";
 import { useGetApprovalWorkflows } from "~/hooks/use-approval-workflow";
 import { WorkflowLevelsEditor } from "./workflow-levels-editor";
 import { CreateApprovalWorkflowDialog } from "./create-approval-workflow-dialog";
-import { ManageApprovalLevelsDialog } from "./manage-approval-levels-dialog";
+import { ManageApprovalTypesDialog } from "./manage-approval-types-dialog";
 
 export function OrganizationApprovalWorkflowsTab() {
 	const { data, isLoading } = useGetApprovalWorkflows({
 		limit: 100,
-	fields: "id, name, description, isActive, minOrderAmount, maxOrderAmount, requiresInstallment, workflowLevels.level, workflowLevels.approverName, workflowLevels.approverEmail, workflowLevels.approvalLevel.role, workflowLevels.approvalLevel.isRequired, workflowLevels.approvalLevel.autoApproveUnder, workflowLevels.approvalLevel.timeoutDays, createdAt, updatedAt",
+		fields: "id, name, description, isActive, minOrderAmount, maxOrderAmount, requiresInstallment, workflowLevels.level, workflowLevels.approverName, workflowLevels.approverEmail, workflowLevels.approvalType.role, workflowLevels.approvalType.isRequired, workflowLevels.approvalType.autoApproveUnder, workflowLevels.approvalType.timeoutDays, createdAt, updatedAt",
 	});
 
 	const workflows = data?.approvalWorkflows || [];
@@ -115,10 +115,10 @@ export function OrganizationApprovalWorkflowsTab() {
 												</div>
 												<div className="font-medium font-mono">
 													{workflow.minOrderAmount
-														? `₱${Number(
+														? `â‚±${Number(
 																workflow.minOrderAmount,
 															).toLocaleString()}`
-														: "—"}
+														: "â€”"}
 												</div>
 											</div>
 											<div>
@@ -127,10 +127,10 @@ export function OrganizationApprovalWorkflowsTab() {
 												</div>
 												<div className="font-medium font-mono">
 													{workflow.maxOrderAmount
-														? `₱${Number(
+														? `â‚±${Number(
 																workflow.maxOrderAmount,
 															).toLocaleString()}`
-														: "—"}
+														: "â€”"}
 												</div>
 											</div>
 										</div>
@@ -177,7 +177,7 @@ export function OrganizationApprovalWorkflowsTab() {
 				open={isCreateWorkflowOpen}
 				onOpenChange={setIsCreateWorkflowOpen}
 			/>
-			<ManageApprovalLevelsDialog
+			<ManageApprovalTypesDialog
 				open={isManageLevelsOpen}
 				onOpenChange={setIsManageLevelsOpen}
 			/>

@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+﻿import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
@@ -24,36 +24,35 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-	CreateApprovalLevelSchema,
+	CreateApprovalTypeSchema,
 	ApproverRoleEnum,
-	type CreateApprovalLevel,
-	type ApprovalLevel,
-} from "../../zod/approval-level.zod";
-import { useCreateApprovalLevel, useUpdateApprovalLevel } from "~/hooks/use-approval-level";
+	type CreateApprovalType,
+	type ApprovalType,
+} from "../../zod/approval-type.zod";
+import { useCreateApprovalType, useUpdateApprovalType } from "~/hooks/use-approval-type";
 
-// We use z.input for the form to allow strings that will be coerced/transformed
-type CreateApprovalLevelInput = z.input<typeof CreateApprovalLevelSchema>;
+type CreateApprovalTypeInput = z.input<typeof CreateApprovalTypeSchema>;
 
-interface CreateApprovalLevelFormProps {
+interface CreateApprovalTypeFormProps {
 	onSuccess: () => void;
 	onCancel?: () => void;
-	defaultValues?: Partial<CreateApprovalLevelInput>;
+	defaultValues?: Partial<CreateApprovalTypeInput>;
 	levelId?: string;
 }
 
-export function CreateApprovalLevelForm({
+export function CreateApprovalTypeForm({
 	onSuccess,
 	onCancel,
 	defaultValues,
 	levelId,
-}: CreateApprovalLevelFormProps) {
-	const { mutate: createLevel, isPending: isCreating } = useCreateApprovalLevel();
-	const { mutate: updateLevel, isPending: isUpdating } = useUpdateApprovalLevel();
+}: CreateApprovalTypeFormProps) {
+	const { mutate: createLevel, isPending: isCreating } = useCreateApprovalType();
+	const { mutate: updateLevel, isPending: isUpdating } = useUpdateApprovalType();
 
 	const isPending = isCreating || isUpdating;
 
-	const form = useForm<CreateApprovalLevelInput>({
-		resolver: zodResolver(CreateApprovalLevelSchema),
+	const form = useForm<CreateApprovalTypeInput>({
+		resolver: zodResolver(CreateApprovalTypeSchema),
 		defaultValues: defaultValues || {
 			role: "MANAGER",
 			description: "",
@@ -63,10 +62,10 @@ export function CreateApprovalLevelForm({
 		},
 	});
 
-	const onSubmit = (data: CreateApprovalLevelInput) => {
+	const onSubmit = (data: CreateApprovalTypeInput) => {
 		if (levelId) {
 			updateLevel(
-				{ id: levelId, data: data as CreateApprovalLevel },
+				{ id: levelId, data: data as CreateApprovalType },
 				{
 					onSuccess: () => {
 						toast.success("Approval level updated successfully");
@@ -78,7 +77,7 @@ export function CreateApprovalLevelForm({
 				},
 			);
 		} else {
-			createLevel(data as CreateApprovalLevel, {
+			createLevel(data as CreateApprovalType, {
 				onSuccess: () => {
 					toast.success("Approval level created successfully");
 					onSuccess();

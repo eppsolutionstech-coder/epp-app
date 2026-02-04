@@ -1,9 +1,9 @@
-import { useForm } from "react-hook-form";
+﻿import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "sonner";
-import { z } from "zod"; // Import z for input type inference
+import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
 	Dialog,
@@ -31,27 +31,26 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
-	CreateApprovalLevelSchema,
+	CreateApprovalTypeSchema,
 	ApproverRoleEnum,
-	type CreateApprovalLevel, // This matches z.infer (output)
-} from "../../zod/approval-level.zod";
-import { useCreateApprovalLevel } from "~/hooks/use-approval-level";
+	type CreateApprovalType,
+} from "../../zod/approval-type.zod";
+import { useCreateApprovalType } from "~/hooks/use-approval-type";
 
-interface CreateApprovalLevelDialogProps {
+interface CreateApprovalTypeDialogProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 }
 
-// We use z.input for the form to allow strings that will be coerced/transformed
-type CreateApprovalLevelInput = z.input<typeof CreateApprovalLevelSchema>;
+type CreateApprovalTypeInput = z.input<typeof CreateApprovalTypeSchema>;
 
-export function CreateApprovalLevelDialog({ open, onOpenChange }: CreateApprovalLevelDialogProps) {
-	const { mutate: createLevel, isPending } = useCreateApprovalLevel();
+export function CreateApprovalTypeDialog({ open, onOpenChange }: CreateApprovalTypeDialogProps) {
+	const { mutate: createLevel, isPending } = useCreateApprovalType();
 
-	const form = useForm<CreateApprovalLevelInput>({
-		resolver: zodResolver(CreateApprovalLevelSchema),
+	const form = useForm<CreateApprovalTypeInput>({
+		resolver: zodResolver(CreateApprovalTypeSchema),
 		defaultValues: {
-			role: "MANAGER", // Default role
+			role: "MANAGER",
 			description: "",
 			isRequired: true,
 			autoApproveUnder: null,
@@ -65,10 +64,8 @@ export function CreateApprovalLevelDialog({ open, onOpenChange }: CreateApproval
 		}
 	}, [open, form]);
 
-	const onSubmit = (data: CreateApprovalLevelInput) => {
-		// data here is actually the output type after validation, but hook-form types it as input.
-		// We cast it to the expected output type for the mutation.
-		createLevel(data as CreateApprovalLevel, {
+	const onSubmit = (data: CreateApprovalTypeInput) => {
+		createLevel(data as CreateApprovalType, {
 			onSuccess: () => {
 				toast.success("Approval level created successfully");
 				onOpenChange(false);
@@ -144,8 +141,6 @@ export function CreateApprovalLevelDialog({ open, onOpenChange }: CreateApproval
 												placeholder="Optional"
 												{...field}
 												value={field.value === null ? "" : field.value}
-												// Allow Zod schema to handle coercion/string checking
-												// Passing the string directly lets user type decimals comfortably
 												onChange={(e) => {
 													const val = e.target.value;
 													field.onChange(val === "" ? null : val);
@@ -170,9 +165,6 @@ export function CreateApprovalLevelDialog({ open, onOpenChange }: CreateApproval
 												value={field.value === null ? "" : field.value}
 												onChange={(e) => {
 													const val = e.target.value;
-													// timeoutDays expects number in schema primarily, but our custom helper might not apply to timeoutDays
-													// Looking at schema: timeoutDays: z.number().int()...
-													// So we MUST coerce to number, or use valueAsNumber
 													field.onChange(val === "" ? null : Number(val));
 												}}
 											/>

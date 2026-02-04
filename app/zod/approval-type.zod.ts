@@ -1,4 +1,4 @@
-import { z } from "zod";
+﻿import { z } from "zod";
 
 export const ApproverRoleEnum = z.enum(["MANAGER", "HR", "FINANCE", "DEPARTMENT_HEAD", "ADMIN"]);
 
@@ -12,9 +12,8 @@ const numberSchema = z
 		return val;
 	});
 
-// ApprovalLevel Schema (full, including ID)
-// Note: workflowId and level are now in WorkflowApprovalLevel junction table
-export const ApprovalLevelSchema = z.object({
+// ApprovalType Schema (full, including ID)
+export const ApprovalTypeSchema = z.object({
 	id: z.string(),
 	role: ApproverRoleEnum,
 	description: z.string().optional().nullable(),
@@ -25,10 +24,10 @@ export const ApprovalLevelSchema = z.object({
 	updatedAt: z.coerce.date(),
 });
 
-export type ApprovalLevel = z.infer<typeof ApprovalLevelSchema>;
+export type ApprovalType = z.infer<typeof ApprovalTypeSchema>;
 
-// Create ApprovalLevel Schema (excluding ID, createdAt, updatedAt)
-export const CreateApprovalLevelSchema = ApprovalLevelSchema.omit({
+// Create ApprovalType Schema (excluding ID, createdAt, updatedAt)
+export const CreateApprovalTypeSchema = ApprovalTypeSchema.omit({
 	id: true,
 	createdAt: true,
 	updatedAt: true,
@@ -39,13 +38,13 @@ export const CreateApprovalLevelSchema = ApprovalLevelSchema.omit({
 	timeoutDays: true,
 });
 
-export type CreateApprovalLevel = z.infer<typeof CreateApprovalLevelSchema>;
+export type CreateApprovalType = z.infer<typeof CreateApprovalTypeSchema>;
 
-// Update ApprovalLevel Schema (partial, excluding immutable fields)
-export const UpdateApprovalLevelSchema = ApprovalLevelSchema.omit({
+// Update ApprovalType Schema (partial, excluding immutable fields)
+export const UpdateApprovalTypeSchema = ApprovalTypeSchema.omit({
 	id: true,
 	createdAt: true,
 	updatedAt: true,
 }).partial();
 
-export type UpdateApprovalLevel = z.infer<typeof UpdateApprovalLevelSchema>;
+export type UpdateApprovalType = z.infer<typeof UpdateApprovalTypeSchema>;

@@ -1,4 +1,4 @@
-import { z } from "zod";
+﻿import { z } from "zod";
 import type { Pagination } from "~/types/pagination";
 import type { OrderWithRelation } from "./order.zod";
 
@@ -21,7 +21,7 @@ export type ApprovalStatus = z.infer<typeof ApprovalStatusEnum>;
 export const OrderApprovalSchema = z.object({
 	id: z.string(),
 	orderId: z.string(),
-	approvalLevel: z.number().int().positive("Approval level must be positive"),
+	approvalType: z.number().int().positive("Approval level must be positive"),
 	approverRole: ApproverRoleEnum,
 	approverId: z.string().min(1, "Approver ID is required"),
 	approverName: z.string().min(1, "Approver name is required"),
@@ -77,3 +77,4 @@ export type GetAllOrderApprovals = {
 	pagination: Pagination;
 	count: number;
 };
+

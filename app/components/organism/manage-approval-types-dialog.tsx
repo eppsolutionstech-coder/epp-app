@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Plus, Settings, ArrowLeft, MoreHorizontal, Pencil, Trash } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -25,26 +25,23 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { useGetApprovalLevels, useDeleteApprovalLevel } from "~/hooks/use-approval-level";
-import type { ApprovalLevel } from "~/zod/approval-level.zod";
-import { CreateApprovalLevelForm } from "./create-approval-level-form";
+import { useGetApprovalTypes, useDeleteApprovalType } from "~/hooks/use-approval-type";
+import type { ApprovalType } from "~/zod/approval-type.zod";
+import { CreateApprovalTypeForm } from "./create-approval-type-form";
 
-interface ManageApprovalLevelsDialogProps {
+interface ManageApprovalTypesDialogProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
 }
 
 type ViewState = "list" | "create" | "edit";
 
-export function ManageApprovalLevelsDialog({
-	open,
-	onOpenChange,
-}: ManageApprovalLevelsDialogProps) {
-	const { data: levelsData, isLoading } = useGetApprovalLevels({ limit: 100 });
-	const { mutate: deleteLevel } = useDeleteApprovalLevel();
-	const levels = (levelsData as { approvalLevels: ApprovalLevel[] })?.approvalLevels || [];
+export function ManageApprovalTypesDialog({ open, onOpenChange }: ManageApprovalTypesDialogProps) {
+	const { data: levelsData, isLoading } = useGetApprovalTypes({ limit: 100 });
+	const { mutate: deleteLevel } = useDeleteApprovalType();
+	const levels = (levelsData as { approvalTypes: ApprovalType[] })?.approvalTypes || [];
 	const [view, setView] = useState<ViewState>("list");
-	const [editingLevel, setEditingLevel] = useState<ApprovalLevel | null>(null);
+	const [editingLevel, setEditingLevel] = useState<ApprovalType | null>(null);
 
 	const handleOpenChange = (newOpen: boolean) => {
 		if (!newOpen) {
@@ -57,7 +54,7 @@ export function ManageApprovalLevelsDialog({
 		onOpenChange(newOpen);
 	};
 
-	const handleEdit = (level: ApprovalLevel) => {
+	const handleEdit = (level: ApprovalType) => {
 		setEditingLevel(level);
 		setView("edit");
 	};
@@ -128,7 +125,7 @@ export function ManageApprovalLevelsDialog({
 				<div className="flex-1 overflow-auto -mx-6 px-6 pt-2">
 					{view === "create" || view === "edit" ? (
 						<div className="max-w-lg mx-auto py-4">
-							<CreateApprovalLevelForm
+							<CreateApprovalTypeForm
 								levelId={view === "edit" ? editingLevel?.id : undefined}
 								defaultValues={
 									view === "edit" && editingLevel

@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Plus, Trash2, GripVertical, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -19,11 +19,11 @@ import {
 
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { useGetApprovalLevels } from "~/hooks/use-approval-level";
-import { useCreateWorkflowApprovalLevel } from "~/hooks/use-workflow-approval-level";
+import { useGetApprovalTypes } from "~/hooks/use-approval-type";
+import { useCreateWorkflowApprovalType } from "~/hooks/use-workflow-approval-type";
 import { queryClient } from "~/lib/query-client";
 import type { ApprovalWorkflow } from "~/zod/approval-workflow.zod";
-import type { ApprovalLevel } from "../../zod/approval-level.zod";
+import type { ApprovalType } from "../../zod/approval-type.zod";
 import { useGetUsers } from "~/hooks/use-user";
 
 interface WorkflowLevelsEditorProps {
@@ -33,15 +33,14 @@ interface WorkflowLevelsEditorProps {
 }
 
 export function WorkflowLevelsEditor({ workflow, open, onOpenChange }: WorkflowLevelsEditorProps) {
-	const { data: levelsData } = useGetApprovalLevels({ limit: 100 });
-	const { mutate: addLevel, isPending } = useCreateWorkflowApprovalLevel();
+	const { data: levelsData } = useGetApprovalTypes({ limit: 100 });
+	const { mutate: addLevel, isPending } = useCreateWorkflowApprovalType();
 	const { data: users, isLoading } = useGetUsers({
 		fields: "id, userName, email, metadata, role",
 	});
 
 	// Cast data to expected type
-	const availableLevels =
-		(levelsData as { approvalLevels: ApprovalLevel[] })?.approvalLevels || [];
+	const availableLevels = (levelsData as { approvalTypes: ApprovalType[] })?.approvalTypes || [];
 
 	const [selectedLevelId, setSelectedLevelId] = useState<string>("");
 	const [selectedApproverId, setSelectedApproverId] = useState<string>("");
@@ -74,7 +73,7 @@ export function WorkflowLevelsEditor({ workflow, open, onOpenChange }: WorkflowL
 		addLevel(
 			{
 				workflowId: workflow.id,
-				approvalLevelId: selectedLevelId,
+				approvalTypeId: selectedLevelId,
 				level: currentLevels.length + 1,
 
 				approverId: selectedApproverId,
@@ -218,14 +217,14 @@ export function WorkflowLevelsEditor({ workflow, open, onOpenChange }: WorkflowL
 													{level.approverName || "Unknown Approver"}
 												</div>
 												<Badge variant="secondary" className="text-xs">
-													{level.approvalLevel?.role || "Unknown Role"}
+													{level.approvalType?.role || "Unknown Role"}
 												</Badge>
 											</div>
 											<div className="text-sm text-muted-foreground">
 												{level.approverEmail || "No email"}
 											</div>
 											<div className="text-xs text-muted-foreground/80 pt-1">
-												{level.approvalLevel?.description}
+												{level.approvalType?.description}
 											</div>
 										</div>
 										<Button

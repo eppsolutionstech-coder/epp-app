@@ -1,4 +1,4 @@
-export const API_ENDPOINTS = {
+﻿export const API_ENDPOINTS = {
 	AUTH_URL: import.meta.env.VITE_AUTH_URL || "http://localhost:3001/api",
 	BASE_URL: import.meta.env.VITE_BASE_URL || "http://localhost:3001/api",
 
@@ -77,20 +77,20 @@ export const API_ENDPOINTS = {
 		DELETE: "/approvalWorkflow/:id", // Soft delete
 	},
 
-	APPROVAL_LEVEL: {
-		GET_ALL: "/approvalLevel",
-		GET_BY_ID: "/approvalLevel/:id",
-		CREATE: "/approvalLevel",
-		UPDATE: "/approvalLevel/:id",
-		DELETE: "/approvalLevel/:id", // Soft delete
+	APPROVAL_TYPE: {
+		GET_ALL: "/approvalType",
+		GET_BY_ID: "/approvalType/:id",
+		CREATE: "/approvalType",
+		UPDATE: "/approvalType/:id",
+		DELETE: "/approvalType/:id", // Soft delete
 	},
 
-	WORKFLOW_APPROVAL_LEVEL: {
-		GET_ALL: "/workflowApprovalLevel",
-		GET_BY_ID: "/workflowApprovalLevel/:id",
-		CREATE: "/workflowApprovalLevel",
-		UPDATE: "/workflowApprovalLevel/:id",
-		DELETE: "/workflowApprovalLevel/:id", // Soft delete
+	WORKFLOW_APPROVAL_TYPE: {
+		GET_ALL: "/workflowapprovalType",
+		GET_BY_ID: "/workflowapprovalType/:id",
+		CREATE: "/workflowapprovalType",
+		UPDATE: "/workflowapprovalType/:id",
+		DELETE: "/workflowapprovalType/:id", // Soft delete
 	},
 
 	FINANCIER_CONFIG: {
@@ -109,3 +109,4 @@ export const API_ENDPOINTS = {
 		DELETE: "/orderApproval/:id", // Soft delete
 	},
 };
+

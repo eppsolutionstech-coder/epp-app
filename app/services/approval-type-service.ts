@@ -1,14 +1,14 @@
-import { APIService } from "./api-service";
+﻿import { APIService } from "./api-service";
 import { apiClient } from "~/lib/api-client";
 import { API_ENDPOINTS } from "~/configs/endpoints";
 
-const { APPROVAL_LEVEL } = API_ENDPOINTS;
+const { APPROVAL_TYPE } = API_ENDPOINTS;
 
-class ApprovalLevelService extends APIService {
-	getAllApprovalLevels = async () => {
+class ApprovalTypeService extends APIService {
+	getAllApprovalTypes = async () => {
 		try {
 			const response = await apiClient.get(
-				`${APPROVAL_LEVEL.GET_ALL}${this.getQueryString()}`,
+				`${APPROVAL_TYPE.GET_ALL}${this.getQueryString()}`,
 			);
 			return response.data;
 		} catch (error: any) {
@@ -18,13 +18,13 @@ class ApprovalLevelService extends APIService {
 		}
 	};
 
-	createApprovalLevel = async (data: object | FormData) => {
+	createApprovalType = async (data: object | FormData) => {
 		try {
 			let response;
 			if (data instanceof FormData) {
-				response = await apiClient.postFormData(APPROVAL_LEVEL.CREATE, data);
+				response = await apiClient.postFormData(APPROVAL_TYPE.CREATE, data);
 			} else {
-				response = await apiClient.post(APPROVAL_LEVEL.CREATE, data);
+				response = await apiClient.post(APPROVAL_TYPE.CREATE, data);
 			}
 			return response.data;
 		} catch (error: any) {
@@ -34,16 +34,16 @@ class ApprovalLevelService extends APIService {
 		}
 	};
 
-	updateApprovalLevel = async (id: string, data: object | FormData) => {
+	updateApprovalType = async (id: string, data: object | FormData) => {
 		try {
 			let response;
 			if (data instanceof FormData) {
 				response = await apiClient.putFormData(
-					`${APPROVAL_LEVEL.UPDATE.replace(":id", id)}`,
+					`${APPROVAL_TYPE.UPDATE.replace(":id", id)}`,
 					data,
 				);
 			} else {
-				response = await apiClient.put(`${APPROVAL_LEVEL.UPDATE.replace(":id", id)}`, data);
+				response = await apiClient.put(`${APPROVAL_TYPE.UPDATE.replace(":id", id)}`, data);
 			}
 			return response.data;
 		} catch (error: any) {
@@ -53,9 +53,9 @@ class ApprovalLevelService extends APIService {
 		}
 	};
 
-	deleteApprovalLevel = async (id: string) => {
+	deleteApprovalType = async (id: string) => {
 		try {
-			const response = await apiClient.delete(`${APPROVAL_LEVEL.DELETE.replace(":id", id)}`);
+			const response = await apiClient.delete(`${APPROVAL_TYPE.DELETE.replace(":id", id)}`);
 			return response.data;
 		} catch (error: any) {
 			throw new Error(
@@ -65,4 +65,4 @@ class ApprovalLevelService extends APIService {
 	};
 }
 
-export default new ApprovalLevelService();
+export default new ApprovalTypeService();
