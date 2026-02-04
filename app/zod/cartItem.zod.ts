@@ -5,7 +5,7 @@ import type { Pagination } from "~/types/pagination";
 // CartItem Schema (full, including ID)
 export const CartItemSchema = z.object({
 	id: z.string(),
-	employeeId: z.string(),
+	userId: z.string(),
 	itemId: z.string(),
 	quantity: z.number().int().min(1).default(1),
 	createdAt: z.coerce.date(),

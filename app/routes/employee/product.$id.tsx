@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { Package, Loader2, ShoppingCart } from "lucide-react";
 import { useGetItemById } from "~/hooks/use-item";
 import { useCreateCartItem } from "~/hooks/use-cart-item";
-import type { ItemImage } from "~/zod/item.zod";
+import type { ItemImage, ItemWithRelation } from "~/zod/item.zod";
 import { useAuth } from "~/hooks/use-auth";
 import {
 	FloatingCartBubbles,
@@ -44,17 +44,10 @@ export default function EmployeeProductDetailsPage() {
 	const handleBuyNow = () => {
 		if (!item) return;
 
-		const coverImage = item.images?.find((img: ItemImage) => img.type === "COVER");
-		const imageUrl = coverImage?.url || item.images?.[0]?.url || "/placeholder.png";
-
 		const checkoutItem = {
 			itemId: item.id,
-			productName: item.name,
-			productSku: item.sku,
-			productImage: imageUrl,
-			costPrice: Number(item.costPrice),
-			retailPrice: Number(item.retailPrice),
 			quantity: 1,
+			item: item as ItemWithRelation,
 		};
 
 		navigate("/employee/checkout", {
@@ -100,7 +93,7 @@ export default function EmployeeProductDetailsPage() {
 		triggerFloatingBubble(currentImage);
 
 		createCartItem({
-			employeeId: user.id,
+			userId: user.id,
 			itemId: item.id,
 			quantity: 1,
 		});
@@ -230,4 +223,3 @@ export default function EmployeeProductDetailsPage() {
 		</>
 	);
 }
-

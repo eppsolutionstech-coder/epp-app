@@ -24,7 +24,7 @@ export function ProfileOrdersTab({ purchases }: ProfileOrdersTabProps) {
 		<div className="space-y-6">
 			<h2 className="text-2xl font-semibold">My Orders</h2>
 
-			<div className="space-y-4">
+			<div className="space-y-4 flex flex-col">
 				{orders.map((order: any) => {
 					// Calculate paid installments
 					const paidInstallments = order.installments.filter(
