@@ -22,7 +22,6 @@ import { ProductCard } from "~/components/molecule/product-card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetItems, useUpdateItem } from "~/hooks/use-item";
 import { useGetCategories } from "~/hooks/use-category";
-import { useGetsuppliers } from "~/hooks/use-supplier";
 import type { Category } from "~/zod/category.zod";
 import type { supplier } from "~/zod/supplier.zod";
 import type { Item, ItemWithRelation } from "~/zod/item.zod";
@@ -30,6 +29,7 @@ import { useApiParams } from "~/hooks/util-hooks/use-api-params";
 import { cn } from "~/lib/utils";
 import { toast } from "sonner";
 import { Badge } from "~/components/ui/badge";
+import { useGetSuppliers } from "~/hooks/use-supplier";
 
 export default function AdminProductsPage() {
 	const navigate = useNavigate();
@@ -90,7 +90,7 @@ export default function AdminProductsPage() {
 	const categories: Category[] = categoriesResponse?.categorys || [];
 
 	// Fetch suppliers for filter dropdown
-	const { data: suppliersResponse } = useGetsuppliers({
+	const { data: suppliersResponse } = useGetSuppliers({
 		limit: 100,
 		fields: "id, name",
 	});
@@ -159,13 +159,13 @@ export default function AdminProductsPage() {
 			key: "retailPrice",
 			label: "Retail Price",
 			sortable: true,
-			render: (value) => <div className="text-right">â‚±{Number(value).toLocaleString()}</div>,
+			render: (value) => <div className="text-right">₱{Number(value).toLocaleString()}</div>,
 		},
 		{
 			key: "sellingPrice",
 			label: "Selling Price",
 			sortable: true,
-			render: (value) => <div className="text-right">â‚±{Number(value).toLocaleString()}</div>,
+			render: (value) => <div className="text-right">₱{Number(value).toLocaleString()}</div>,
 		},
 		{
 			key: "stockQuantity",

@@ -15,12 +15,12 @@ import { ProductCard } from "~/components/molecule/product-card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetItems } from "~/hooks/use-item";
 import { useGetCategories } from "~/hooks/use-category";
-import { useGetsuppliers } from "~/hooks/use-supplier";
 import type { Category } from "~/zod/category.zod";
 import type { supplier } from "~/zod/supplier.zod";
 import type { Item, ItemWithRelation } from "~/zod/item.zod";
 import { useApiParams } from "~/hooks/util-hooks/use-api-params";
 import { cn } from "~/lib/utils";
+import { useGetSuppliers } from "~/hooks/use-supplier";
 
 export default function OrganizationProductsPage() {
 	const navigate = useNavigate();
@@ -62,7 +62,7 @@ export default function OrganizationProductsPage() {
 	const categories: Category[] = categoriesResponse?.categorys || [];
 
 	// Fetch suppliers for filter dropdown
-	const { data: suppliersResponse } = useGetsuppliers({
+	const { data: suppliersResponse } = useGetSuppliers({
 		limit: 100,
 		fields: "id, name",
 	});
@@ -128,19 +128,19 @@ export default function OrganizationProductsPage() {
 			key: "retailPrice",
 			label: "Retail Price",
 			sortable: true,
-			render: (value) => <div className="text-right">â‚±{Number(value).toLocaleString()}</div>,
+			render: (value) => <div className="text-right">₱{Number(value).toLocaleString()}</div>,
 		},
 		{
 			key: "sellingPrice",
 			label: "Selling Price",
 			sortable: true,
-			render: (value) => <div className="text-right">â‚±{Number(value).toLocaleString()}</div>,
+			render: (value) => <div className="text-right">₱{Number(value).toLocaleString()}</div>,
 		},
 		{
 			key: "costPrice",
 			label: "Cost Price",
 			sortable: true,
-			render: (value) => <div className="text-right">â‚±{Number(value).toLocaleString()}</div>,
+			render: (value) => <div className="text-right">₱{Number(value).toLocaleString()}</div>,
 		},
 		{
 			key: "stockQuantity",

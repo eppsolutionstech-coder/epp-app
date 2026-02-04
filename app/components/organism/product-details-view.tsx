@@ -190,13 +190,13 @@ export function ProductDetailsView({
 								<div>
 									<p className="text-sm text-muted-foreground">Retail Price</p>
 									<p className="text-2xl font-bold">
-										â‚±{Number(product.retailPrice).toLocaleString()}
+										₱{Number(product.retailPrice).toLocaleString()}
 									</p>
 								</div>
 								<div>
 									<p className="text-sm text-muted-foreground">Selling Price</p>
 									<p className="text-2xl font-bold text-primary">
-										â‚±{Number(product.sellingPrice).toLocaleString()}
+										₱{Number(product.sellingPrice).toLocaleString()}
 									</p>
 								</div>
 							</div>
@@ -204,7 +204,7 @@ export function ProductDetailsView({
 								<div>
 									<p className="text-sm text-muted-foreground">Cost Price</p>
 									<p className="text-lg font-medium">
-										â‚±{Number(product.costPrice).toLocaleString()}
+										₱{Number(product.costPrice).toLocaleString()}
 									</p>
 								</div>
 							)} */}

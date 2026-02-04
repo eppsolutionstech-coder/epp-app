@@ -1,6 +1,5 @@
 ﻿import { useState } from "react";
 import { Link } from "react-router";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -19,6 +18,7 @@ import { useApiParams } from "~/hooks/util-hooks/use-api-params";
 import type { Category } from "~/zod/category.zod";
 import type { supplier } from "~/zod/supplier.zod";
 import { useGetSuppliers } from "~/hooks/use-supplier";
+import { cn } from "@/lib/utils";
 
 export default function EmployeeCatalog() {
 	const [categoryFilter, setCategoryFilter] = useState<string>("all");
@@ -86,7 +86,7 @@ export default function EmployeeCatalog() {
 			case "name":
 				return a.name.localeCompare(b.name);
 			default:
-				return 0;
+				return 0; // Default is usually popular or id based
 		}
 	});
 
@@ -100,7 +100,7 @@ export default function EmployeeCatalog() {
 	};
 
 	return (
-		<div className="flex flex-col lg:flex-row gap-8 min-h-[calc(100vh-4rem)] p-4 sm:p-6 bg-background/50">
+		<div className="flex flex-col lg:flex-row gap-8 min-h-[calc(100vh-4rem)] p-4 sm:p-8 bg-background/30 dark:bg-background/95">
 			{/* Sidebar Filters */}
 			<CatalogSidebar
 				searchTerm={searchTerm}
@@ -121,25 +121,31 @@ export default function EmployeeCatalog() {
 				suppliers={suppliers}
 				hasFilters={hasFilters}
 				onClearFilters={clearFilters}
+				className="lg:flex"
 			/>
+			{/* Keep original behavior for mobile - just stacked */}
+			<div className="lg:hidden">
+				{/* Mobile Filter Sheet TRIGGER would go here - skipping for now to match original functionality but could exist */}
+			</div>
 
 			{/* Main Content */}
-			<main className="flex-1 space-y-8">
+			<main className="flex-1 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
 				{/* Header */}
 				<div className="flex flex-col gap-6">
 					<div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-						<div className="space-y-1">
-							<h1 className="text-3xl font-bold tracking-tight text-foreground">
+						<div className="space-y-2">
+							<h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-chart-4 bg-clip-text text-transparent pb-1">
 								Catalog
 							</h1>
-							<p className="text-muted-foreground">
-								Discover premium equipment and supplies for your workspace.
+							<p className="text-muted-foreground text-base max-w-2xl">
+								Browse and manage your organization's equipment and supplies
+								procurement.
 							</p>
 						</div>
 
 						<div className="flex items-center gap-3 shrink-0">
 							<Select value={sortBy} onValueChange={setSortBy}>
-								<SelectTrigger className="w-[180px] h-9 bg-background/50 backdrop-blur-sm border-input hover:bg-accent/50 transition-colors">
+								<SelectTrigger className="w-[180px] h-10 bg-background/50 backdrop-blur-sm border-input hover:border-primary/50 transition-all rounded-lg shadow-sm">
 									<Filter className="w-3.5 h-3.5 mr-2 text-muted-foreground" />
 									<SelectValue placeholder="Sort by" />
 								</SelectTrigger>
@@ -155,10 +161,15 @@ export default function EmployeeCatalog() {
 					</div>
 
 					{/* Quick Filter Pills */}
-					<div className="flex flex-wrap gap-2">
+					<div className="flex flex-wrap gap-2 pb-2">
 						<Badge
-							variant={categoryFilter === "all" ? "default" : "outline"}
-							className="px-4 py-1.5 h-8 text-sm font-medium rounded-full cursor-pointer hover:opacity-90 transition-all active:scale-95 select-none"
+							variant={categoryFilter === "all" ? "default" : "secondary"}
+							className={cn(
+								"px-4 py-1.5 h-8 text-sm font-medium rounded-full cursor-pointer transition-all active:scale-95 select-none",
+								categoryFilter === "all"
+									? "shadow-md hover:opacity-90"
+									: "bg-background border border-border hover:border-primary/50 hover:bg-muted",
+							)}
 							onClick={() => {
 								setCategoryFilter("all");
 								handleFilterChange(buildFilterString("all", supplierFilter));
@@ -168,13 +179,20 @@ export default function EmployeeCatalog() {
 						{categories.map((category) => (
 							<Badge
 								key={category.id}
-								variant={categoryFilter === category.id ? "default" : "outline"}
-								className="px-4 py-1.5 h-8 text-sm font-medium rounded-full cursor-pointer hover:bg-primary/90 hover:text-primary-foreground transition-all active:scale-95 select-none"
+								variant={categoryFilter === category.id ? "default" : "secondary"}
+								className={cn(
+									"px-4 py-1.5 h-8 text-sm font-medium rounded-full cursor-pointer transition-all active:scale-95 select-none",
+									categoryFilter === category.id
+										? "shadow-md hover:opacity-90"
+										: "bg-background border border-border hover:border-primary/50 hover:bg-muted",
+								)}
 								onClick={() => {
 									const newFilter =
 										categoryFilter === category.id ? "all" : category.id;
 									setCategoryFilter(newFilter);
-									handleFilterChange(buildFilterString(newFilter, supplierFilter));
+									handleFilterChange(
+										buildFilterString(newFilter, supplierFilter),
+									);
 								}}>
 								{category.name}
 							</Badge>
@@ -184,35 +202,43 @@ export default function EmployeeCatalog() {
 
 				{/* Product Grid */}
 				{isLoadingProducts ? (
-					<div className="flex flex-col items-center justify-center py-32 space-y-4">
-						<Loader2 className="h-10 w-10 animate-spin text-primary/50" />
-						<p className="text-sm text-muted-foreground animate-pulse">
-							Loading products...
+					<div className="flex flex-col items-center justify-center py-32 space-y-6 min-h-[400px]">
+						<div className="relative">
+							<div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
+							<Loader2 className="h-12 w-12 animate-spin text-primary relative z-10" />
+						</div>
+						<p className="text-sm font-medium text-muted-foreground animate-pulse">
+							Loading catalog...
 						</p>
 					</div>
 				) : isProductsError ? (
-					<div className="flex flex-col items-center justify-center py-32 space-y-4 text-center">
-						<div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center">
-							<SlidersHorizontal className="h-8 w-8 text-destructive" />
+					<div className="flex flex-col items-center justify-center py-32 space-y-6 text-center min-h-[400px]">
+						<div className="h-20 w-20 rounded-full bg-destructive/5 flex items-center justify-center ring-1 ring-destructive/10">
+							<SlidersHorizontal className="h-10 w-10 text-destructive/80" />
 						</div>
 						<div className="space-y-2">
-							<h3 className="font-semibold text-lg">Failed to load catalog</h3>
-							<p className="text-muted-foreground max-w-sm">
-								We couldn't fetch the products. Please check your connection and try
-								again.
+							<h3 className="font-semibold text-lg">Unable to load catalog</h3>
+							<p className="text-muted-foreground max-w-sm mx-auto">
+								We encountered an issue fetching the products. Please verify your
+								connection.
 							</p>
 						</div>
-						<Button variant="outline" onClick={() => window.location.reload()}>
+						<Button
+							variant="outline"
+							onClick={() => window.location.reload()}
+							className="mt-4">
 							Reload Page
 						</Button>
 					</div>
 				) : sortedProducts.length > 0 ? (
-					<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6 pb-12">
-						{sortedProducts.map((product) => (
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 gap-y-8 pb-12">
+						{sortedProducts.map((product, index) => (
 							<Link
 								key={product.id}
 								to={`/employee/product/${product.id}`}
-								className="group h-full outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
+								className="block h-full outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl"
+								style={{ animationDelay: `${index * 50}ms` }} // Staggered fade in
+							>
 								<ProductCard
 									product={{
 										id: product.id,
@@ -242,18 +268,18 @@ export default function EmployeeCatalog() {
 						))}
 					</div>
 				) : (
-					<div className="flex flex-col items-center justify-center py-32 space-y-4 text-center">
-						<div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
-							<Search className="h-8 w-8 text-muted-foreground" />
+					<div className="flex flex-col items-center justify-center py-32 space-y-6 text-center min-h-[400px] border-2 border-dashed border-muted rounded-xl bg-muted/5">
+						<div className="h-20 w-20 rounded-full bg-muted flex items-center justify-center">
+							<Search className="h-10 w-10 text-muted-foreground/50" />
 						</div>
 						<div className="space-y-2">
-							<h3 className="font-semibold text-lg">No products found</h3>
-							<p className="text-muted-foreground max-w-sm">
-								We couldn't find matches for your search. Try broadening your
-								filters.
+							<h3 className="font-semibold text-xl">No products found</h3>
+							<p className="text-muted-foreground max-w-sm mx-auto">
+								No items match your current filters. Try adjusting your search or
+								categories.
 							</p>
 						</div>
-						<Button variant="secondary" onClick={clearFilters}>
+						<Button variant="secondary" onClick={clearFilters} className="mt-2">
 							Clear all filters
 						</Button>
 					</div>
@@ -262,4 +288,3 @@ export default function EmployeeCatalog() {
 		</div>
 	);
 }
-

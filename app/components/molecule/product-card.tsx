@@ -112,16 +112,16 @@ export function ProductCard({ product, variant = "admin", onClick }: ProductCard
 								{product.name}
 							</h3>
 							<p className="text-sm text-muted-foreground">
-								â‚±{monthlyPayment.toLocaleString()}/mo â€¢ {minInstallment} mos
+								₱{monthlyPayment.toLocaleString()}/mo • {minInstallment} mos
 							</p>
 						</div>
 						<div className="flex flex-col items-end shrink-0">
 							<span className="font-bold text-base">
-								â‚±{(product.costPrice || product.retailPrice).toLocaleString()}
+								₱{(product.costPrice || product.retailPrice).toLocaleString()}
 							</span>
 							{product.costPrice && product.costPrice < product.retailPrice && (
 								<span className="text-xs text-muted-foreground line-through">
-									â‚±{product.retailPrice.toLocaleString()}
+									₱{product.retailPrice.toLocaleString()}
 								</span>
 							)}
 						</div>
@@ -185,16 +185,16 @@ export function ProductCard({ product, variant = "admin", onClick }: ProductCard
 							{product.name}
 						</h3>
 						<p className="text-[11px] text-muted-foreground">
-							â‚±{monthlyPayment.toLocaleString()}/mo â€¢ {minInstallment} mos
+							₱{monthlyPayment.toLocaleString()}/mo • {minInstallment} mos
 						</p>
 					</div>
 					<div className="flex flex-col items-end">
 						<span className="font-bold text-primary">
-							â‚±{(product.costPrice || product.retailPrice).toLocaleString()}
+							₱{(product.costPrice || product.retailPrice).toLocaleString()}
 						</span>
 						{product.costPrice && product.costPrice < product.retailPrice && (
 							<span className="text-[11px] text-gray-400 line-through">
-								â‚±{product.retailPrice.toLocaleString()}
+								₱{product.retailPrice.toLocaleString()}
 							</span>
 						)}
 					</div>
@@ -297,7 +297,7 @@ export function ProductCard({ product, variant = "admin", onClick }: ProductCard
 						{product.name}
 					</h3>
 					<span className="shrink-0 font-semibold text-sm">
-						â‚±{product.retailPrice.toLocaleString()}
+						₱{product.retailPrice.toLocaleString()}
 					</span>
 				</div>
 				<div className="flex items-center justify-between text-xs text-muted-foreground">

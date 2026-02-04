@@ -74,7 +74,7 @@ export default function supplierReportsPage() {
 			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 				<StatCard
 					title="Total Revenue"
-					value="â‚±124,500"
+					value="₱124,500"
 					description="+12.5% from last month"
 					trend="up"
 					icon={DollarSign}
@@ -152,11 +152,11 @@ export default function supplierReportsPage() {
 									fontSize={12}
 									tickLine={false}
 									axisLine={false}
-									tickFormatter={(value) => `â‚±${value / 1000}k`}
+									tickFormatter={(value) => `₱${value / 1000}k`}
 								/>
 								<Tooltip
 									formatter={(value: number) => [
-										`â‚±${value.toLocaleString()}`,
+										`₱${value.toLocaleString()}`,
 										"Revenue",
 									]}
 									contentStyle={{ borderRadius: "8px" }}

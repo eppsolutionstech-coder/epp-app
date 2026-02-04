@@ -85,7 +85,7 @@ export function supplierAboutTab({ supplier, products }: supplierAboutTabProps) 
 				<Card>
 					<CardContent className=" text-center">
 						<div className="text-3xl font-bold text-emerald-600">
-							â‚±{totalRevenue.toLocaleString()}
+							₱{totalRevenue.toLocaleString()}
 						</div>
 						<p className="text-sm text-muted-foreground">Total Sales</p>
 					</CardContent>

@@ -31,9 +31,9 @@ import { ProductUpsertModal } from "~/components/supplier/product-upsert-modal";
 import type { Item } from "~/zod/item.zod";
 import type { CategoryWithRelation } from "~/zod/category.zod";
 import { toast } from "sonner";
-import { useGetsuppliers } from "~/hooks/use-supplier";
 
 import { useApiParams } from "~/hooks/util-hooks/use-api-params";
+import { useGetSuppliers } from "~/hooks/use-supplier";
 
 export default function supplierProductsPage() {
 	const navigate = useNavigate();
@@ -55,7 +55,7 @@ export default function supplierProductsPage() {
 		fields: "id, name",
 	});
 
-	const { data: suppliersResponse } = useGetsuppliers({
+	const { data: suppliersResponse } = useGetSuppliers({
 		limit: 100,
 		fields: "id",
 	});
@@ -167,13 +167,13 @@ export default function supplierProductsPage() {
 			key: "retailPrice",
 			label: "Retail Price",
 			sortable: true,
-			render: (value) => `â‚±${Number(value).toLocaleString()}`,
+			render: (value) => `₱${Number(value).toLocaleString()}`,
 		},
 		{
 			key: "sellingPrice",
 			label: "Selling Price",
 			sortable: true,
-			render: (value) => `â‚±${Number(value).toLocaleString()}`,
+			render: (value) => `₱${Number(value).toLocaleString()}`,
 		},
 		{
 			key: "stockQuantity",
@@ -342,4 +342,3 @@ export default function supplierProductsPage() {
 		</div>
 	);
 }
-

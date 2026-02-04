@@ -62,7 +62,7 @@ export default function supplierDashboard() {
 		},
 		{
 			title: "Total Sales",
-			value: `â‚±${totalRevenue.toLocaleString()}`,
+			value: `₱${totalRevenue.toLocaleString()}`,
 			description: "From delivered orders",
 			icon: DollarSign,
 			color: "text-purple-600",
@@ -144,7 +144,7 @@ export default function supplierDashboard() {
 										{order.productName}
 									</p>
 									<p className="text-xs text-muted-foreground">
-										{order.employeeName} â€¢ â‚±{order.amount.toLocaleString()}
+										{order.employeeName} â€¢ ₱{order.amount.toLocaleString()}
 									</p>
 								</div>
 								<Badge className={getStatusColor(order.status)}>
@@ -187,7 +187,7 @@ export default function supplierDashboard() {
 											{product.name}
 										</p>
 										<p className="text-xs text-muted-foreground">
-											{product.category} â€¢ â‚±{product.price.toLocaleString()}
+											{product.category} â€¢ ₱{product.price.toLocaleString()}
 										</p>
 									</div>
 									<div className="flex items-center gap-1 text-sm text-muted-foreground">
