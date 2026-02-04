@@ -1,14 +1,14 @@
 import { APIService } from "./api-service";
 import { apiClient, type ApiResponse } from "~/lib/api-client";
 import { API_ENDPOINTS } from "~/configs/endpoints";
-import type { GetAllSuppliers, Supplier, SupplierWithRelation } from "~/zod/supplier.zod";
+import type { GetAllsuppliers, supplierWithRelations } from "~/zod/supplier.zod";
 
 const { SUPPLIER } = API_ENDPOINTS;
 
 class SupplierService extends APIService {
 	getAllSuppliers = async () => {
 		try {
-			const response: ApiResponse<GetAllSuppliers> = await apiClient.get(
+			const response: ApiResponse<GetAllsuppliers> = await apiClient.get(
 				`${SUPPLIER.GET_ALL}${this.getQueryString()}`,
 			);
 			return response.data;
@@ -21,7 +21,7 @@ class SupplierService extends APIService {
 
 	getSupplierById = async (supplierId: string) => {
 		try {
-			const response: ApiResponse<SupplierWithRelation> = await apiClient.get(
+			const response: ApiResponse<supplierWithRelations> = await apiClient.get(
 				`${SUPPLIER.GET_BY_ID.replace(":id", supplierId)}${this.getQueryString()}`,
 			);
 			return response.data;

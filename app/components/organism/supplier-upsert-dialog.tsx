@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
 import { Createsupplierschema, type Createsupplier, type supplier } from "~/zod/supplier.zod";
-import { useCreatesupplier, useUpdatesupplier, useGetsupplierById } from "~/hooks/use-supplier";
+import { useCreateSupplier, useGetSupplierById, useUpdateSupplier } from "~/hooks/use-supplier";
 
 interface supplierUpsertDialogProps {
 	open: boolean;
@@ -30,12 +30,19 @@ interface supplierUpsertDialogProps {
 	supplierId?: string | null;
 }
 
-export function supplierUpsertDialog({ open, onOpenChange, supplierId }: supplierUpsertDialogProps) {
+export function SupplierUpsertDialog({
+	open,
+	onOpenChange,
+	supplierId,
+}: supplierUpsertDialogProps) {
 	const isEditMode = !!supplierId;
 
-	const { data: supplierData, isLoading: isLoadingsupplier } = useGetsupplierById(supplierId || "", {});
-	const createsupplier = useCreatesupplier();
-	const updatesupplier = useUpdatesupplier();
+	const { data: supplierData, isLoading: isLoadingsupplier } = useGetSupplierById(
+		supplierId || "",
+		{},
+	);
+	const createsupplier = useCreateSupplier();
+	const updatesupplier = useUpdateSupplier();
 
 	const form = useForm<Createsupplier>({
 		resolver: zodResolver(Createsupplierschema),
@@ -290,4 +297,3 @@ export function supplierUpsertDialog({ open, onOpenChange, supplierId }: supplie
 		</Dialog>
 	);
 }
-

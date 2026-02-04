@@ -11,9 +11,9 @@ import {
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Plus, MoreHorizontal, Store, Loader2, Mail, Phone, User, Calendar } from "lucide-react";
-import { supplierUpsertDialog } from "~/components/organism/supplier-upsert-dialog";
-import { useGetsuppliers, useDeletesupplier } from "~/hooks/use-supplier";
+import { SupplierUpsertDialog } from "~/components/organism/supplier-upsert-dialog";
 import { useApiParams } from "~/hooks/util-hooks/use-api-params";
+import { useDeleteSupplier, useGetSuppliers } from "~/hooks/use-supplier";
 
 export default function AdminsuppliersPage() {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -23,8 +23,8 @@ export default function AdminsuppliersPage() {
 		limit: 100,
 	});
 
-	const { data: suppliersResponse, isLoading, isError } = useGetsuppliers(apiParams);
-	const deletesupplier = useDeletesupplier();
+	const { data: suppliersResponse, isLoading, isError } = useGetSuppliers(apiParams);
+	const deletesupplier = useDeleteSupplier();
 
 	const suppliers = suppliersResponse?.suppliers || [];
 
@@ -48,7 +48,7 @@ export default function AdminsuppliersPage() {
 		<div className="space-y-6">
 			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 				<div>
-					<h1 className="text-3xl font-bold tracking-tight">suppliers</h1>
+					<h1 className="text-3xl font-bold tracking-tight">Suppliers</h1>
 					<p className="text-muted-foreground">
 						Manage your supplier partnerships and listings.
 					</p>
@@ -207,7 +207,7 @@ export default function AdminsuppliersPage() {
 				</div>
 			)}
 
-			<supplierUpsertDialog
+			<SupplierUpsertDialog
 				open={isDialogOpen}
 				onOpenChange={setIsDialogOpen}
 				supplierId={selectedsupplierId}

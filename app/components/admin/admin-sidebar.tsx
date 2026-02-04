@@ -25,7 +25,7 @@ const navItems = [
 	{ href: "/admin/organizations", icon: Users, label: "Organizations" },
 	{ href: "/admin/orders", icon: ShoppingCart, label: "Orders", count: 12 },
 	{ href: "/admin/products", icon: Package, label: "Products", count: 5 },
-	{ href: "/admin/suppliers", icon: Store, label: "suppliers" },
+	{ href: "/admin/suppliers", icon: Store, label: "Suppliers" },
 	{ href: "/admin/employees", icon: Users, label: "Employees" },
 	{ href: "/admin/reports", icon: PieChart, label: "Reports" },
 	{ href: "/admin/settings", icon: Settings, label: "Settings" },
