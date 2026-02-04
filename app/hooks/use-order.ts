@@ -4,7 +4,7 @@ import type { ApiQueryParams } from "~/services/api-service";
 import type { CreateOrder, UpdateOrder } from "~/zod/order.zod";
 import { queryClient } from "~/lib/query-client";
 
-export const useGetOrders = (apiParams?: ApiQueryParams) => {
+export const useGetOrders = (apiParams?: ApiQueryParams, options?: { enabled?: boolean }) => {
 	return useQuery({
 		queryKey: ["orders", apiParams],
 		queryFn: () => {
@@ -19,6 +19,7 @@ export const useGetOrders = (apiParams?: ApiQueryParams) => {
 				.pagination(apiParams?.pagination ?? true)
 				.getAllOrders();
 		},
+		enabled: options?.enabled,
 	});
 };
 

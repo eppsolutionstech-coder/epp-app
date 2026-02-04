@@ -107,11 +107,13 @@ const columns: DataTableColumn<OrderWithRelation>[] = [
 
 export default function FinancerApplications() {
 	const { user } = useAuth();
-	const { data: orders, isLoading } = useGetOrders({
-		fields: "id, orderNumber, userId, status, orderDate, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, approvals.id, approvals.approverId, approvals.approverEmail",
-		// filter: `approvals.approverId=${user?.id}`,
-		filter: `approvals.approverId=6969ceb5a1037f2809f62ce7`,
-	});
+	const { data: orders, isLoading } = useGetOrders(
+		{
+			fields: "id, orderNumber, userId, status, orderDate, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, approvals.id, approvals.approverId, approvals.approverEmail",
+			filter: `approvals.approverId=${user?.id}`,
+		},
+		{ enabled: !!user?.id },
+	);
 
 	return (
 		<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">

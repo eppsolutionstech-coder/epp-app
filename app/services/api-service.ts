@@ -142,9 +142,9 @@ export abstract class APIService {
 			.map((f) => {
 				if (!f || f.trim() === "") return null;
 
-				// Find the operator (>=, <=, :, !, ^, $, ~, >, <)
+				// Find the operator (>=, <=, :, !, ^, $, ~, >, <, =)
 				// Order matters: longer operators first to avoid partial matches (e.g. > matching >=)
-				const operatorMatch = f.match(/(>=|<=|:|!|\^|\$|~|>|<)/);
+				const operatorMatch = f.match(/(>=|<=|:|!|\^|\$|~|>|<|=)/);
 				if (!operatorMatch) return null;
 
 				const operator = operatorMatch[0];

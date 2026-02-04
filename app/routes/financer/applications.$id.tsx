@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { MOCK_LOAN_APPLICATIONS } from "~/data/mock-financer-data";
 import {
 	ArrowLeft,
 	User,
@@ -16,20 +15,40 @@ import {
 	XCircle,
 	Clock,
 	AlertCircle,
+	Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useGetOrderById } from "~/hooks/use-order";
 
 export default function ApplicationDetail() {
 	const { id } = useParams();
-	const initialApplication = MOCK_LOAN_APPLICATIONS.find((app) => app.id === id);
 
-	// Local state to simulate status changes
-	const [status, setStatus] = useState<string>(initialApplication?.status || "pending");
-	const [reviewDate, setReviewDate] = useState<string | null>(
-		initialApplication?.reviewedDate || null,
-	);
+	const { data: orderResponse, isLoading } = useGetOrderById(id!, {
+		fields: "id, orderNumber, userId, status, orderDate, updatedAt, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.name, orderItems.item.sku, orderItems.item.images, approvals",
+	});
 
-	if (!initialApplication) {
+	const application = orderResponse as any;
+
+	// Local state to simulate status changes - initialized when data loads
+	const [status, setStatus] = useState<string>("PENDING_APPROVAL");
+	const [reviewDate, setReviewDate] = useState<string | null>(null);
+
+	// Sync status when data loads
+	useEffect(() => {
+		if (application?.status) {
+			setStatus(application.status);
+		}
+	}, [application?.status]);
+
+	if (isLoading) {
+		return (
+			<div className="flex h-96 items-center justify-center">
+				<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+			</div>
+		);
+	}
+
+	if (!application) {
 		return (
 			<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
 				<Button variant="ghost" asChild>
@@ -52,25 +71,26 @@ export default function ApplicationDetail() {
 
 	const getStatusBadge = (currentStatus: string) => {
 		switch (currentStatus) {
-			case "pending":
+			case "PENDING_APPROVAL":
+			case "PENDING":
 				return (
 					<Badge variant="secondary" className="text-base px-3 py-1">
 						Pending
 					</Badge>
 				);
-			case "under_review":
+			case "UNDER_REVIEW":
 				return (
 					<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 text-base px-3 py-1">
 						Under Review
 					</Badge>
 				);
-			case "approved":
+			case "APPROVED":
 				return (
 					<Badge className="bg-green-100 text-green-700 hover:bg-green-100 text-base px-3 py-1">
 						Approved
 					</Badge>
 				);
-			case "rejected":
+			case "REJECTED":
 				return (
 					<Badge variant="destructive" className="text-base px-3 py-1">
 						Rejected
@@ -81,9 +101,9 @@ export default function ApplicationDetail() {
 		}
 	};
 
-	const handleAction = (newStatus: "approved" | "rejected" | "under_review") => {
+	const handleAction = (newStatus: "APPROVED" | "REJECTED" | "UNDER_REVIEW") => {
 		setStatus(newStatus);
-		if (newStatus === "approved" || newStatus === "rejected") {
+		if (newStatus === "APPROVED" || newStatus === "REJECTED") {
 			setReviewDate(
 				new Date().toLocaleDateString("en-US", {
 					year: "numeric",
@@ -94,7 +114,16 @@ export default function ApplicationDetail() {
 		}
 	};
 
-	const canReview = status === "pending" || status === "under_review";
+	const canReview =
+		status === "PENDING_APPROVAL" || status === "PENDING" || status === "UNDER_REVIEW";
+
+	// Helper to get customer name
+	const getCustomerName = () => {
+		if (application.user?.firstName && application.user?.lastName) {
+			return `${application.user.firstName} ${application.user.lastName}`;
+		}
+		return application.user?.username || application.userId || "Unknown Customer";
+	};
 
 	return (
 		<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -113,10 +142,10 @@ export default function ApplicationDetail() {
 
 			<div>
 				<h1 className="text-4xl font-bold tracking-tight mb-1">
-					Application {initialApplication.id}
+					Application {application.orderNumber || application.id}
 				</h1>
 				<p className="text-muted-foreground">
-					Submitted on {initialApplication.appliedDate}
+					Submitted on {new Date(application.orderDate).toLocaleDateString()}
 				</p>
 			</div>
 
@@ -137,11 +166,10 @@ export default function ApplicationDetail() {
 							</div>
 							<div>
 								<p className="text-lg font-bold text-foreground">
-									{initialApplication.customerName}
+									{getCustomerName()}
 								</p>
 								<Badge variant="outline" className="mt-1">
-									{initialApplication.customerType.charAt(0).toUpperCase() +
-										initialApplication.customerType.slice(1)}
+									Regular Customer
 								</Badge>
 							</div>
 						</div>
@@ -152,7 +180,7 @@ export default function ApplicationDetail() {
 									<Mail className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
 								</div>
 								<span className="font-medium">
-									{initialApplication.customerEmail}
+									{application.user?.email || "No email"}
 								</span>
 							</div>
 							<div className="flex items-center gap-3 text-sm group">
@@ -161,22 +189,16 @@ export default function ApplicationDetail() {
 								</div>
 								<span>
 									Credit Score:{" "}
-									<span
-										className={cn(
-											"font-bold",
-											(initialApplication.creditScore || 0) > 700
-												? "text-green-600"
-												: "text-amber-600",
-										)}>
-										{initialApplication.creditScore || "N/A"}
-									</span>
+									<span className="font-bold text-amber-600">N/A</span>
 								</span>
 							</div>
 							<div className="flex items-center gap-3 text-sm group">
 								<div className="p-2 rounded-full bg-muted group-hover:bg-primary/10 transition-colors">
 									<Calendar className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
 								</div>
-								<span>Applied: {initialApplication.appliedDate}</span>
+								<span>
+									Applied: {new Date(application.orderDate).toLocaleDateString()}
+								</span>
 							</div>
 						</div>
 					</CardContent>
@@ -192,26 +214,40 @@ export default function ApplicationDetail() {
 						</CardTitle>
 					</CardHeader>
 					<CardContent className="space-y-6">
-						<div className="flex items-center gap-4">
-							{initialApplication.productImage ? (
-								<img
-									src={initialApplication.productImage}
-									alt={initialApplication.productName}
-									className="h-20 w-20 rounded-xl object-cover shadow-sm border"
-								/>
-							) : (
-								<div className="h-20 w-20 rounded-xl bg-muted flex items-center justify-center">
-									<FileText className="h-8 w-8 text-muted-foreground" />
-								</div>
-							)}
-							<div>
-								<p className="font-bold text-lg">
-									{initialApplication.productName}
-								</p>
-								<p className="text-sm text-muted-foreground">
-									Product to be financed
-								</p>
-							</div>
+						<div className="space-y-4">
+							{application.orderItems?.map((orderItem: any) => {
+								const item = orderItem.item;
+								const imageUrl = item?.images?.[0]?.url;
+
+								return (
+									<div key={orderItem.id} className="flex items-center gap-4">
+										{imageUrl ? (
+											<img
+												src={imageUrl}
+												alt={item?.name || "Product"}
+												className="h-20 w-20 min-w-20 rounded-xl object-cover shadow-sm border"
+											/>
+										) : (
+											<div className="h-20 w-20 min-w-20 rounded-xl bg-muted flex items-center justify-center">
+												<FileText className="h-8 w-8 text-muted-foreground" />
+											</div>
+										)}
+										<div>
+											<p className="font-bold text-lg leading-tight mb-1">
+												{item?.name || "Unknown Product"}
+											</p>
+											<div className="text-sm text-muted-foreground flex flex-wrap gap-x-2">
+												<span>Qty: {orderItem.quantity}</span>
+												<span>•</span>
+												<span>
+													Price: ₱
+													{(orderItem.unitPrice || 0).toLocaleString()}
+												</span>
+											</div>
+										</div>
+									</div>
+								);
+							})}
 						</div>
 						<Separator />
 						<div className="grid grid-cols-2 gap-6">
@@ -220,7 +256,7 @@ export default function ApplicationDetail() {
 									Requested Amount
 								</p>
 								<p className="text-2xl font-bold tracking-tight text-primary">
-									₱{initialApplication.requestedAmount.toLocaleString()}
+									₱{(application.subtotal || 0).toLocaleString()}
 								</p>
 							</div>
 							<div className="space-y-1">
@@ -228,7 +264,11 @@ export default function ApplicationDetail() {
 									Monthly Payment
 								</p>
 								<p className="text-2xl font-bold tracking-tight">
-									₱{initialApplication.monthlyPayment.toFixed(2)}
+									₱
+									{(application.installmentAmount || 0).toLocaleString(
+										undefined,
+										{ minimumFractionDigits: 2, maximumFractionDigits: 2 },
+									)}
 								</p>
 							</div>
 							<div className="space-y-1">
@@ -236,7 +276,7 @@ export default function ApplicationDetail() {
 									Interest Rate
 								</p>
 								<p className="text-lg font-semibold">
-									{initialApplication.interestRate}%
+									0% {/* Hardcoded for now as it's not in schema */}
 								</p>
 							</div>
 							<div className="space-y-1">
@@ -244,7 +284,7 @@ export default function ApplicationDetail() {
 									Loan Term
 								</p>
 								<p className="text-lg font-semibold">
-									{initialApplication.requestedTerm} months
+									{application.installmentMonths || 0} months
 								</p>
 							</div>
 						</div>
@@ -252,14 +292,14 @@ export default function ApplicationDetail() {
 				</Card>
 			</div>
 
-			{initialApplication.notes && (
+			{application.notes && (
 				<Card className="shadow-md border-border/50">
 					<CardHeader>
 						<CardTitle className="text-lg font-semibold">Notes</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<p className="text-sm text-muted-foreground bg-muted/30 p-4 rounded-lg italic">
-							"{initialApplication.notes}"
+							"{application.notes}"
 						</p>
 					</CardContent>
 				</Card>
@@ -281,21 +321,21 @@ export default function ApplicationDetail() {
 						<CardContent>
 							<div className="flex flex-wrap gap-4">
 								<Button
-									onClick={() => handleAction("approved")}
+									onClick={() => handleAction("APPROVED")}
 									className="bg-green-600 hover:bg-green-700 text-white shadow-sm hover:shadow-md transition-all duration-200">
 									<CheckCircle className="h-4 w-4 mr-2" />
 									Approve Application
 								</Button>
 								<Button
-									onClick={() => handleAction("rejected")}
+									onClick={() => handleAction("REJECTED")}
 									variant="destructive"
 									className="shadow-sm hover:shadow-md transition-all duration-200">
 									<XCircle className="h-4 w-4 mr-2" />
 									Reject Application
 								</Button>
-								{status === "pending" && (
+								{(status === "PENDING_APPROVAL" || status === "PENDING") && (
 									<Button
-										onClick={() => handleAction("under_review")}
+										onClick={() => handleAction("UNDER_REVIEW")}
 										variant="outline"
 										className="hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200 transition-all duration-200">
 										<Clock className="h-4 w-4 mr-2" />
@@ -307,11 +347,11 @@ export default function ApplicationDetail() {
 					</Card>
 				)}
 
-				{reviewDate && (
+				{(reviewDate || status === "APPROVED" || status === "REJECTED") && (
 					<Card
 						className={cn(
 							"md:col-span-3 shadow-md border-border/50 border-t-4",
-							status === "approved" ? "border-t-green-500" : "border-t-red-500",
+							status === "APPROVED" ? "border-t-green-500" : "border-t-red-500",
 						)}>
 						<CardHeader>
 							<CardTitle>Review History</CardTitle>
@@ -320,9 +360,9 @@ export default function ApplicationDetail() {
 							<div className="flex items-center gap-4 animate-in zoom-in-95 duration-300">
 								<div
 									className={`h-12 w-12 rounded-full flex items-center justify-center shadow-sm ${
-										status === "approved" ? "bg-green-100" : "bg-red-100"
+										status === "APPROVED" ? "bg-green-100" : "bg-red-100"
 									}`}>
-									{status === "approved" ? (
+									{status === "APPROVED" ? (
 										<CheckCircle className="h-6 w-6 text-green-600" />
 									) : (
 										<XCircle className="h-6 w-6 text-red-600" />
@@ -331,10 +371,12 @@ export default function ApplicationDetail() {
 								<div>
 									<p className="font-bold text-lg">
 										Application{" "}
-										{status === "approved" ? "Approved" : "Rejected"}
+										{status === "APPROVED" ? "Approved" : "Rejected"}
 									</p>
 									<p className="text-sm text-muted-foreground">
-										Action taken on {reviewDate}
+										Action taken on{" "}
+										{reviewDate ||
+											new Date(application.updatedAt).toLocaleDateString()}
 									</p>
 								</div>
 							</div>
