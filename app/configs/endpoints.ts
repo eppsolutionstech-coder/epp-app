@@ -86,11 +86,11 @@
 	},
 
 	WORKFLOW_APPROVAL_TYPE: {
-		GET_ALL: "/workflowapprovalType",
-		GET_BY_ID: "/workflowapprovalType/:id",
-		CREATE: "/workflowapprovalType",
-		UPDATE: "/workflowapprovalType/:id",
-		DELETE: "/workflowapprovalType/:id", // Soft delete
+		GET_ALL: "/workflowapprovalLevel",
+		GET_BY_ID: "/workflowapprovalLevel/:id",
+		CREATE: "/workflowapprovalLevel",
+		UPDATE: "/workflowapprovalLevel/:id",
+		DELETE: "/workflowapprovalLevel/:id", // Soft delete
 	},
 
 	FINANCIER_CONFIG: {

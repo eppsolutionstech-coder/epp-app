@@ -38,12 +38,12 @@ class ApprovalTypeService extends APIService {
 		try {
 			let response;
 			if (data instanceof FormData) {
-				response = await apiClient.putFormData(
+				response = await apiClient.patchFormData(
 					`${APPROVAL_TYPE.UPDATE.replace(":id", id)}`,
 					data,
 				);
 			} else {
-				response = await apiClient.put(`${APPROVAL_TYPE.UPDATE.replace(":id", id)}`, data);
+				response = await apiClient.patch(`${APPROVAL_TYPE.UPDATE.replace(":id", id)}`, data);
 			}
 			return response.data;
 		} catch (error: any) {
