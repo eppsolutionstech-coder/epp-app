@@ -3,11 +3,11 @@ import { ChevronRight } from "lucide-react";
 import { ProductCard } from "~/components/molecule/product-card";
 import type { supplierWithRelations } from "~/zod/supplier.zod";
 
-interface supplierProductListProps {
+interface SupplierProductListProps {
 	suppliers: supplierWithRelations[];
 }
 
-export function supplierProductList({ suppliers }: supplierProductListProps) {
+export function SupplierProductList({ suppliers }: SupplierProductListProps) {
 	// Filter suppliers that actually have items
 	const suppliersWithItems = suppliers.filter((supplier) => supplier.items && supplier.items.length > 0);
 

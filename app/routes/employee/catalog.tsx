@@ -15,10 +15,10 @@ import { ProductCard } from "~/components/molecule/product-card";
 import { CatalogSidebar } from "~/components/employee/catalog-sidebar";
 import { useGetItems } from "~/hooks/use-item";
 import { useGetCategories } from "~/hooks/use-category";
-import { useGetsuppliers } from "~/hooks/use-supplier";
 import { useApiParams } from "~/hooks/util-hooks/use-api-params";
 import type { Category } from "~/zod/category.zod";
 import type { supplier } from "~/zod/supplier.zod";
+import { useGetSuppliers } from "~/hooks/use-supplier";
 
 export default function EmployeeCatalog() {
 	const [categoryFilter, setCategoryFilter] = useState<string>("all");
@@ -59,7 +59,7 @@ export default function EmployeeCatalog() {
 	const categories: Category[] = categoriesResponse?.categorys || [];
 
 	// Fetch suppliers for filter
-	const { data: suppliersResponse } = useGetsuppliers({
+	const { data: suppliersResponse } = useGetSuppliers({
 		limit: 100,
 		fields: "id, name",
 	});

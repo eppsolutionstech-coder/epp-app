@@ -5,11 +5,11 @@ import { PAGE_TITLES } from "~/config/page-titles";
 import { CatalogHero } from "~/components/employee/catalog-hero";
 import { CategorySection } from "~/components/employee/category-section";
 import { PartnerBrandsSection } from "~/components/employee/partner-brands-section";
-import { supplierProductList } from "~/components/employee/supplier-product-list";
 import type { Route } from "./+types/landing";
-import { useGetsuppliers } from "~/hooks/use-supplier";
 
 import { LoanTypesSection } from "~/components/employee/loan-types-section";
+import { useGetSuppliers } from "~/hooks/use-supplier";
+import { SupplierProductList } from "~/components/employee/supplier-product-list";
 
 export function meta({}: Route.MetaArgs) {
 	return [{ title: PAGE_TITLES.landing }];
@@ -19,7 +19,7 @@ export default function LandingPage() {
 	const navigate = useNavigate();
 	const { user } = useAuth();
 	// Fetch suppliers for filter
-	const { data: suppliersResponse } = useGetsuppliers({
+	const { data: suppliersResponse } = useGetSuppliers({
 		limit: 10,
 		fields: "id, name, items",
 	});
@@ -31,7 +31,7 @@ export default function LandingPage() {
 			<CatalogHero />
 			<CategorySection />
 			<PartnerBrandsSection />
-			<supplierProductList suppliers={suppliers} />
+			<SupplierProductList suppliers={suppliers} />
 			<LoanTypesSection />
 		</div>
 	);

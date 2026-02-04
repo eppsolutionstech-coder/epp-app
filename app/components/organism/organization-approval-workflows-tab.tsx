@@ -115,10 +115,10 @@ export function OrganizationApprovalWorkflowsTab() {
 												</div>
 												<div className="font-medium font-mono">
 													{workflow.minOrderAmount
-														? `â‚±${Number(
+														? `${Number(
 																workflow.minOrderAmount,
 															).toLocaleString()}`
-														: "â€”"}
+														: "-"}
 												</div>
 											</div>
 											<div>
@@ -127,10 +127,10 @@ export function OrganizationApprovalWorkflowsTab() {
 												</div>
 												<div className="font-medium font-mono">
 													{workflow.maxOrderAmount
-														? `â‚±${Number(
+														? `${Number(
 																workflow.maxOrderAmount,
 															).toLocaleString()}`
-														: "â€”"}
+														: "-"}
 												</div>
 											</div>
 										</div>
