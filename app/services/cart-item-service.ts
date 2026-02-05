@@ -80,7 +80,10 @@ class CartItemService extends APIService {
 			return response.data;
 		} catch (error: any) {
 			throw new Error(
-				error.data?.errors?.[0]?.message || error.message || "An error has occurred",
+				error.data?.message ||
+					error.data?.errors?.[0]?.message ||
+					error.message ||
+					"An error has occurred",
 			);
 		}
 	};

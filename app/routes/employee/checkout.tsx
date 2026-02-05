@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation, useSearchParams } from "react-router";
+import { toast } from "sonner";
 import {
 	CheckoutEmpty,
 	CheckoutHeader,
@@ -84,7 +85,7 @@ export default function CheckoutPage() {
 			},
 			onError: (error: any) => {
 				console.error("Failed to create order:", error);
-				// TODO: Show error toast/notification
+				toast.error(error.message || "Failed to create order. Please try again.");
 			},
 		};
 

@@ -24,7 +24,7 @@ export default function ApplicationDetail() {
 	const { id } = useParams();
 
 	const { data: orderResponse, isLoading } = useGetOrderById(id!, {
-		fields: "id, orderNumber, userId, status, orderDate, updatedAt, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.name, orderItems.item.sku, orderItems.item.images, approvals",
+		fields: "id, orderNumber, userId, status, orderDate, updatedAt, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.name, orderItems.item.sku, orderItems.item.images, approvals.id, approvals.approvalLevel, approvals.approverRole, approvals.approverId, approvals.approverName, approvals.approverEmail, approvals.status",
 	});
 
 	const application = orderResponse as any;

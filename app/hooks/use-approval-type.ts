@@ -25,6 +25,8 @@ export const useCreateApprovalType = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["approval-types"] });
+			queryClient.invalidateQueries({ queryKey: ["approval-workflows"] });
+			queryClient.invalidateQueries({ queryKey: ["approval-workflows-by-id"] });
 		},
 	});
 };
@@ -36,6 +38,8 @@ export const useUpdateApprovalType = () => {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["approval-types"] });
+			queryClient.invalidateQueries({ queryKey: ["approval-workflows"] });
+			queryClient.invalidateQueries({ queryKey: ["approval-workflows-by-id"] });
 		},
 	});
 };
