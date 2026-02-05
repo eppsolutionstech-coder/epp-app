@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router";
+import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +20,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useGetOrderById } from "~/hooks/use-order";
+import { useUpdateOrderApproval } from "~/hooks/use-order-approval";
+import { queryClient } from "~/lib/query-client";
 
 export default function ApplicationDetail() {
 	const { id } = useParams();
@@ -26,6 +29,8 @@ export default function ApplicationDetail() {
 	const { data: orderResponse, isLoading } = useGetOrderById(id!, {
 		fields: "id, orderNumber, userId, status, orderDate, updatedAt, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.name, orderItems.item.sku, orderItems.item.images, approvals.id, approvals.approvalLevel, approvals.approverRole, approvals.approverId, approvals.approverName, approvals.approverEmail, approvals.status",
 	});
+
+	const { mutate: updateApproval, isPending: isUpdatingApproval } = useUpdateOrderApproval();
 
 	const application = orderResponse as any;
 
@@ -78,12 +83,7 @@ export default function ApplicationDetail() {
 						Pending
 					</Badge>
 				);
-			case "UNDER_REVIEW":
-				return (
-					<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 text-base px-3 py-1">
-						Under Review
-					</Badge>
-				);
+
 			case "APPROVED":
 				return (
 					<Badge className="bg-green-100 text-green-700 hover:bg-green-100 text-base px-3 py-1">
@@ -101,21 +101,54 @@ export default function ApplicationDetail() {
 		}
 	};
 
-	const handleAction = (newStatus: "APPROVED" | "REJECTED" | "UNDER_REVIEW") => {
-		setStatus(newStatus);
-		if (newStatus === "APPROVED" || newStatus === "REJECTED") {
-			setReviewDate(
-				new Date().toLocaleDateString("en-US", {
-					year: "numeric",
-					month: "long",
-					day: "numeric",
-				}),
-			);
+	const handleAction = (newStatus: "APPROVED" | "REJECTED") => {
+		// Find the first pending approval to update
+		const pendingApproval = application?.approvals?.find(
+			(approval: any) => approval.status === "PENDING",
+		);
+
+		if (!pendingApproval) {
+			toast.error("No pending approval found to update.");
+			return;
 		}
+
+		const now = new Date().toISOString();
+
+		updateApproval(
+			{
+				orderApprovalId: pendingApproval.id,
+				data: {
+					status: newStatus,
+					approvedAt:
+						newStatus === "APPROVED" || newStatus === "REJECTED" ? now : undefined,
+				},
+			},
+			{
+				onSuccess: () => {
+					setStatus(newStatus);
+					if (newStatus === "APPROVED" || newStatus === "REJECTED") {
+						setReviewDate(
+							new Date().toLocaleDateString("en-US", {
+								year: "numeric",
+								month: "long",
+								day: "numeric",
+							}),
+						);
+					}
+					toast.success(`Application ${newStatus.toLowerCase()} successfully`);
+					// Invalidate the order query to refetch updated data
+					queryClient.invalidateQueries({ queryKey: ["order-by-id", id] });
+				},
+				onError: (error) => {
+					toast.error(
+						error.message || `Failed to ${newStatus.toLowerCase()} application`,
+					);
+				},
+			},
+		);
 	};
 
-	const canReview =
-		status === "PENDING_APPROVAL" || status === "PENDING" || status === "UNDER_REVIEW";
+	const canReview = status === "PENDING_APPROVAL" || status === "PENDING";
 
 	// Helper to get customer name
 	const getCustomerName = () => {
@@ -322,26 +355,27 @@ export default function ApplicationDetail() {
 							<div className="flex flex-wrap gap-4">
 								<Button
 									onClick={() => handleAction("APPROVED")}
+									disabled={isUpdatingApproval}
 									className="bg-green-600 hover:bg-green-700 text-white shadow-sm hover:shadow-md transition-all duration-200">
-									<CheckCircle className="h-4 w-4 mr-2" />
+									{isUpdatingApproval ? (
+										<Loader2 className="h-4 w-4 mr-2 animate-spin" />
+									) : (
+										<CheckCircle className="h-4 w-4 mr-2" />
+									)}
 									Approve Application
 								</Button>
 								<Button
 									onClick={() => handleAction("REJECTED")}
 									variant="destructive"
+									disabled={isUpdatingApproval}
 									className="shadow-sm hover:shadow-md transition-all duration-200">
-									<XCircle className="h-4 w-4 mr-2" />
+									{isUpdatingApproval ? (
+										<Loader2 className="h-4 w-4 mr-2 animate-spin" />
+									) : (
+										<XCircle className="h-4 w-4 mr-2" />
+									)}
 									Reject Application
 								</Button>
-								{(status === "PENDING_APPROVAL" || status === "PENDING") && (
-									<Button
-										onClick={() => handleAction("UNDER_REVIEW")}
-										variant="outline"
-										className="hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200 transition-all duration-200">
-										<Clock className="h-4 w-4 mr-2" />
-										Mark Under Review
-									</Button>
-								)}
 							</div>
 						</CardContent>
 					</Card>

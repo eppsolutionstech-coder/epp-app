@@ -1,5 +1,5 @@
 ﻿import { useState } from "react";
-import { Plus, Layers, Settings } from "lucide-react";
+import { Plus, Layers, Settings, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -18,8 +18,26 @@ export function OrganizationApprovalWorkflowsTab() {
 
 	const workflows = data?.approvalWorkflows || [];
 	const [editingWorkflow, setEditingWorkflow] = useState<ApprovalWorkflow | null>(null);
-	const [isCreateWorkflowOpen, setIsCreateWorkflowOpen] = useState(false);
+	const [isWorkflowDialogOpen, setIsWorkflowDialogOpen] = useState(false);
+	const [editingWorkflowId, setEditingWorkflowId] = useState<string | null>(null);
 	const [isManageLevelsOpen, setIsManageLevelsOpen] = useState(false);
+
+	const handleOpenCreateDialog = () => {
+		setEditingWorkflowId(null);
+		setIsWorkflowDialogOpen(true);
+	};
+
+	const handleOpenEditDialog = (workflowId: string) => {
+		setEditingWorkflowId(workflowId);
+		setIsWorkflowDialogOpen(true);
+	};
+
+	const handleCloseWorkflowDialog = (open: boolean) => {
+		setIsWorkflowDialogOpen(open);
+		if (!open) {
+			setEditingWorkflowId(null);
+		}
+	};
 
 	return (
 		<>
@@ -45,7 +63,7 @@ export function OrganizationApprovalWorkflowsTab() {
 								<Settings className="mr-2 h-4 w-4" />
 								Manage Levels
 							</Button>
-							<Button size="sm" onClick={() => setIsCreateWorkflowOpen(true)}>
+							<Button size="sm" onClick={handleOpenCreateDialog}>
 								<Plus className="mr-2 h-4 w-4" />
 								Add Workflow
 							</Button>
@@ -72,10 +90,7 @@ export function OrganizationApprovalWorkflowsTab() {
 							<div className="text-muted-foreground mb-4">
 								No approval workflows found.
 							</div>
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={() => setIsCreateWorkflowOpen(true)}>
+							<Button variant="outline" size="sm" onClick={handleOpenCreateDialog}>
 								<Plus className="mr-2 h-4 w-4" />
 								Create your first workflow
 							</Button>
@@ -151,14 +166,26 @@ export function OrganizationApprovalWorkflowsTab() {
 												Created:{" "}
 												{new Date(workflow.createdAt).toLocaleDateString()}
 											</span>
-											<Button
-												variant="ghost"
-												size="sm"
-												className="h-7 px-2"
-												onClick={() => setEditingWorkflow(workflow)}>
-												<Layers className="mr-1.5 h-3.5 w-3.5" />
-												Levels
-											</Button>
+											<div className="flex items-center gap-1">
+												<Button
+													variant="ghost"
+													size="sm"
+													className="h-7 px-2"
+													onClick={() =>
+														handleOpenEditDialog(workflow.id)
+													}>
+													<Pencil className="mr-1.5 h-3.5 w-3.5" />
+													Edit
+												</Button>
+												<Button
+													variant="ghost"
+													size="sm"
+													className="h-7 px-2"
+													onClick={() => setEditingWorkflow(workflow)}>
+													<Layers className="mr-1.5 h-3.5 w-3.5" />
+													Levels
+												</Button>
+											</div>
 										</div>
 									</CardContent>
 								</Card>
@@ -174,8 +201,9 @@ export function OrganizationApprovalWorkflowsTab() {
 				onOpenChange={(open) => !open && setEditingWorkflow(null)}
 			/>
 			<CreateApprovalWorkflowDialog
-				open={isCreateWorkflowOpen}
-				onOpenChange={setIsCreateWorkflowOpen}
+				open={isWorkflowDialogOpen}
+				onOpenChange={handleCloseWorkflowDialog}
+				workflowId={editingWorkflowId}
 			/>
 			<ManageApprovalTypesDialog
 				open={isManageLevelsOpen}

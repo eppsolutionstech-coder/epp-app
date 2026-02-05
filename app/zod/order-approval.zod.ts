@@ -77,4 +77,3 @@ export type GetAllOrderApprovals = {
 	pagination: Pagination;
 	count: number;
 };
-
