@@ -1,6 +1,7 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Printer, Loader2 } from "lucide-react";
+import { ArrowLeft, FileText, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useGetOrderById } from "~/hooks/use-order";
 
@@ -11,13 +12,15 @@ import { PaymentDetailsCard } from "@/components/organism/order/payment-details-
 import { OrderStatusCard } from "@/components/organism/order/order-status-card";
 import { OrderApprovalsCard } from "@/components/organism/order/order-approvals-card";
 import { OrderTimeline } from "@/components/organism/order/order-timeline";
+import { PurchaseOrderModal } from "@/components/organism/order/purchase-order-modal";
 
 export default function AdminOrderDetailsPage() {
 	const { id } = useParams();
+	const [isPOModalOpen, setIsPOModalOpen] = useState(false);
 
 	// Cast to any to handle relations not in the base Zod schema
 	const { data: orderResponse, isLoading } = useGetOrderById(id!, {
-		fields: "id, orderNumber, userId, status, orderDate, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.name, orderItems.item.sku, orderItems.item.images, approvals.id, approvals.approvalLevel, approvals.approverRole, approvals.approverId, approvals.approverName, approvals.approverEmail, approvals.status",
+		fields: "id, orderNumber, userId, status, orderDate, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.name, orderItems.item.sku, orderItems.item.images, approvals.id, approvals.approvalLevel, approvals.approverRole, approvals.approverId, approvals.approverName, approvals.approverEmail, approvals.status, purchaseOrders",
 	});
 
 	const order = orderResponse as any;
@@ -88,9 +91,12 @@ export default function AdminOrderDetailsPage() {
 				</div>
 			</div>
 			<div className="flex items-center gap-2">
-				<Button variant="outline" className="gap-2 rounded-full h-9">
-					<Printer className="h-4 w-4" />
-					Print Slip
+				<Button
+					variant="outline"
+					className="gap-2 rounded-full h-9"
+					onClick={() => setIsPOModalOpen(true)}>
+					<FileText className="h-4 w-4" />
+					View Purchase Order
 				</Button>
 			</div>
 		</div>
@@ -99,6 +105,7 @@ export default function AdminOrderDetailsPage() {
 	return (
 		<div className="max-w-7xl mx-auto space-y-6">
 			<PageHeader />
+			<PurchaseOrderModal open={isPOModalOpen} onOpenChange={setIsPOModalOpen} />
 
 			<div className="grid grid-cols-1 md:grid-cols-12 gap-4">
 				{/* MAIN CONTENT - Left Side (8 cols) */}
