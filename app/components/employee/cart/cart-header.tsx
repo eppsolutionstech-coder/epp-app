@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
@@ -7,12 +7,16 @@ interface CartHeaderProps {
 }
 
 export function CartHeader({ totalItemCount }: CartHeaderProps) {
+	const navigate = useNavigate();
+
 	return (
 		<div className="flex items-center gap-4">
-			<Button variant="ghost" size="icon" className="rounded-full" asChild>
-				<Link to="/employee">
-					<ArrowLeft className="h-5 w-5" />
-				</Link>
+			<Button
+				variant="ghost"
+				size="icon"
+				className="rounded-full"
+				onClick={() => navigate(-1)}>
+				<ArrowLeft className="h-5 w-5" />
 			</Button>
 			<div>
 				<h1 className="text-2xl font-semibold tracking-tight">Shopping Cart</h1>

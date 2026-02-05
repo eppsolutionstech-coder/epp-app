@@ -9,7 +9,7 @@ import { OrderItemsList } from "@/components/organism/order/order-items-list";
 import { CustomerDetailsCard } from "@/components/organism/order/customer-details-card";
 import { PaymentDetailsCard } from "@/components/organism/order/payment-details-card";
 import { OrderStatusCard } from "@/components/organism/order/order-status-card";
-import { OrderActionsCard } from "@/components/organism/order/order-actions-card";
+import { OrderApprovalsCard } from "@/components/organism/order/order-approvals-card";
 import { OrderTimeline } from "@/components/organism/order/order-timeline";
 
 export default function AdminOrderDetailsPage() {
@@ -17,7 +17,7 @@ export default function AdminOrderDetailsPage() {
 
 	// Cast to any to handle relations not in the base Zod schema
 	const { data: orderResponse, isLoading } = useGetOrderById(id!, {
-		fields: "id, orderNumber, userId, status, orderDate, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.name, orderItems.item.sku, orderItems.item.images",
+		fields: "id, orderNumber, userId, status, orderDate, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.name, orderItems.item.sku, orderItems.item.images, approvals.id, approvals.approvalLevel, approvals.approverRole, approvals.approverId, approvals.approverName, approvals.approverEmail, approvals.status",
 	});
 
 	const order = orderResponse as any;
@@ -110,9 +110,9 @@ export default function AdminOrderDetailsPage() {
 
 				{/* RIGHT SIDEBAR (4 cols) */}
 				<div className="md:col-span-4 flex flex-col gap-4">
-					<div className="space-y-6">
+					<div className="space-y-4">
 						<OrderStatusCard order={order} getStatusColor={getStatusColor} />
-						<OrderActionsCard order={order} onStatusUpdate={handleStatusUpdate} />
+						<OrderApprovalsCard approvals={order.approvals} />
 						<OrderTimeline order={order} />
 					</div>
 				</div>
