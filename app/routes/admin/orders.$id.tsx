@@ -96,7 +96,9 @@ export default function AdminOrderDetailsPage() {
 					className="gap-2 rounded-full h-9"
 					onClick={() => setIsPOModalOpen(true)}>
 					<FileText className="h-4 w-4" />
-					View Purchase Order
+					{order.purchaseOrders?.length > 0
+						? "View Purchase Order"
+						: "Create Purchase Order"}
 				</Button>
 			</div>
 		</div>

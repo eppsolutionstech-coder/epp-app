@@ -39,7 +39,6 @@ export function PurchaseOrderModal({ open, onOpenChange }: PurchaseOrderModalPro
 				itemCode: "LG 55UK762H",
 				description: "LG 55inch 4K UHD TV with Pro:Centric with 4years Warranty",
 				unitPrice: "22,500.00",
-				total: "36,000,000.00",
 			},
 		],
 		subTotal: "36,000,000.00",
