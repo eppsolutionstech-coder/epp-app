@@ -1,4 +1,7 @@
 ﻿import { z } from "zod";
+import type { Order, OrderWithRelation } from "./order.zod";
+import type { supplierWithRelations } from "./supplier.zod";
+import type { Pagination } from "~/types/pagination";
 
 export const PurchaseOrderStatusEnum = z.enum([
 	"PENDING",
@@ -25,9 +28,19 @@ export const PurchaseOrderSchema = z.object({
 	supplierId: z.string(),
 	status: PurchaseOrderStatusEnum,
 	items: z.array(PurchaseOrderItemSchema).optional().nullable(),
+	leadTime: z.number().int().min(0).optional().nullable(),
+	availability: z.string().optional().nullable(),
+	delivery: z.coerce.date().optional().nullable(),
+	pdc: z.coerce.date().optional().nullable(),
+	contactName: z.string().optional().nullable(),
+	contactDesignation: z.string().optional().nullable(),
+	contactDepartment: z.string().optional().nullable(),
+	contactNumber: z.string().optional().nullable(),
+	contactMobile: z.string().optional().nullable(),
+	contactEmail: z.string().optional().nullable(),
 	approvedBy: z.string().optional().nullable(),
 	approvedAt: z.coerce.date().optional().nullable(),
-	sentTosupplierAt: z.coerce.date().optional().nullable(),
+	sentToSupplierAt: z.coerce.date().optional().nullable(),
 	notes: z.string().optional().nullable(),
 	organizationId: z.string().optional().nullable(),
 	createdAt: z.coerce.date(),
@@ -58,3 +71,13 @@ export const UpdatePurchaseOrderSchema = PurchaseOrderSchema.omit({
 
 export type UpdatePurchaseOrder = z.infer<typeof UpdatePurchaseOrderSchema>;
 
+export interface PurchaseOrderWithRelations extends PurchaseOrder {
+	order: OrderWithRelation;
+	supplier: supplierWithRelations;
+}
+
+export type GetAllPurchaseOrders = {
+	purchaseOrders: PurchaseOrderWithRelations[];
+	pagination: Pagination;
+	count: number;
+};

@@ -7,10 +7,18 @@ import { Eye, Truck, CheckCircle, Package, Clock } from "lucide-react";
 import { DataTable, type DataTableColumn } from "@/components/molecule/data-table-updated";
 import { useGetOrders } from "~/hooks/use-order";
 import type { Order } from "~/zod/order.zod";
+import { useGetPurchaseOrders } from "~/hooks/use-purchase-order";
+import { useAuth } from "~/hooks/use-auth";
 
 export default function supplierOrdersPage() {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
+	const { user } = useAuth();
+
+	const { data: purchaseOrders } = useGetPurchaseOrders({
+		fields: "id, organizationId, poNumber, orderId, supplierId, status, items, approved, approvedAt, sentToSupplierAt, notes, createdAtm updatedAt, supplier",
+		filter: `supplier.code:${user?.metadata?.supplier?.code}`,
+	});
 
 	const { data: ordersResponse, isLoading } = useGetOrders({
 		fields: "id, orderNumber, userId, status, orderItems.id, total, orderDate",
@@ -201,4 +209,3 @@ export default function supplierOrdersPage() {
 		</div>
 	);
 }
-

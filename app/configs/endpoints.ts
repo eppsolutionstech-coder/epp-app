@@ -108,5 +108,12 @@
 		UPDATE: "/orderApproval/:id",
 		DELETE: "/orderApproval/:id", // Soft delete
 	},
-};
 
+	PURCHASE_ORDER: {
+		GET_ALL: "/purchaseOrder",
+		GET_BY_ID: "/purchaseOrder/:id",
+		CREATE: "/purchaseOrder",
+		UPDATE: "/purchaseOrder/:id",
+		DELETE: "/purchaseOrder/:id", // Soft delete
+	},
+};
