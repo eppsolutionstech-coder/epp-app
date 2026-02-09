@@ -1,4 +1,5 @@
 ﻿import { useState } from "react";
+import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -81,7 +82,8 @@ export default function AdminsuppliersPage() {
 							<Store className="h-10 w-10 text-muted-foreground mb-4" />
 							<h3 className="font-semibold text-lg">No suppliers found</h3>
 							<p className="text-muted-foreground max-w-sm mb-4">
-								Get started by adding your first supplier partnership to the platform.
+								Get started by adding your first supplier partnership to the
+								platform.
 							</p>
 							<Button onClick={handleOpenCreateDialog} variant="outline">
 								<Plus className="mr-2 h-4 w-4" />
@@ -103,7 +105,10 @@ export default function AdminsuppliersPage() {
 											<div className="space-y-1">
 												<div className="flex items-center gap-2">
 													<h3 className="font-semibold text-lg hover:text-primary transition-colors cursor-pointer">
-														{supplier.name}
+														<Link
+															to={`/admin/suppliers/${supplier.id}`}>
+															{supplier.name}
+														</Link>
 													</h3>
 													<Badge
 														variant={
@@ -186,8 +191,11 @@ export default function AdminsuppliersPage() {
 														}>
 														Edit supplier
 													</DropdownMenuItem>
-													<DropdownMenuItem>
-														View Products
+													<DropdownMenuItem asChild>
+														<Link
+															to={`/admin/suppliers/${supplier.id}`}>
+															View Details
+														</Link>
 													</DropdownMenuItem>
 													<DropdownMenuItem
 														className="text-red-600"
@@ -215,4 +223,3 @@ export default function AdminsuppliersPage() {
 		</div>
 	);
 }
-

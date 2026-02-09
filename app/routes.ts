@@ -46,6 +46,7 @@ const adminRoutes: RouteConfig = [
 		route("settings", "routes/admin/organization.$id.settings.tsx"),
 	]),
 	route("suppliers", "routes/admin/suppliers.tsx"),
+	route("suppliers/:id", "routes/admin/suppliers.$id.tsx"),
 	route("reports", "routes/admin/reports.tsx"),
 ];
 
