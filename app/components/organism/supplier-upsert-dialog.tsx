@@ -21,8 +21,8 @@ import {
 	FormMessage,
 } from "@/components/ui/form";
 import { Loader2 } from "lucide-react";
-import { Createsupplierschema, type Createsupplier, type supplier } from "~/zod/supplier.zod";
 import { useCreateSupplier, useGetSupplierById, useUpdateSupplier } from "~/hooks/use-supplier";
+import { CreateSupplierSchema, type CreateSupplier } from "~/zod/supplier.zod";
 
 interface supplierUpsertDialogProps {
 	open: boolean;
@@ -44,8 +44,8 @@ export function SupplierUpsertDialog({
 	const createsupplier = useCreateSupplier();
 	const updatesupplier = useUpdateSupplier();
 
-	const form = useForm<Createsupplier>({
-		resolver: zodResolver(Createsupplierschema),
+	const form = useForm<CreateSupplier>({
+		resolver: zodResolver(CreateSupplierSchema),
 		defaultValues: {
 			name: "",
 			code: "",
@@ -54,6 +54,7 @@ export function SupplierUpsertDialog({
 			email: "",
 			phone: "",
 			website: "",
+			address: "",
 			isActive: true,
 		},
 	});
@@ -69,6 +70,7 @@ export function SupplierUpsertDialog({
 				email: supplierData.email || "",
 				phone: supplierData.phone || "",
 				website: supplierData.website || "",
+				address: supplierData.address || "",
 				isActive: supplierData.isActive ?? true,
 			});
 		} else if (!isEditMode) {
@@ -80,12 +82,13 @@ export function SupplierUpsertDialog({
 				email: "",
 				phone: "",
 				website: "",
+				address: "",
 				isActive: true,
 			});
 		}
 	}, [supplierData, isEditMode, form]);
 
-	const handleSubmit = async (data: Createsupplier) => {
+	const handleSubmit = async (data: CreateSupplier) => {
 		try {
 			if (isEditMode && supplierId) {
 				await updatesupplier.mutateAsync({ supplierId, data });
@@ -248,6 +251,25 @@ export function SupplierUpsertDialog({
 									)}
 								/>
 							</div>
+
+							<FormField
+								control={form.control}
+								name="address"
+								render={({ field }) => (
+									<FormItem>
+										<FormLabel>Address</FormLabel>
+										<FormControl>
+											<Textarea
+												placeholder="Full physical address..."
+												className="min-h-[80px]"
+												{...field}
+												value={field.value || ""}
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 
 							<FormField
 								control={form.control}
