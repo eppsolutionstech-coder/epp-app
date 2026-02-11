@@ -2,7 +2,7 @@
 
 ## 1. Executive Summary
 
-The Employee Purchase Program (EPP) is a B2B2C e-commerce platform owned by **Uzaro** that enables various customer types to purchase products at discounted prices through strategic vendor partnerships. The platform supports multiple payment options including installment plans managed by partnered financial institutions.
+The Employee Purchase Program (EPP) is a B2B2C e-commerce platform owned by **Uzaro** that enables various customer types to purchase products at discounted prices through strategic vendor partnerships. The platform supports multiple payment options including installment plans funded by partnered **Financiers** (lending institutions) that lend capital to Uzaro for product procurement and order fulfillment.
 
 ---
 
@@ -13,7 +13,9 @@ The Employee Purchase Program (EPP) is a B2B2C e-commerce platform owned by **Uz
 - **Uzaro** establishes direct partnerships with vendors/suppliers/manufacturers
 - Partners offer products at **discounted wholesale prices** to Uzaro
 - Uzaro applies a **small markup** (still lower than SRP/retail price) and sells to customers
+- **Financiers** lend capital (equal to the **Cost Price**) to Uzaro to purchase products from vendors on behalf of customers
 - Customers benefit from below-market pricing through the EPP program
+- Interest revenue from installment plans is **shared between Uzaro and the Financier** (configurable split)
 
 ### 2.2 Revenue Streams
 
@@ -21,7 +23,7 @@ The Employee Purchase Program (EPP) is a B2B2C e-commerce platform owned by **Uz
 |----------------|-------------|
 | Product Markup | Small margin added to vendor wholesale price |
 | Platform Fees | Commission from vendor sales |
-| Financing Partnerships | Revenue share with financers on installment interest |
+| Financier Interest Share | 50% (configurable) of installment interest revenue shared with Uzaro |
 
 ---
 
@@ -43,7 +45,7 @@ The Employee Purchase Program (EPP) is a B2B2C e-commerce platform owned by **Uz
 | **Customer** | End users purchasing products | Browse, purchase, track orders, manage loans |
 | **Vendor** | Suppliers/partners providing products | Manage products, fulfill orders, track sales |
 | **Admin** | Uzaro platform administrators | Manage users, vendors, organizations, approvals |
-| **Financer** | Financial institutions | Manage loan applications, payments, interest rates |
+| **Financier** | Lending institutions that fund product purchases | Approve orders, release funds to Uzaro, set installment terms & rates, receive repayments |
 
 ---
 
@@ -52,16 +54,16 @@ The Employee Purchase Program (EPP) is a B2B2C e-commerce platform owned by **Uz
 ### 4.1 Pricing Tiers
 
 ```
-Vendor Cost Price
+Market SRP (Suggested Retail Price - reference point)
     ↓
-Uzaro Acquisition Price (Discounted via partnership)
-    ↓
+Cost Price (Discounted price from vendor via internal partnership)
+    ↓ Uzaro adds small markup per customer type
 ├── Employee Price (Lowest markup)
 ├── Wholesaler Price (Bulk discount applied)
 ├── Retailer Price (Standard markup)
 └── Regular User Price (Highest markup, still < SRP)
-    ↓
-Market SRP (Reference - always higher than EPP prices)
+    ↓ For installment orders, Financier adds interest
+Final Installment Price (Base Price + Financier Interest)
 ```
 
 ### 4.2 Pricing Rules
@@ -71,6 +73,83 @@ Market SRP (Reference - always higher than EPP prices)
 3. **Wholesaler pricing** applies volume-based discounts for bulk purchases
 4. **Retailer pricing** standard EPP markup
 5. **Regular user pricing** lowest discount tier but still competitive
+
+### 4.3 Pricing Terminology
+
+| Term | Definition |
+|------|-----------|
+| **SRP** | Suggested Retail Price — the market price set by the vendor |
+| **Cost Price** | The discounted price Uzaro acquires the product for via vendor partnership |
+| **Employee Price** | Cost Price + Uzaro markup for employee customers |
+| **Wholesaler Price** | Cost Price + Uzaro markup for wholesaler customers |
+| **Retailer Price** | Cost Price + Uzaro markup for retailer customers |
+| **Regular User Price** | Cost Price + Uzaro markup for general consumers |
+| **Financier Rate** | Interest rate per installment set by the Financier |
+| **Total Installment Price** | Base price + total accumulated interest across all installments |
+
+### 4.4 Pricing Calculation with Financier (Installment Orders)
+
+When a customer chooses installment payment, the Financier's interest is applied on top of the base price for that customer type.
+
+**Example Calculation (Employee Price, 3-month installment):**
+
+```
+Step 1: Vendor sets product SRP
+  SRP = ₱10,000
+
+Step 2: Uzaro acquires at discounted Cost Price (via vendor partnership)
+  Cost Price = ₱9,000
+
+Step 3: Uzaro adds markup → Employee Price
+  Uzaro Markup = ₱250
+  Employee Price = ₱9,000 + ₱250 = ₱9,250
+
+Step 4: Financier sets installment terms
+  Installment Term = 3 months
+  Interest Rate = 2% per installment
+
+Step 5: Calculate installment breakdown
+  Principal per Installment = ₱9,250 / 3 = ₱3,083.33
+  Interest per Installment  = ₱3,083.33 × 0.02 = ₱61.67
+  Amount per Installment    = ₱3,083.33 + ₱61.67 = ₱3,145.00
+
+Step 6: Calculate total price
+  Total Installment Price = ₱3,145.00 × 3 = ₱9,435.00
+  Total Interest Revenue  = ₱9,435.00 - ₱9,250.00 = ₱185.00
+```
+
+### 4.5 Financier Interest Revenue Sharing
+
+The total interest revenue generated from installment plans is **split between Uzaro and the Financier** based on a configurable ratio.
+
+```
+Using the example above:
+
+Total Interest Revenue = ₱185.00
+Revenue Split Ratio    = 50/50 (configurable per Financier agreement)
+
+Uzaro Share     = ₱185.00 × 50% = ₱92.50
+Financier Share = ₱185.00 × 50% = ₱92.50
+```
+
+**Revenue Split Configuration:**
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| Split Ratio | Percentage of interest revenue allocated to each party | 50% Uzaro / 50% Financier |
+| Configurable Per | Can be configured per Financier agreement | Per Financier |
+| Override | Admin can override default split for specific Financier partnerships | Yes |
+
+**Uzaro Total Revenue per Transaction (Installment):**
+
+```
+Financier Lends         = Cost Price = ₱9,000.00 (excludes Uzaro markup)
+Uzaro Markup Revenue    = Employee Price - Cost Price = ₱250.00
+Uzaro Interest Share    = ₱92.50
+Total Uzaro Revenue     = ₱250.00 + ₱92.50 = ₱342.50
+
+Uzaro remits to Financier = ₱9,000.00 + ₱92.50 = ₱9,092.50
+```
 
 ---
 
@@ -133,17 +212,19 @@ Market SRP (Reference - always higher than EPP prices)
 | Reports & Analytics | Platform-wide metrics and insights |
 | Settings | System configuration and parameters |
 
-### 5.6 Financer Features
+### 5.6 Financier Features
 
 | Feature | Description |
 |---------|-------------|
-| Application Review | Review loan/installment applications |
-| Loan Approval | Approve/reject based on risk assessment |
-| Interest Rate Management | Set interest rates per installment term |
-| Payment Tracking | Monitor scheduled payments |
+| Order Approval | Review and approve/reject customer installment orders |
+| Fund Release | Release lending capital to Uzaro for approved orders |
+| Installment Configuration | Set number of installments and interest rate per term |
+| Interest Rate Management | Configure interest rates per installment term |
+| Payment Tracking | Monitor scheduled repayments from Uzaro |
+| Revenue Share Dashboard | Track interest revenue and split with Uzaro |
 | Collection Management | Handle overdue and default cases |
 | Customer Portfolio | View customer loan history and risk profile |
-| Financial Reports | Loan portfolio analytics |
+| Financial Reports | Loan portfolio analytics, revenue share reports |
 
 ---
 
@@ -172,24 +253,30 @@ Market SRP (Reference - always higher than EPP prices)
 
 | Term | Duration | Interest Rate | Notes |
 |------|----------|---------------|-------|
-| 3 months | 3 months | Set by Financer | Short-term |
-| 6 months | 6 months | Set by Financer | Popular option |
-| 12 months | 12 months | Set by Financer | Standard |
-| 18 months | 18 months | Set by Financer | Extended |
-| 24 months | 24 months | Set by Financer | Long-term |
+| 3 months | 3 months | Set by Financier | Short-term |
+| 6 months | 6 months | Set by Financier | Popular option |
+| 12 months | 12 months | Set by Financier | Standard |
+| 18 months | 18 months | Set by Financier | Extended |
+| 24 months | 24 months | Set by Financier | Long-term |
 
 ### 6.4 Salary Deduction Flow (Employees)
 
 ```
-1. Employee selects installment payment
+1. Employee selects installment payment at checkout
 2. System checks credit limit eligibility
 3. Order requires organization approval (if configured)
-4. Upon approval, loan is created
-5. Financer approves loan application
-6. Monthly deduction scheduled from payroll
-7. HR/Payroll system receives deduction instructions
-8. Deductions processed each pay period
-9. Loan marked complete after final payment
+4. Uzaro Admin reviews the order
+5. Financier reviews and approves the installment order
+6. Financier releases funds equal to Cost Price (lending capital) to Uzaro
+7. Uzaro uses funds to create Purchase Order to vendor/supplier
+8. Vendor/Supplier fulfills and ships product to Uzaro
+9. Uzaro receives product and signs delivery receipt
+10. Uzaro fulfills and delivers product to the customer
+11. Monthly salary deduction begins for the customer
+12. HR/Payroll system processes deductions each pay period
+13. Uzaro collects payments from payroll deductions
+14. Uzaro remits repayment to Financier (cost price + Financier's interest share)
+15. Loan marked complete after final payment
 ```
 
 ---
@@ -199,30 +286,62 @@ Market SRP (Reference - always higher than EPP prices)
 ### 7.1 Order Status Flow
 
 ```
-PENDING_APPROVAL
-    ↓ (Approval required)
-APPROVED
-    ↓ (Vendor accepts)
-PROCESSING
-    ↓ (Vendor ships)
-SHIPPED
+PENDING_ADMIN_REVIEW
+    ↓ (Uzaro Admin reviews)
+PENDING_FINANCIER_APPROVAL
+    ↓ (Financier approves installment order)
+FINANCIER_APPROVED
+    ↓ (Financier releases Cost Price funds to Uzaro)
+FUNDS_RELEASED
+    ↓ (Uzaro creates Purchase Order to vendor)
+PO_CREATED
+    ↓ (Vendor fulfills product)
+VENDOR_SHIPPED
+    ↓ (Uzaro receives product)
+RECEIVED_BY_UZARO
+    ↓ (Uzaro ships to customer)
+SHIPPED_TO_CUSTOMER
     ↓ (Customer receives)
 DELIVERED
     ↓ (Optional)
 COMPLETED
 
 Alternative flows:
-- REJECTED (approval denied)
+- REJECTED (Financier or Admin denies)
 - CANCELLED (customer/admin cancels)
 - RETURNED (customer returns product)
 ```
 
-### 7.2 Approval Workflow
+### 7.2 End-to-End Order Flow (Installment)
+
+```
+1. Vendor/Supplier adds product to EPP app
+2. Uzaro Admin approves the product listing
+3. Customer browses products on EPP app
+4. Customer places order with installment/payroll deduction
+5. Uzaro Admin sees and reviews the order
+6. Financier reviews and approves the order
+7. Financier releases lending capital equal to Cost Price (funds) to Uzaro
+8. Uzaro uses the funds to purchase product from vendor/supplier
+9. Uzaro creates Purchase Order (PO) to vendor/supplier
+10. Vendor/Supplier sees and fulfills the order
+11. Uzaro receives the product and signs a delivery receipt
+12. Uzaro fulfills the product to the customer
+13. Customer receives product ✓
+14. Customer pays via automatic payroll deduction (monthly installments)
+15. Uzaro collects the installment payments
+16. Uzaro remits repayment to Financier (cost price + Financier's interest share)
+17. Financier receives repayment ✓
+18. Uzaro retains its markup + its share of the interest revenue ✓
+```
+
+### 7.3 Approval Workflow
 
 1. **Organization-level Approval**: Required for employees based on org settings
 2. **Credit Limit Check**: Automatic validation against available credit
-3. **Financer Approval**: Required for installment payments
-4. **Admin Override**: Manual intervention capability
+3. **Admin Review**: Uzaro admin reviews the order
+4. **Financier Approval**: Required for installment payments — Financier decides whether to fund the order
+5. **Admin Override**: Manual intervention capability
 
 ---
 
@@ -275,28 +394,66 @@ Alternative flows:
 
 ---
 
-## 10. Financer Partnership
+## 10. Financier Partnership
 
-### 10.1 Financer Role
+### 10.1 Financier Role
 
-- **Pay on behalf** of customers for installment purchases
-- Set and manage **interest rates** per term
-- Assume **credit risk** for approved loans
-- Handle **collections** for overdue payments
+The Financier acts as a **lending institution** that provides capital to Uzaro for purchasing products from vendors on behalf of customers who choose installment payment.
 
-### 10.2 Financer Revenue Model
+- **Lend money to Uzaro** equal to the **Cost Price** (not including Uzaro's markup) to fund product purchases for installment orders
+- **Approve installment orders** — decide whether to fund each customer order
+- **Release funds to Uzaro** upon order approval
+- Set and manage **installment terms** (number of installments) and **interest rates** per term
+- **Receive repayments** from Uzaro as customers pay through payroll deductions
+- Earn revenue through **interest rate share** (configurable split with Uzaro)
+
+### 10.2 Financier Fund Flow
 
 ```
-Loan Amount: ₱10,000
-Interest Rate: 1.5% per month
-Term: 12 months
-
-Monthly Interest: ₱150
-Total Interest Revenue: ₱1,800
-Monthly Payment: ₱983.33 (principal + interest)
+Financier releases funds (Cost Price = ₱9,000) to Uzaro
+    ↓
+Uzaro uses funds to purchase product from Vendor at Cost Price
+    ↓
+Uzaro creates Purchase Order → Vendor fulfills
+    ↓
+Customer pays installments via payroll deduction (based on Employee Price + interest)
+    ↓
+Uzaro collects payments (₱9,435.00 total)
+    ↓
+Uzaro remits to Financier: Cost Price + Financier's Interest Share (₱9,000 + ₱92.50 = ₱9,092.50)
+    ↓
+Uzaro retains: Markup + Uzaro's Interest Share (₱250 + ₱92.50 = ₱342.50)
 ```
 
-### 10.3 Risk Management
+### 10.3 Financier Revenue Model
+
+```
+Example: Cost Price = ₱9,000 | Employee Price = ₱9,250 | Term = 3 months | Rate = 2%
+
+Financier lends to Uzaro   = ₱9,000 (Cost Price only, excludes Uzaro markup)
+
+Customer installment calculation (based on Employee Price):
+  Principal per Installment  = ₱9,250 / 3 = ₱3,083.33
+  Interest per Installment   = ₱3,083.33 × 2% = ₱61.67
+  Payment per Installment    = ₱3,083.33 + ₱61.67 = ₱3,145.00
+
+Total Paid by Customer       = ₱3,145.00 × 3 = ₱9,435.00
+Total Interest Generated     = ₱185.00
+
+Revenue Split (50/50 default):
+  Financier Interest Share   = ₱185.00 × 50% = ₱92.50
+  Uzaro Interest Share       = ₱185.00 × 50% = ₱92.50
+
+Financier receives from Uzaro:
+  Total = ₱9,000.00 (cost price / loan principal) + ₱92.50 (interest share) = ₱9,092.50
+
+Uzaro retains:
+  Total = ₱250.00 (markup) + ₱92.50 (interest share) = ₱342.50
+
+Verification: ₱9,092.50 + ₱342.50 = ₱9,435.00 ✓ (matches total paid by customer)
+```
+
+### 10.4 Risk Management
 
 | Factor | Description |
 |--------|-------------|
@@ -305,6 +462,7 @@ Monthly Payment: ₱983.33 (principal + interest)
 | Salary Validation | Verify salary for deduction capacity |
 | Loan-to-Income Ratio | Cap installment vs. monthly salary |
 | Default Handling | Collections process for non-payment |
+| Order Approval | Financier can reject high-risk orders before releasing funds |
 
 ---
 
@@ -316,7 +474,7 @@ Monthly Payment: ₱983.33 (principal + interest)
 - **Backend**: RESTful API services
 - **Database**: Relational database for transactional data
 - **Authentication**: Role-based access control (RBAC)
-- **Integration**: Payroll systems, payment gateways, financer APIs
+- **Integration**: Payroll systems, payment gateways, financier APIs
 
 ### 11.2 Integration Points
 
@@ -324,7 +482,7 @@ Monthly Payment: ₱983.33 (principal + interest)
 |--------|------------------|---------|
 | Payroll Systems | API/File | Salary deduction processing |
 | Payment Gateway | API | Card and bank payments |
-| Financer Systems | API | Loan processing and management |
+| Financier Systems | API | Loan processing and management |
 | Shipping Providers | API | Order tracking |
 | SMS/Email Gateway | API | Notifications |
 
@@ -364,13 +522,15 @@ Monthly Payment: ₱983.33 (principal + interest)
 - Revenue and commission tracking
 - Inventory turnover
 
-### 13.3 Financer Reports
+### 13.3 Financier Reports
 
 - Loan portfolio summary
 - Approval/rejection rates
-- Payment collection rates
+- Fund release tracking (capital lent to Uzaro)
+- Repayment collection rates
 - Default and delinquency metrics
-- Interest revenue analysis
+- Interest revenue analysis (total and Financier's share)
+- Revenue share breakdown per order
 
 ---
 
@@ -404,6 +564,8 @@ Monthly Payment: ₱983.33 (principal + interest)
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 1.0 | 2026-01-30 | - | Initial document |
+| 1.1 | 2026-02-11 | - | Added Financier role, fund flow, detailed order workflow, pricing with financier interest, revenue sharing model |
+| 1.2 | 2026-02-11 | - | Clarified Financier lends Cost Price only (excludes Uzaro markup), updated settlement calculations |
 
 ---
 
