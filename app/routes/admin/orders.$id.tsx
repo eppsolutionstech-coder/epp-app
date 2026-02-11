@@ -91,15 +91,22 @@ export default function AdminOrderDetailsPage() {
 				</div>
 			</div>
 			<div className="flex items-center gap-2">
-				<Button
-					variant="outline"
-					className="gap-2 rounded-full h-9"
-					onClick={() => setIsPOModalOpen(true)}>
-					<FileText className="h-4 w-4" />
-					{order.purchaseOrders?.length > 0
-						? "View Purchase Order"
-						: "Create Purchase Order"}
-				</Button>
+				{order.purchaseOrders?.length > 0 ? (
+					<Button
+						variant="outline"
+						className="gap-2 rounded-full h-9"
+						onClick={() => setIsPOModalOpen(true)}>
+						<FileText className="h-4 w-4" />
+						View Purchase Order
+					</Button>
+				) : (
+					<Button asChild variant="outline" className="gap-2 rounded-full h-9">
+						<Link to={`/admin/orders/${id}/create-po`}>
+							<FileText className="h-4 w-4" />
+							Create Purchase Order
+						</Link>
+					</Button>
+				)}
 			</div>
 		</div>
 	);

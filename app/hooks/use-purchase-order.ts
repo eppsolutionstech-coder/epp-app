@@ -1,78 +1,49 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import purchaseOrderService from "~/services/purchase-order-service";
-import type { ApiQueryParams } from "~/services/api-service";
-import type { CreatePurchaseOrder, UpdatePurchaseOrder } from "~/zod/purchaseOrder.zod";
 import { queryClient } from "~/lib/query-client";
+import type { CreatePurchaseOrder, UpdatePurchaseOrder } from "~/zod/purchaseOrder.zod";
 
-export const useGetPurchaseOrders = (
-	apiParams?: ApiQueryParams,
-	options?: { enabled?: boolean },
-) => {
+export const useGetPurchaseOrders = (params?: any) => {
 	return useQuery({
-		queryKey: ["purchaseOrders", apiParams],
-		queryFn: () => {
-			return purchaseOrderService
-				.select(apiParams?.fields || "")
-				.search(apiParams?.query || "")
-				.paginate(apiParams?.page || 1, apiParams?.limit || 10)
-				.sort(apiParams?.sort, apiParams?.order)
-				.filter(apiParams?.filter || "")
-				.count(apiParams?.count ?? false)
-				.document(apiParams?.document ?? true)
-				.pagination(apiParams?.pagination ?? true)
-				.getAllPurchaseOrders();
-		},
-		enabled: options?.enabled,
+		queryKey: ["purchase-orders", params],
+		queryFn: () => purchaseOrderService.getAllPurchaseOrders(),
 	});
 };
 
-export const useGetPurchaseOrderById = (purchaseOrderId: string, apiParams?: ApiQueryParams) => {
+export const useGetPurchaseOrderById = (id: string) => {
 	return useQuery({
-		queryKey: ["purchaseOrder-by-id", purchaseOrderId, apiParams],
-		queryFn: () => {
-			return purchaseOrderService
-				.select(apiParams?.fields || "")
-				.getPurchaseOrderById(purchaseOrderId);
-		},
-		enabled: !!purchaseOrderId,
+		queryKey: ["purchase-order", id],
+		queryFn: () => purchaseOrderService.getPurchaseOrderById(id),
+		enabled: !!id,
 	});
 };
 
 export const useCreatePurchaseOrder = () => {
 	return useMutation({
-		mutationFn: (data: CreatePurchaseOrder) => {
-			return purchaseOrderService.createPurchaseOrder(data);
-		},
+		mutationFn: (data: CreatePurchaseOrder) => purchaseOrderService.createPurchaseOrder(data),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["purchaseOrders"] });
+			queryClient.invalidateQueries({ queryKey: ["purchase-orders"] });
+			queryClient.invalidateQueries({ queryKey: ["order"] }); // Invalidate generic order query if affected
 		},
 	});
 };
 
 export const useUpdatePurchaseOrder = () => {
 	return useMutation({
-		mutationFn: ({
-			purchaseOrderId,
-			data,
-		}: {
-			purchaseOrderId: string;
-			data: UpdatePurchaseOrder;
-		}) => {
-			return purchaseOrderService.updatePurchaseOrder(purchaseOrderId, data);
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["purchaseOrders"] });
+		mutationFn: ({ id, data }: { id: string; data: UpdatePurchaseOrder }) =>
+			purchaseOrderService.updatePurchaseOrder(id, data),
+		onSuccess: (_data, variables) => {
+			queryClient.invalidateQueries({ queryKey: ["purchase-orders"] });
+			queryClient.invalidateQueries({ queryKey: ["purchase-order", variables.id] });
 		},
 	});
 };
 
 export const useDeletePurchaseOrder = () => {
 	return useMutation({
-		mutationFn: (purchaseOrderId: string) => {
-			return purchaseOrderService.deletePurchaseOrder(purchaseOrderId);
-		},
+		mutationFn: (id: string) => purchaseOrderService.deletePurchaseOrder(id),
 		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: ["purchaseOrders"] });
+			queryClient.invalidateQueries({ queryKey: ["purchase-orders"] });
 		},
 	});
 };

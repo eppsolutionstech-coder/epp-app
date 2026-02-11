@@ -34,6 +34,7 @@ const adminRoutes: RouteConfig = [
 
 	route("orders", "routes/admin/orders.tsx"),
 	route("orders/:id", "routes/admin/orders.$id.tsx"),
+	route("orders/:id/create-po", "routes/admin/orders.$id.create-po.tsx"),
 	route("employees", "routes/admin/employees.tsx"),
 	route("products", "routes/admin/products.tsx"),
 	route("products/:id", "routes/admin/product.$id.tsx"),

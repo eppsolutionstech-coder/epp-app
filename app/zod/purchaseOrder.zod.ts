@@ -1,5 +1,5 @@
 ﻿import { z } from "zod";
-import type { Order, OrderWithRelation } from "./order.zod";
+import type { OrderWithRelation } from "./order.zod";
 import type { supplierWithRelations } from "./supplier.zod";
 import type { Pagination } from "~/types/pagination";
 
@@ -21,6 +21,12 @@ const PurchaseOrderItemSchema = z.object({
 	unitPrice: z.number().optional().nullable(),
 });
 
+const RequisitionerSchema = z.object({
+	name: z.string(),
+	designation: z.string().optional().nullable(),
+	department: z.string().optional().nullable(),
+});
+
 export const PurchaseOrderSchema = z.object({
 	id: z.string(),
 	poNumber: z.string(),
@@ -32,6 +38,7 @@ export const PurchaseOrderSchema = z.object({
 	availability: z.string().optional().nullable(),
 	delivery: z.coerce.date().optional().nullable(),
 	pdc: z.coerce.date().optional().nullable(),
+	requisitioner: RequisitionerSchema.optional().nullable(),
 	contactName: z.string().optional().nullable(),
 	contactDesignation: z.string().optional().nullable(),
 	contactDepartment: z.string().optional().nullable(),
