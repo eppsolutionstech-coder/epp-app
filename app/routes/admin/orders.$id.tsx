@@ -20,7 +20,7 @@ export default function AdminOrderDetailsPage() {
 
 	// Cast to any to handle relations not in the base Zod schema
 	const { data: orderResponse, isLoading } = useGetOrderById(id!, {
-		fields: "id, orderNumber, userId, status, orderDate, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.name, orderItems.item.sku, orderItems.item.images, approvals.id, approvals.approvalLevel, approvals.approverRole, approvals.approverId, approvals.approverName, approvals.approverEmail, approvals.status, purchaseOrders",
+		fields: "id, orderNumber, userId, status, orderDate, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.supplier.name, orderItems.item.name, orderItems.item.sku, orderItems.item.images, approvals.id, approvals.approvalLevel, approvals.approverRole, approvals.approverId, approvals.approverName, approvals.approverEmail, approvals.status, purchaseOrders",
 	});
 
 	const order = orderResponse as any;
@@ -114,7 +114,7 @@ export default function AdminOrderDetailsPage() {
 	return (
 		<div className="max-w-7xl mx-auto space-y-6">
 			<PageHeader />
-			<PurchaseOrderModal open={isPOModalOpen} onOpenChange={setIsPOModalOpen} />
+			<PurchaseOrderModal open={isPOModalOpen} onOpenChange={setIsPOModalOpen} purchaseOrder={order.purchaseOrders[0]} />
 
 			<div className="grid grid-cols-1 md:grid-cols-12 gap-4">
 				{/* MAIN CONTENT - Left Side (8 cols) */}

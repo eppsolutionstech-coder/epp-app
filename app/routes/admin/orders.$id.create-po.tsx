@@ -41,11 +41,11 @@ export default function CreatePurchaseOrderPage() {
 	const order = orderResponse as any;
 	const orderItems = order?.orderItems || [];
 
-	// Fetch Suppliers for selection
 	const { data: suppliersResponse, isLoading: isLoadingSuppliers } = useGetSuppliers({
+		fields: "id,name",
 		limit: 100,
 	});
-	const suppliers = suppliersResponse?.suppliers || [];
+	const suppliers = (suppliersResponse as any)?.suppliers || [];
 
 	const createPO = useCreatePurchaseOrder();
 
@@ -53,6 +53,7 @@ export default function CreatePurchaseOrderPage() {
 		resolver: zodResolver(CreatePurchaseOrderSchema) as any,
 		defaultValues: {
 			orderId: orderId || "",
+			supplierId: "",
 			status: "PENDING",
 			requisitioner: {
 				name: "",
@@ -61,10 +62,7 @@ export default function CreatePurchaseOrderPage() {
 				address: "",
 			},
 			contactName: "",
-			contactDesignation: "",
-			contactDepartment: "",
 			contactNumber: "",
-			contactMobile: "",
 			contactEmail: "",
 		},
 	});
@@ -78,18 +76,6 @@ export default function CreatePurchaseOrderPage() {
 			// For now leaving blank or could fill from user profile if we had that context readily compliant to schema
 		}
 	}, [order, form]);
-
-	// Auto-fill supplier info when selected
-	const handleSupplierChange = (supplierId: string) => {
-		const supplier = suppliers.find((s) => s.id === supplierId);
-		if (supplier) {
-			form.setValue("supplierId", supplierId);
-			form.setValue("contactName", supplier.contactName || "");
-			// We can map other fields if they match, but PurchaseOrder contact info usually refers to the VENDOR contact person for this PO
-			form.setValue("contactEmail", supplier.email || "");
-			form.setValue("contactNumber", supplier.phone || "");
-		}
-	};
 
 	const onSubmit = async (data: CreatePurchaseOrder) => {
 		try {
@@ -108,7 +94,8 @@ export default function CreatePurchaseOrderPage() {
 						? orderItems.map((orderItem: any) => ({
 								itemId: orderItem.item?.id || null,
 								sku: orderItem.item?.sku || "N/A",
-								description: orderItem.item?.name || orderItem.item?.description || null,
+								description:
+									orderItem.item?.name || orderItem.item?.description || null,
 								quantity: orderItem.quantity,
 								unitPrice: orderItem.unitPrice ?? null,
 							}))
@@ -123,7 +110,7 @@ export default function CreatePurchaseOrderPage() {
 		}
 	};
 
-	if (isLoadingOrder || isLoadingSuppliers) {
+	if (isLoadingOrder) {
 		return (
 			<div className="flex h-96 items-center justify-center">
 				<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
@@ -194,27 +181,26 @@ export default function CreatePurchaseOrderPage() {
 								<h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">
 									Supplier Details
 								</h3>
+
 								<FormField
 									control={form.control}
 									name="supplierId"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Select Supplier</FormLabel>
+											<FormLabel>Supplier *</FormLabel>
 											<Select
-												onValueChange={(val) => {
-													field.onChange(val);
-													handleSupplierChange(val);
-												}}
-												defaultValue={field.value}>
+												onValueChange={field.onChange}
+												value={field.value}
+											>
 												<FormControl>
 													<SelectTrigger>
 														<SelectValue placeholder="Select a supplier" />
 													</SelectTrigger>
 												</FormControl>
 												<SelectContent>
-													{suppliers.map((s) => (
-														<SelectItem key={s.id} value={s.id}>
-															{s.name} ({s.code})
+													{suppliers.map((supplier: any) => (
+														<SelectItem key={supplier.id} value={supplier.id}>
+															{supplier.name}
 														</SelectItem>
 													))}
 												</SelectContent>
@@ -455,13 +441,18 @@ export default function CreatePurchaseOrderPage() {
 								<Separator />
 								{orderItems.map((orderItem: any, index: number) => (
 									<div
-										key={orderItem.item?.id || `${orderItem.item?.sku || "item"}-${index}`}
+										key={
+											orderItem.item?.id ||
+											`${orderItem.item?.sku || "item"}-${index}`
+										}
 										className="grid grid-cols-[1fr_2fr_100px_150px] gap-4 items-start animate-in fade-in slide-in-from-top-1">
 										<div className="rounded-md border bg-muted/20 px-3 py-2 text-sm">
 											{orderItem.item?.sku || "N/A"}
 										</div>
 										<div className="rounded-md border bg-muted/20 px-3 py-2 text-sm">
-											{orderItem.item?.name || orderItem.item?.description || "-"}
+											{orderItem.item?.name ||
+												orderItem.item?.description ||
+												"-"}
 										</div>
 										<div className="rounded-md border bg-muted/20 px-3 py-2 text-center text-sm">
 											{orderItem.quantity || 0}

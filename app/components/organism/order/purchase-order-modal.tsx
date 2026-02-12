@@ -1,45 +1,70 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Separator } from "@/components/ui/separator";
+import type { PurchaseOrderWithRelations } from "~/zod/purchaseOrder.zod";
 
 interface PurchaseOrderModalProps {
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
+	purchaseOrder?: PurchaseOrderWithRelations;
 }
 
-export function PurchaseOrderModal({ open, onOpenChange }: PurchaseOrderModalProps) {
-	// Mock Data
+export function PurchaseOrderModal({ open, onOpenChange, purchaseOrder }: PurchaseOrderModalProps) {
+	console.log("Purchase Order Data:", purchaseOrder); // Debugging log
+	const formatDate = (value?: string | Date | null) => {
+		if (!value) return "-";
+		const date = value instanceof Date ? value : new Date(value);
+		if (Number.isNaN(date.getTime())) return "-";
+		return date.toLocaleDateString("en-US", {
+			day: "2-digit",
+			month: "short",
+			year: "2-digit",
+		});
+	};
+
+	const formatCurrency = (value?: number | null) => {
+		if (typeof value !== "number") return "0.00";
+		return value.toLocaleString(undefined, {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		});
+	};
+
+	// Use real purchaseOrder data; keep selected footer values as mock for now.
 	const poData = {
-		poNumber: "PO Uzaro_003165r",
-		date: "04-Feb-26",
+		poNumber: purchaseOrder?.poNumber || "-",
+		date: formatDate((purchaseOrder?.createdAt as Date | string | undefined) ?? null),
 		company: {
-			to: "Wordtext Systems Inc.",
-			address: "WSI Corporate Center 1005 Metropolitan Avenue, Corner Kakarong, Makati",
+			to: purchaseOrder?.supplier?.name || "-",
+			address: (purchaseOrder as any)?.supplier?.address || "-",
 		},
 		contact: {
-			name: "Kate Lois",
-			designation: "Sales",
-			department: "Sales",
-			contactNumber: "+639657442914",
-			contactMobile: "+639657442914",
-			email: "",
+			name: purchaseOrder?.contactName || "-",
+			designation: purchaseOrder?.contactDesignation || "-",
+			department: purchaseOrder?.contactDepartment || "-",
+			contactNumber: purchaseOrder?.contactNumber || "-",
+			contactMobile: purchaseOrder?.contactMobile || "-",
+			email: purchaseOrder?.contactEmail || "-",
 		},
-		shippedTo: "2F Fairway Residences #9 Capitol Hills Matandang Balara, Quezon City, 1119",
-		requisitioner: "Cyd Layug",
-		reqDesignation: "VP Sales",
-		reqDepartment: "Sales",
-		terms: "90 days PDC",
-		leadTime: "ON-STOCK",
-		availability: "ON STOCK",
-		delivery: "for delivery",
-		items: [
-			{
-				qty: "1,600",
+		shippedTo: purchaseOrder?.requisitioner?.address || "-",
+		requisitioner: purchaseOrder?.requisitioner?.name || "-",
+		reqDesignation: purchaseOrder?.requisitioner?.designation || "-",
+		reqDepartment: purchaseOrder?.requisitioner?.department || "-",
+		terms: purchaseOrder?.pdc || "-",
+		leadTime: purchaseOrder?.leadTime ?? "-",
+		availability: purchaseOrder?.availability || "-",
+		delivery: purchaseOrder?.delivery || "-",
+		items: (purchaseOrder?.items || []).map((item) => {
+			const quantity = item.quantity;
+			const unitPrice = item.unitPrice ?? 0;
+			const total = quantity * unitPrice;
+			return {
+				qty: quantity.toLocaleString(),
 				unit: "unit/s",
-				itemCode: "LG 55UK762H",
-				description: "LG 55inch 4K UHD TV with Pro:Centric with 4years Warranty",
-				unitPrice: "22,500.00",
-			},
-		],
+				itemCode: item.sku,
+				description: item.description || "-",
+				unitPrice: formatCurrency(unitPrice),
+				total: formatCurrency(total),
+			};
+		}),
 		subTotal: "36,000,000.00",
 		totalVatInc: "36,000,000.00",
 		checkedBy: {

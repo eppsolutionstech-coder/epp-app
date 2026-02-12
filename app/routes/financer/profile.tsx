@@ -5,16 +5,12 @@ import { FinancerProfileTab } from "@/components/financer/profile/profile-tab";
 import { FinancerLoanSettingsTab } from "@/components/financer/profile/loan-settings-tab";
 import { FinancerNotificationsTab } from "@/components/financer/profile/notifications-tab";
 import { FinancerSecurityTab } from "@/components/financer/profile/security-tab";
-import { FinancerBillingTab } from "@/components/financer/profile/billing-tab";
-import { FinancerOrganizationsTab } from "@/components/financer/profile/organizations-tab";
 
 const tabs = [
 	{ id: "profile", label: "Profile", icon: User },
-	{ id: "organizations", label: "Organizations", icon: Building2 },
 	{ id: "loan-settings", label: "Loan Settings", icon: Percent },
 	{ id: "notifications", label: "Notifications", icon: Bell },
 	{ id: "security", label: "Security", icon: Shield },
-	{ id: "billing", label: "Billing", icon: CreditCard },
 ];
 
 const validTabs = tabs.map((t) => t.id);
@@ -77,11 +73,9 @@ export default function FinancerProfile() {
 				{/* Right - Content */}
 				<div className="flex-1 min-w-0">
 					{activeTab === "profile" && <FinancerProfileTab />}
-					{activeTab === "organizations" && <FinancerOrganizationsTab />}
 					{activeTab === "loan-settings" && <FinancerLoanSettingsTab />}
 					{activeTab === "notifications" && <FinancerNotificationsTab />}
 					{activeTab === "security" && <FinancerSecurityTab />}
-					{activeTab === "billing" && <FinancerBillingTab />}
 				</div>
 			</div>
 		</div>

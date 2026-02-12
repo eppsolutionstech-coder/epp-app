@@ -24,6 +24,7 @@ export const useCreatePurchaseOrder = () => {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["purchase-orders"] });
 			queryClient.invalidateQueries({ queryKey: ["order"] }); // Invalidate generic order query if affected
+			queryClient.invalidateQueries({ queryKey: ["order-by-id"] }); // Invalidate generic order query if affected
 		},
 	});
 };
