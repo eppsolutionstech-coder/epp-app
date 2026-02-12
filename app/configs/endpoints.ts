@@ -127,4 +127,20 @@
 		GET_SUMMARY_ORDER: "/installment/order/:orderId/summary",
 		PAY_INSTALLMENT: "/installment/:id/deduct",
 	},
+
+	FINANCIER_DISBURSEMENT: {
+		GET_ALL: "/financier-disbursement",
+		GET_BY_ID: "/financier-disbursement/:id",
+		CREATE: "/financier-disbursement",
+		UPDATE: "/financier-disbursement/:id",
+		DELETE: "/financier-disbursement/:id", // Hard delete in API
+		GET_LEDGER: "/ledger/financier/:financierConfigId",
+		// RECONCILE: "/financier-disbursement/:id/reconcile",
+		// CREATE_REMITTANCE: "/financier-disbursement/:id/remittance",
+		// GET_REMITTANCES: "/financier-disbursement/:id/remittances",
+		// GET_LEDGER: "/financier-disbursement/ledger/:financierConfigId",
+		// GET_ADMIN_SOA: "/financier-disbursement/ledger/admin",
+		// GET_ADMIN_SOA_BY_ID: "/financier-disbursement/ledger/admin/:financierConfigId",
+		// GET_FINANCIER_SOA: "/financier-disbursement/ledger/financier/:financierConfigId",
+	},
 };
