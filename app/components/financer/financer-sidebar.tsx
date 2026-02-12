@@ -5,6 +5,7 @@ import {
 	Wallet,
 	CreditCard,
 	PieChart,
+	BookOpen,
 	Settings,
 	LogOut,
 	X,
@@ -23,6 +24,7 @@ const navItems = [
 	{ href: "/financer/loans", icon: Wallet, label: "Active Loans" },
 	{ href: "/financer/payments", icon: CreditCard, label: "Payments" },
 	{ href: "/financer/reports", icon: PieChart, label: "Reports" },
+	{ href: "/financer/ledger", icon: BookOpen, label: "Ledger" },
 	{ href: "/financer/profile", icon: Settings, label: "Settings" },
 ];
 

@@ -9,6 +9,7 @@ import {
 	CreditCard,
 	PieChart,
 	ReceiptText,
+	BookOpen,
 	Settings,
 	LogOut,
 	User,
@@ -31,6 +32,7 @@ const navItems = [
 	// { href: "/financer/payments", icon: CreditCard, label: "Payments" },
 	{ href: "/financer/reports", icon: PieChart, label: "Reports" },
 	{ href: "/financer/statements", icon: ReceiptText, label: "SOA" },
+	{ href: "/financer/ledger", icon: BookOpen, label: "Ledger" },
 ];
 
 // Mock financer data
