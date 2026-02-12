@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { Pagination } from "~/types/pagination";
 
 export const InstallmentStatusEnum = z.enum([
 	"PENDING",
@@ -68,3 +69,63 @@ export const UpdateInstallmentSchema = InstallmentSchema.omit({
 }).partial();
 
 export type UpdateInstallment = z.infer<typeof UpdateInstallmentSchema>;
+
+export type InstallmentWithRelation = Installment;
+
+export type GetAllInstallments = {
+	installments: InstallmentWithRelation[];
+	pagination?: Pagination;
+	count?: number;
+};
+
+export const PayInstallmentPayloadSchema = z.object({
+	payrollBatchId: z.string().optional(),
+	deductionReference: z.string().optional(),
+});
+
+export type PayInstallmentPayload = z.infer<typeof PayInstallmentPayloadSchema>;
+
+export const InstallmentOrderSummarySchema = z.object({
+	totalInstallments: z.number(),
+	paidCount: z.number(),
+	pendingCount: z.number(),
+	failedCount: z.number(),
+	totalAmount: z.number(),
+	paidAmount: z.number(),
+	remainingAmount: z.number(),
+	installments: z.array(InstallmentSchema),
+});
+
+export type InstallmentOrderSummary = z.infer<typeof InstallmentOrderSummarySchema>;
+
+export const InstallmentLedgerEntrySchema = z.object({
+	date: z.coerce.date(),
+	description: z.string(),
+	debit: z.number(),
+	credit: z.number(),
+	balance: z.number(),
+	eventType: z.enum(["LOAN", "PAYMENT"]),
+	orderId: z.string(),
+	orderNumber: z.string(),
+	installmentId: z.string().nullable(),
+	installmentNumber: z.number().nullable(),
+	installmentStatus: z.string().nullable(),
+	referenceNo: z.string().nullable(),
+});
+
+export type InstallmentLedgerEntry = z.infer<typeof InstallmentLedgerEntrySchema>;
+
+export const InstallmentLedgerSchema = z.object({
+	employeeId: z.string(),
+	orderId: z.string().optional(),
+	summary: z.object({
+		totalOrders: z.number(),
+		totalEntries: z.number(),
+		totalDebit: z.number(),
+		totalCredit: z.number(),
+		outstandingBalance: z.number(),
+	}),
+	entries: z.array(InstallmentLedgerEntrySchema),
+});
+
+export type InstallmentLedger = z.infer<typeof InstallmentLedgerSchema>;

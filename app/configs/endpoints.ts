@@ -116,4 +116,15 @@
 		UPDATE: "/purchaseOrder/:id",
 		DELETE: "/purchaseOrder/:id", // Soft delete
 	},
+
+	INSTALLMENT: {
+		GET_ALL: "/installment",
+		GET_BY_ID: "/installment/:id",
+		CREATE: "/installment",
+		UPDATE: "/installment/:id",
+		DELETE: "/installment/:id", // Soft delete
+		GET_LEDGER: "/installment/ledger/:employeeId/order/:orderId",
+		GET_SUMMARY_ORDER: "/installment/order/:orderId/summary",
+		PAY_INSTALLMENT: "/installment/:id/deduct",
+	},
 };
