@@ -316,10 +316,10 @@ When integrating hooks into your pages, **always refer to the Zod schema and ser
 
 Before using any hook, check these files for the resource:
 
-| Purpose              | File                                 | What to look for                                                  |
-| -------------------- | ------------------------------------ | ----------------------------------------------------------------- |
+| Purpose                  | File                                 | What to look for                                                                                             |
+| ------------------------ | ------------------------------------ | ------------------------------------------------------------------------------------------------------------ |
 | Response & Payload Types | `app/zod/{resource}.zod.ts`          | All type definitions (`GetAll{Resource}s`, `Create{Resource}`, `Update{Resource}`, `{Resource}WithRelation`) |
-| Service Methods      | `app/services/{resource}-service.ts` | How each method calls the API and what response type it returns    |
+| Service Methods          | `app/services/{resource}-service.ts` | How each method calls the API and what response type it returns                                              |
 
 ### Using GET hooks (List & Detail)
 
@@ -337,15 +337,15 @@ When using `useGet{Resource}s` or `useGet{Resource}ById`, the **response data ty
 import { useGetOrganizations } from "~/hooks/use-organization";
 
 const MyPage = () => {
-    const { data, isLoading } = useGetOrganizations({
-        page: 1,
-        limit: 10,
-    });
+	const { data, isLoading } = useGetOrganizations({
+		page: 1,
+		limit: 10,
+	});
 
-    // data is typed as GetAllOrganizations (from app/zod/organization.zod.ts)
-    // Access the list:  data?.organizations
-    // Access pagination: data?.pagination
-    // Access count:      data?.count
+	// data is typed as GetAllOrganizations (from app/zod/organization.zod.ts)
+	// Access the list:  data?.organizations
+	// Access pagination: data?.pagination
+	// Access count:      data?.count
 };
 ```
 
@@ -361,10 +361,10 @@ const MyPage = () => {
 import { useGetOrganizationById } from "~/hooks/use-organization";
 
 const DetailPage = ({ organizationId }: { organizationId: string }) => {
-    const { data, isLoading } = useGetOrganizationById(organizationId);
+	const { data, isLoading } = useGetOrganizationById(organizationId);
 
-    // data is typed as OrganizationWithRelation (from app/zod/organization.zod.ts)
-    // Access fields: data?.id, data?.name, data?.code, etc.
+	// data is typed as OrganizationWithRelation (from app/zod/organization.zod.ts)
+	// Access fields: data?.id, data?.name, data?.code, etc.
 };
 ```
 
@@ -386,19 +386,19 @@ import { useCreateOrganization } from "~/hooks/use-organization";
 import type { CreateOrganization } from "~/zod/organization.zod";
 
 const CreatePage = () => {
-    const { mutate, isPending } = useCreateOrganization();
+	const { mutate, isPending } = useCreateOrganization();
 
-    const handleSubmit = (formData: CreateOrganization) => {
-        // formData must match CreateOrganization type from app/zod/organization.zod.ts
-        mutate(formData, {
-            onSuccess: () => {
-                // Handle success (e.g., navigate, show toast)
-            },
-            onError: (error) => {
-                // Handle error
-            },
-        });
-    };
+	const handleSubmit = (formData: CreateOrganization) => {
+		// formData must match CreateOrganization type from app/zod/organization.zod.ts
+		mutate(formData, {
+			onSuccess: () => {
+				// Handle success (e.g., navigate, show toast)
+			},
+			onError: (error) => {
+				// Handle error
+			},
+		});
+	};
 };
 ```
 
@@ -420,22 +420,22 @@ import { useUpdateOrganization } from "~/hooks/use-organization";
 import type { UpdateOrganization } from "~/zod/organization.zod";
 
 const EditPage = ({ organizationId }: { organizationId: string }) => {
-    const { mutate, isPending } = useUpdateOrganization();
+	const { mutate, isPending } = useUpdateOrganization();
 
-    const handleSubmit = (formData: UpdateOrganization) => {
-        // formData must match UpdateOrganization type from app/zod/organization.zod.ts
-        mutate(
-            { organizationId, data: formData },
-            {
-                onSuccess: () => {
-                    // Handle success
-                },
-                onError: (error) => {
-                    // Handle error
-                },
-            },
-        );
-    };
+	const handleSubmit = (formData: UpdateOrganization) => {
+		// formData must match UpdateOrganization type from app/zod/organization.zod.ts
+		mutate(
+			{ organizationId, data: formData },
+			{
+				onSuccess: () => {
+					// Handle success
+				},
+				onError: (error) => {
+					// Handle error
+				},
+			},
+		);
+	};
 };
 ```
 
@@ -447,21 +447,21 @@ const EditPage = ({ organizationId }: { organizationId: string }) => {
 import { useDeleteOrganization } from "~/hooks/use-organization";
 
 const ListPage = () => {
-    const { mutate: deleteOrganization, isPending } = useDeleteOrganization();
+	const { mutate: deleteOrganization, isPending } = useDeleteOrganization();
 
-    const handleDelete = (organizationId: string) => {
-        deleteOrganization(
-            { organizationId },
-            {
-                onSuccess: () => {
-                    // Handle success
-                },
-                onError: (error) => {
-                    // Handle error
-                },
-            },
-        );
-    };
+	const handleDelete = (organizationId: string) => {
+		deleteOrganization(
+			{ organizationId },
+			{
+				onSuccess: () => {
+					// Handle success
+				},
+				onError: (error) => {
+					// Handle error
+				},
+			},
+		);
+	};
 };
 ```
 
@@ -480,12 +480,12 @@ const ListPage = () => {
 
 When adding a new resource API, create/modify the following files:
 
-| Step | File           | Location                             |
-| ---- | -------------- | ------------------------------------ |
-| 1    | Endpoints      | `app/configs/endpoints.ts`           |
-| 2    | Service        | `app/services/{resource}-service.ts` |
-| 3    | Hooks          | `app/hooks/use-{resource}.ts`        |
-| 4    | Zod Schema     | `app/zod/{resource}.zod.ts`          |
+| Step | File             | Location                                        |
+| ---- | ---------------- | ----------------------------------------------- |
+| 1    | Endpoints        | `app/configs/endpoints.ts`                      |
+| 2    | Service          | `app/services/{resource}-service.ts`            |
+| 3    | Hooks            | `app/hooks/use-{resource}.ts`                   |
+| 4    | Zod Schema       | `app/zod/{resource}.zod.ts`                     |
 | 5    | Page Integration | Check Zod + Service before using hooks in pages |
 
 ---

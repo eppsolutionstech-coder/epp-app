@@ -1,19 +1,15 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import type { EmployeePurchase } from "~/data/mock-admin-data";
 import { useGetOrders } from "~/hooks/use-order";
 import { useAuth } from "~/hooks/use-auth";
 import { Link } from "react-router";
 import { ShoppingBag } from "lucide-react";
+import { ProfileOrdersEmpty } from "~/components/employee/profile/profile-orders-empty";
 
-interface ProfileOrdersTabProps {
-	purchases: EmployeePurchase[];
-}
-
-export function ProfileOrdersTab({ purchases }: ProfileOrdersTabProps) {
+export function ProfileOrdersTab() {
 	const { user } = useAuth();
-	const { data: ordersResponse } = useGetOrders({
+	const { data: ordersResponse, isLoading } = useGetOrders({
 		fields: "id, orderNumber, userId, status, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.images, subtotal, tax, total, paymentType, installmentMonths, installmentCount, installmentAmount, paymentMethod, paymentStatus, orderDate, installments.status",
 		filter: `userId:${user?.id}`,
 	});
@@ -24,8 +20,11 @@ export function ProfileOrdersTab({ purchases }: ProfileOrdersTabProps) {
 		<div className="space-y-6">
 			<h2 className="text-2xl font-semibold">My Orders</h2>
 
-			<div className="space-y-4 flex flex-col">
-				{orders.map((order: any) => {
+			{!isLoading && orders.length === 0 ? (
+				<ProfileOrdersEmpty />
+			) : (
+				<div className="space-y-4 flex flex-col">
+					{orders.map((order: any) => {
 					// Calculate paid installments
 					const paidInstallments = order.installments.filter(
 						(i: any) => i.status === "PAID",
@@ -99,8 +98,9 @@ export function ProfileOrdersTab({ purchases }: ProfileOrdersTabProps) {
 							</Card>
 						</Link>
 					);
-				})}
-			</div>
+					})}
+				</div>
+			)}
 		</div>
 	);
 }

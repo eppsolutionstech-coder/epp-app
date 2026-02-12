@@ -11,7 +11,6 @@ export function PurchaseOrderModal({ open, onOpenChange }: PurchaseOrderModalPro
 	const poData = {
 		poNumber: "PO Uzaro_003165r",
 		date: "04-Feb-26",
-		projectCode: "OKD251",
 		company: {
 			to: "Wordtext Systems Inc.",
 			address: "WSI Corporate Center 1005 Metropolitan Avenue, Corner Kakarong, Makati",
@@ -102,8 +101,6 @@ export function PurchaseOrderModal({ open, onOpenChange }: PurchaseOrderModalPro
 							<div className="text-right">{poData.poNumber}</div>
 							<div className="font-bold text-right">DATE :</div>
 							<div className="text-right">{poData.date}</div>
-							<div className="font-bold text-right">PROJECT CODE:</div>
-							<div className="text-right">{poData.projectCode}</div>
 						</div>
 					</div>
 				</div>

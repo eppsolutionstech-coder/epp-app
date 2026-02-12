@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Plus, Trash2, ArrowLeft, Save } from "lucide-react";
+import { Loader2, ArrowLeft, Save } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,7 +29,6 @@ import { useGetOrderById } from "~/hooks/use-order";
 import { useGetSuppliers } from "~/hooks/use-supplier";
 import { useCreatePurchaseOrder } from "~/hooks/use-purchase-order";
 import { CreatePurchaseOrderSchema, type CreatePurchaseOrder } from "~/zod/purchaseOrder.zod";
-import { cn } from "@/lib/utils";
 
 export default function CreatePurchaseOrderPage() {
 	const { id: orderId } = useParams();
@@ -40,6 +39,7 @@ export default function CreatePurchaseOrderPage() {
 		fields: "id, orderNumber, orderItems.item.id, orderItems.item.sku, orderItems.item.name, orderItems.item.description, orderItems.quantity, orderItems.unitPrice",
 	});
 	const order = orderResponse as any;
+	const orderItems = order?.orderItems || [];
 
 	// Fetch Suppliers for selection
 	const { data: suppliersResponse, isLoading: isLoadingSuppliers } = useGetSuppliers({
@@ -54,11 +54,11 @@ export default function CreatePurchaseOrderPage() {
 		defaultValues: {
 			orderId: orderId || "",
 			status: "PENDING",
-			items: [],
 			requisitioner: {
 				name: "",
 				designation: "",
 				department: "",
+				address: "",
 			},
 			contactName: "",
 			contactDesignation: "",
@@ -69,32 +69,15 @@ export default function CreatePurchaseOrderPage() {
 		},
 	});
 
-	const { fields, append, remove, replace } = useFieldArray({
-		control: form.control,
-		name: "items",
-	});
-
 	// Pre-fill form when order loads
 	useEffect(() => {
 		if (order) {
 			form.setValue("orderId", order.id);
 
-			// Pre-fill items from order items
-			if (order.orderItems?.length > 0) {
-				const poItems = order.orderItems.map((oi: any) => ({
-					itemId: oi.item?.id,
-					sku: oi.item?.sku || "N/A",
-					description: oi.item?.name || "Item Description",
-					quantity: oi.quantity || 1,
-					unitPrice: oi.unitPrice || 0,
-				}));
-				replace(poItems);
-			}
-
 			// Pre-fill contact info if available (e.g., from logged in user or config)
 			// For now leaving blank or could fill from user profile if we had that context readily compliant to schema
 		}
-	}, [order, form, replace]);
+	}, [order, form]);
 
 	// Auto-fill supplier info when selected
 	const handleSupplierChange = (supplierId: string) => {
@@ -110,7 +93,28 @@ export default function CreatePurchaseOrderPage() {
 
 	const onSubmit = async (data: CreatePurchaseOrder) => {
 		try {
-			await createPO.mutateAsync(data);
+			const payload = CreatePurchaseOrderSchema.parse({
+				...data,
+				requisitioner: data.requisitioner?.name?.trim()
+					? {
+							name: data.requisitioner.name.trim(),
+							designation: data.requisitioner.designation?.trim() || null,
+							department: data.requisitioner.department?.trim() || null,
+							address: data.requisitioner.address?.trim() || null,
+						}
+					: null,
+				items:
+					orderItems.length > 0
+						? orderItems.map((orderItem: any) => ({
+								itemId: orderItem.item?.id || null,
+								sku: orderItem.item?.sku || "N/A",
+								description: orderItem.item?.name || orderItem.item?.description || null,
+								quantity: orderItem.quantity,
+								unitPrice: orderItem.unitPrice ?? null,
+							}))
+						: undefined,
+			});
+			await createPO.mutateAsync(payload);
 			toast.success("Purchase Order created successfully");
 			navigate(`/admin/orders/${orderId}`);
 		} catch (error) {
@@ -131,15 +135,15 @@ export default function CreatePurchaseOrderPage() {
 		return <div>Order not found</div>;
 	}
 
-	const subTotal =
-		form
-			.watch("items")
-			?.reduce((sum, item) => sum + item.quantity * (item.unitPrice || 0), 0) || 0;
+	const subTotal = orderItems.reduce(
+		(sum: number, item: any) => sum + (item.quantity || 0) * (item.unitPrice || 0),
+		0,
+	);
 	// Assuming VAT inclusive for simplicity or adding calculation logic as needed
 	const totalVatInc = subTotal;
 
 	return (
-		<div className="max-w-5xl mx-auto space-y-6 pb-20">
+		<div className="max-w-6xl mx-auto space-y-6 pb-20">
 			<div className="flex items-center gap-4">
 				<Button
 					variant="ghost"
@@ -172,24 +176,6 @@ export default function CreatePurchaseOrderPage() {
 									</div>
 								</div>
 								<div className="text-right space-y-1">
-									<FormField
-										control={form.control}
-										name="poNumber"
-										render={({ field }) => (
-											<FormItem className="flex items-center gap-2 space-y-0">
-												<FormLabel className="w-20 text-right font-bold text-xs uppercase text-muted-foreground">
-													PO Number
-												</FormLabel>
-												<FormControl>
-													<Input
-														{...field}
-														placeholder="Auto-generated"
-														className="h-8 w-40 text-right font-mono"
-													/>
-												</FormControl>
-											</FormItem>
-										)}
-									/>
 									<div className="flex items-center gap-2 justify-end">
 										<span className="w-20 text-right font-bold text-xs uppercase text-muted-foreground">
 											Date
@@ -347,13 +333,7 @@ export default function CreatePurchaseOrderPage() {
 													<Input
 														type="date"
 														{...field}
-														value={
-															field.value
-																? new Date(field.value)
-																		.toISOString()
-																		.split("T")[0]
-																: ""
-														}
+														value={field.value ?? ""}
 													/>
 												</FormControl>
 												<FormMessage />
@@ -370,13 +350,7 @@ export default function CreatePurchaseOrderPage() {
 													<Input
 														type="date"
 														{...field}
-														value={
-															field.value
-																? new Date(field.value)
-																		.toISOString()
-																		.split("T")[0]
-																: ""
-														}
+														value={field.value ?? ""}
 													/>
 												</FormControl>
 												<FormMessage />
@@ -443,134 +417,68 @@ export default function CreatePurchaseOrderPage() {
 									</FormItem>
 								)}
 							/>
+							<FormField
+								control={form.control}
+								name="requisitioner.address"
+								render={({ field }) => (
+									<FormItem className="md:col-span-3">
+										<FormLabel>Shipped To</FormLabel>
+										<FormControl>
+											<Input
+												{...field}
+												value={field.value || ""}
+												placeholder="1234 Tech Avenue, Innovation City, Philippines"
+											/>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 						</CardContent>
 					</Card>
 
 					{/* Order Items */}
 					<Card>
-						<CardHeader className="flex flex-row items-center justify-between">
+						<CardHeader>
 							<CardTitle className="text-base uppercase tracking-wide text-muted-foreground">
 								Order Items
 							</CardTitle>
-							<Button
-								type="button"
-								variant="outline"
-								size="sm"
-								onClick={() =>
-									append({
-										sku: "",
-										description: "",
-										quantity: 1,
-										unitPrice: 0,
-									})
-								}>
-								<Plus className="mr-2 h-4 w-4" /> Add Item
-							</Button>
 						</CardHeader>
 						<CardContent>
 							<div className="space-y-4">
-								<div className="grid grid-cols-[1fr_2fr_100px_150px_50px] gap-4 text-xs font-bold text-muted-foreground px-2">
+								<div className="grid grid-cols-[1fr_2fr_100px_150px] gap-4 text-xs font-bold text-muted-foreground px-2">
 									<div>SKU/Code</div>
 									<div>Description</div>
 									<div className="text-center">Qty</div>
 									<div className="text-right">Unit Price</div>
-									<div></div>
 								</div>
 								<Separator />
-								{fields.map((field, index) => (
+								{orderItems.map((orderItem: any, index: number) => (
 									<div
-										key={field.id}
-										className="grid grid-cols-[1fr_2fr_100px_150px_50px] gap-4 items-start animate-in fade-in slide-in-from-top-1">
-										<FormField
-											control={form.control}
-											name={`items.${index}.sku`}
-											render={({ field }) => (
-												<FormItem>
-													<FormControl>
-														<Input {...field} placeholder="SKU" />
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name={`items.${index}.description`}
-											render={({ field }) => (
-												<FormItem>
-													<FormControl>
-														<Input
-															{...field}
-															value={field.value || ""}
-															placeholder="Item Description"
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name={`items.${index}.quantity`}
-											render={({ field }) => (
-												<FormItem>
-													<FormControl>
-														<Input
-															type="number"
-															{...field}
-															onChange={(e) =>
-																field.onChange(
-																	e.target.value === ""
-																		? 0
-																		: parseInt(e.target.value),
-																)
-															}
-															className="text-center"
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<FormField
-											control={form.control}
-											name={`items.${index}.unitPrice`}
-											render={({ field }) => (
-												<FormItem>
-													<FormControl>
-														<Input
-															type="number"
-															{...field}
-															onChange={(e) =>
-																field.onChange(
-																	e.target.value === ""
-																		? 0
-																		: parseFloat(
-																				e.target.value,
-																			),
-																)
-															}
-															value={field.value ?? 0}
-															className="text-right"
-														/>
-													</FormControl>
-													<FormMessage />
-												</FormItem>
-											)}
-										/>
-										<Button
-											type="button"
-											variant="ghost"
-											size="icon"
-											className="text-destructive hover:text-destructive hover:bg-destructive/10"
-											onClick={() => remove(index)}>
-											<Trash2 className="h-4 w-4" />
-										</Button>
+										key={orderItem.item?.id || `${orderItem.item?.sku || "item"}-${index}`}
+										className="grid grid-cols-[1fr_2fr_100px_150px] gap-4 items-start animate-in fade-in slide-in-from-top-1">
+										<div className="rounded-md border bg-muted/20 px-3 py-2 text-sm">
+											{orderItem.item?.sku || "N/A"}
+										</div>
+										<div className="rounded-md border bg-muted/20 px-3 py-2 text-sm">
+											{orderItem.item?.name || orderItem.item?.description || "-"}
+										</div>
+										<div className="rounded-md border bg-muted/20 px-3 py-2 text-center text-sm">
+											{orderItem.quantity || 0}
+										</div>
+										<div className="rounded-md border bg-muted/20 px-3 py-2 text-right text-sm">
+											₱ {(orderItem.unitPrice || 0).toLocaleString()}
+										</div>
 									</div>
 								))}
+								{orderItems.length === 0 && (
+									<p className="px-2 text-sm text-muted-foreground">
+										No items found for this order.
+									</p>
+								)}
 
 								<Separator className="my-4" />
-								<div className="flex flex-col items-end gap-2 pr-12">
+								<div className="flex flex-col items-end gap-2 pr-2">
 									<div className="flex gap-8 text-sm">
 										<span className="font-medium text-muted-foreground w-32 text-right">
 											Subtotal:

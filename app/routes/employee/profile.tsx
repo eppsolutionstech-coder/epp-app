@@ -80,7 +80,7 @@ export default function EmployeeProfile() {
 						/>
 					)}
 
-					{activeTab === "orders" && <ProfileOrdersTab purchases={purchases} />}
+					{activeTab === "orders" && <ProfileOrdersTab />}
 
 					{activeTab === "credit" && (
 						<ProfileCreditTab

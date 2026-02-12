@@ -25,6 +25,7 @@ const RequisitionerSchema = z.object({
 	name: z.string(),
 	designation: z.string().optional().nullable(),
 	department: z.string().optional().nullable(),
+	address: z.string().optional().nullable(),
 });
 
 export const PurchaseOrderSchema = z.object({
@@ -36,8 +37,8 @@ export const PurchaseOrderSchema = z.object({
 	items: z.array(PurchaseOrderItemSchema).optional().nullable(),
 	leadTime: z.number().int().min(0).optional().nullable(),
 	availability: z.string().optional().nullable(),
-	delivery: z.coerce.date().optional().nullable(),
-	pdc: z.coerce.date().optional().nullable(),
+	delivery: z.string().optional().nullable(),
+	pdc: z.string().optional().nullable(),
 	requisitioner: RequisitionerSchema.optional().nullable(),
 	contactName: z.string().optional().nullable(),
 	contactDesignation: z.string().optional().nullable(),
