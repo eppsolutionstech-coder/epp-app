@@ -8,7 +8,7 @@ export default function FinancerLayout() {
 
 			{/* Main Content */}
 			<main className="flex-1 p-6 overflow-y-auto">
-				<div className="max-w-7xl mx-auto px-6">
+				<div className="max-w-8xl mx-auto px-6">
 					<Outlet />
 				</div>
 			</main>

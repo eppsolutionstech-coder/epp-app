@@ -534,3 +534,73 @@ export const INTEREST_RATES = {
 	wholesaler: 10,
 	regular: 18,
 } as const;
+
+// =====================================================
+// STATEMENT OF ACCOUNT (SOA) - Financier ↔ Uzaro
+// Aggregate view only. No customer-level details.
+// The Financier only cares about money lent to Uzaro,
+// money returned, balance, and interest share.
+// =====================================================
+
+export type SOATransaction = {
+	id: string;
+	date: string;
+	type: "release" | "repayment";
+	description: string;
+	amount: number;
+	runningBalance: number;
+};
+
+export type SOAMonthlySummary = {
+	month: string;
+	fundsReleased: number;
+	repaymentReceived: number;
+	interestEarned: number;
+	ordersApproved: number;
+	ordersSettled: number;
+};
+
+export type SOATotals = {
+	totalFundsReleased: number;
+	totalRepaymentReceived: number;
+	totalOutstandingBalance: number;
+	totalInterestEarned: number;
+	revenueShareRatio: string;
+	totalOrdersFunded: number;
+	totalOrdersSettled: number;
+};
+
+export const MOCK_SOA_TRANSACTIONS: SOATransaction[] = [
+	{ id: "TXN-001", date: "2024-01-15", type: "release", description: "Funds released to Uzaro — 3 orders approved", amount: 291000, runningBalance: 291000 },
+	{ id: "TXN-002", date: "2024-02-01", type: "repayment", description: "Repayment from Uzaro — January collections", amount: 24250, runningBalance: 266750 },
+	{ id: "TXN-003", date: "2024-02-15", type: "release", description: "Funds released to Uzaro — 2 orders approved", amount: 97000, runningBalance: 363750 },
+	{ id: "TXN-004", date: "2024-03-01", type: "repayment", description: "Repayment from Uzaro — February collections", amount: 48500, runningBalance: 315250 },
+	{ id: "TXN-005", date: "2024-03-20", type: "release", description: "Funds released to Uzaro — 4 orders approved", amount: 200000, runningBalance: 515250 },
+	{ id: "TXN-006", date: "2024-04-01", type: "repayment", description: "Repayment from Uzaro — March collections", amount: 72750, runningBalance: 442500 },
+	{ id: "TXN-007", date: "2024-04-18", type: "release", description: "Funds released to Uzaro — 2 orders approved", amount: 87000, runningBalance: 529500 },
+	{ id: "TXN-008", date: "2024-05-01", type: "repayment", description: "Repayment from Uzaro — April collections", amount: 95200, runningBalance: 434300 },
+	{ id: "TXN-009", date: "2024-05-10", type: "release", description: "Funds released to Uzaro — 3 orders approved", amount: 145000, runningBalance: 579300 },
+	{ id: "TXN-010", date: "2024-06-01", type: "repayment", description: "Repayment from Uzaro — May collections", amount: 105336.67, runningBalance: 473963.33 },
+	{ id: "TXN-011", date: "2024-06-12", type: "release", description: "Funds released to Uzaro — 1 order approved", amount: 45000, runningBalance: 518963.33 },
+	{ id: "TXN-012", date: "2024-07-01", type: "repayment", description: "Repayment from Uzaro — June collections", amount: 118200, runningBalance: 400763.33 },
+];
+
+export const MOCK_SOA_MONTHLY: SOAMonthlySummary[] = [
+	{ month: "2024-01", fundsReleased: 291000, repaymentReceived: 0, interestEarned: 0, ordersApproved: 3, ordersSettled: 0 },
+	{ month: "2024-02", fundsReleased: 97000, repaymentReceived: 24250, interestEarned: 2425, ordersApproved: 2, ordersSettled: 0 },
+	{ month: "2024-03", fundsReleased: 200000, repaymentReceived: 48500, interestEarned: 4850, ordersApproved: 4, ordersSettled: 0 },
+	{ month: "2024-04", fundsReleased: 87000, repaymentReceived: 72750, interestEarned: 7275, ordersApproved: 2, ordersSettled: 1 },
+	{ month: "2024-05", fundsReleased: 145000, repaymentReceived: 95200, interestEarned: 9520, ordersApproved: 3, ordersSettled: 1 },
+	{ month: "2024-06", fundsReleased: 45000, repaymentReceived: 105336.67, interestEarned: 10533.67, ordersApproved: 1, ordersSettled: 2 },
+	{ month: "2024-07", fundsReleased: 0, repaymentReceived: 118200, interestEarned: 11820, ordersApproved: 0, ordersSettled: 3 },
+];
+
+export const MOCK_SOA_TOTALS: SOATotals = {
+	totalFundsReleased: 865000,
+	totalRepaymentReceived: 464236.67,
+	totalOutstandingBalance: 400763.33,
+	totalInterestEarned: 46423.67,
+	revenueShareRatio: "50/50",
+	totalOrdersFunded: 15,
+	totalOrdersSettled: 7,
+};

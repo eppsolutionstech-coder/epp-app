@@ -8,6 +8,7 @@ import {
 	FileText,
 	CreditCard,
 	PieChart,
+	ReceiptText,
 	Settings,
 	LogOut,
 	User,
@@ -26,9 +27,10 @@ import { cn } from "@/lib/utils";
 const navItems = [
 	{ href: "/financer", icon: LayoutDashboard, label: "Dashboard", end: true },
 	{ href: "/financer/applications", icon: FileText, label: "Applications" },
-	{ href: "/financer/loans", icon: Wallet, label: "Loans" },
-	{ href: "/financer/payments", icon: CreditCard, label: "Payments" },
+	// { href: "/financer/loans", icon: Wallet, label: "Loans" },
+	// { href: "/financer/payments", icon: CreditCard, label: "Payments" },
 	{ href: "/financer/reports", icon: PieChart, label: "Reports" },
+	{ href: "/financer/statements", icon: ReceiptText, label: "SOA" },
 ];
 
 // Mock financer data
