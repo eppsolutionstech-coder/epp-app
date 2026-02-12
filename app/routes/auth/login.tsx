@@ -1,7 +1,16 @@
 ﻿import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Loader2, Users, Store, Shield, ArrowRight, Wallet } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { Loader2, LogIn, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router";
 import { PAGE_TITLES } from "~/config/page-titles";
 import type { Route } from "./+types/login";
@@ -14,76 +23,71 @@ export function meta({}: Route.MetaArgs) {
 interface RoleOption {
 	id: string;
 	title: string;
-	description: string;
-	icon: React.ComponentType<{ className?: string }>;
 	route: string;
-	color: string;
-	bgColor: string;
 	email: string;
+	password: string;
 }
 
 const roleOptions: RoleOption[] = [
 	{
 		id: "employee",
-		title: "Login as Employee",
-		description: "Browse and purchase products through the EPP program",
-		icon: Users,
+		title: "Employee",
 		route: "/employee/",
-		color: "text-blue-600 dark:text-blue-400",
-		bgColor:
-			"bg-blue-50 dark:bg-blue-950/50 hover:bg-blue-100 dark:hover:bg-blue-900/50 border-blue-200 dark:border-blue-800",
 		email: "epp-user@gmail.com",
+		password: "Test123!",
 	},
 	{
 		id: "supplier",
-		title: "Login as Supplier",
-		description: "Manage your products and fulfill employee orders",
-		icon: Store,
+		title: "Supplier",
 		route: "/supplier/dashboard",
-		color: "text-emerald-600 dark:text-emerald-400",
-		bgColor:
-			"bg-emerald-50 dark:bg-emerald-950/50 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border-emerald-200 dark:border-emerald-800",
 		email: "epp-vendor@gmail.com",
+		password: "Test123!",
 	},
 	{
 		id: "financer",
-		title: "Login as Financer",
-		description: "Manage loan applications, payments, and financing",
-		icon: Wallet,
+		title: "Financer",
 		route: "/financer",
-		color: "text-teal-600 dark:text-teal-400",
-		bgColor:
-			"bg-teal-50 dark:bg-teal-950/50 hover:bg-teal-100 dark:hover:bg-teal-900/50 border-teal-200 dark:border-teal-800",
 		email: "epp-financier@gmail.com",
+		password: "Test123!",
 	},
 	{
 		id: "admin",
-		title: "Login as EPP Admin",
-		description: "Manage suppliers, products, and program oversight",
-		icon: Shield,
+		title: "EPP Admin",
 		route: "/admin",
-		color: "text-purple-600 dark:text-purple-400",
-		bgColor:
-			"bg-purple-50 dark:bg-purple-950/50 hover:bg-purple-100 dark:hover:bg-purple-900/50 border-purple-200 dark:border-purple-800",
 		email: "epp-admin@gmail.com",
+		password: "Test123!",
 	},
 ];
 
 export default function LoginPage() {
-	const [selectedRole, setSelectedRole] = useState<string | null>(null);
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [selectedRoleId, setSelectedRoleId] = useState<string>("");
+	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const navigate = useNavigate();
 	const { login } = useAuth();
 
-	const handleRoleSelect = async (role: RoleOption) => {
-		setSelectedRole(role.id);
+	const handleRoleChange = (roleId: string) => {
+		setSelectedRoleId(roleId);
+		const role = roleOptions.find((r) => r.id === roleId);
+		if (role) {
+			setEmail(role.email);
+			setPassword(role.password);
+		}
+	};
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!email || !password) return;
+
 		setIsLoading(true);
+		const role = roleOptions.find((r) => r.id === selectedRoleId);
 
 		try {
-			await login(role.email, "Test123!");
-			navigate(role.route);
+			await login(email, password);
+			navigate(role?.route ?? "/employee/");
 		} catch (err) {
-			// Error is handled by the hook, but you can add additional handling here if needed
 			console.error("Login failed:", err);
 		} finally {
 			setIsLoading(false);
@@ -92,9 +96,9 @@ export default function LoginPage() {
 
 	return (
 		<div className="h-screen overflow-hidden flex flex-col lg:flex-row">
-			{/* Left Panel - Role Selection */}
+			{/* Left Panel - Login Form */}
 			<div className="flex-1 flex items-center justify-center py-12 px-6 lg:px-12 bg-gradient-to-br from-background via-background to-muted/30">
-				<div className="w-full max-w-lg space-y-8">
+				<div className="w-full max-w-md space-y-8">
 					{/* Header */}
 					<div className="text-center space-y-3">
 						<div className="flex justify-center mb-6">
@@ -108,63 +112,104 @@ export default function LoginPage() {
 							Employee Purchase Program
 						</h1>
 						<p className="text-muted-foreground text-lg">
-							Select your role to continue
+							Sign in to your account
 						</p>
 					</div>
 
-					{/* Role Selection Cards */}
-					<div className="space-y-4">
-						{roleOptions.map((role) => {
-							const Icon = role.icon;
-							const isSelected = selectedRole === role.id;
+					{/* Login Form */}
+					<Card>
+						<CardContent className="pt-6 space-y-6">
+							{/* Quick Role Select */}
+							<div className="space-y-2">
+								<Label htmlFor="role-select">Quick Login As</Label>
+								<Select
+									value={selectedRoleId}
+									onValueChange={handleRoleChange}>
+									<SelectTrigger id="role-select">
+										<SelectValue placeholder="Select a role to prefill..." />
+									</SelectTrigger>
+									<SelectContent>
+										{roleOptions.map((role) => (
+											<SelectItem key={role.id} value={role.id}>
+												{role.title}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
 
-							return (
-								<Card
-									key={role.id}
-									className={`cursor-pointer transition-all duration-300 border-2 ${role.bgColor} ${
-										isSelected ? "ring-2 ring-primary ring-offset-2" : ""
-									}`}
-									onClick={() => !isLoading && handleRoleSelect(role)}>
-									<CardContent className="px-6">
-										<div className="flex items-center gap-4">
-											{/* Icon */}
-											<div
-												className={`h-14 w-14 rounded-xl flex items-center justify-center ${role.color} bg-white dark:bg-gray-900 shadow-sm`}>
-												<Icon className="h-7 w-7" />
-											</div>
+							<div className="relative">
+								<div className="absolute inset-0 flex items-center">
+									<span className="w-full border-t" />
+								</div>
+								<div className="relative flex justify-center text-xs uppercase">
+									<span className="bg-card px-2 text-muted-foreground">
+										credentials
+									</span>
+								</div>
+							</div>
 
-											{/* Content */}
-											<div className="flex-1">
-												<h3 className="font-semibold text-lg">
-													{role.title}
-												</h3>
-												<p className="text-sm text-muted-foreground mt-0.5">
-													{role.description}
-												</p>
-											</div>
+							<form onSubmit={handleSubmit} className="space-y-4">
+								<div className="space-y-2">
+									<Label htmlFor="email">Email</Label>
+									<Input
+										id="email"
+										type="email"
+										placeholder="Enter your email"
+										value={email}
+										onChange={(e) => setEmail(e.target.value)}
+										required
+									/>
+								</div>
 
-											{/* Arrow / Loading */}
-											<div className="flex-shrink-0">
-												{isSelected && isLoading ? (
-													<Loader2 className="h-5 w-5 animate-spin text-primary" />
-												) : (
-													<ArrowRight className="h-5 w-5 text-muted-foreground" />
-												)}
-											</div>
-										</div>
-									</CardContent>
-								</Card>
-							);
-						})}
-					</div>
+								<div className="space-y-2">
+									<Label htmlFor="password">Password</Label>
+									<div className="relative">
+										<Input
+											id="password"
+											type={showPassword ? "text" : "password"}
+											placeholder="Enter your password"
+											value={password}
+											onChange={(e) => setPassword(e.target.value)}
+											className="pr-10"
+											required
+										/>
+										<button
+											type="button"
+											className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+											onClick={() => setShowPassword(!showPassword)}
+											tabIndex={-1}>
+											{showPassword ? (
+												<EyeOff className="h-4 w-4" />
+											) : (
+												<Eye className="h-4 w-4" />
+											)}
+										</button>
+									</div>
+								</div>
+
+								<Button
+									type="submit"
+									className="w-full"
+									disabled={isLoading || !email || !password}>
+									{isLoading ? (
+										<Loader2 className="h-4 w-4 animate-spin mr-2" />
+									) : (
+										<LogIn className="h-4 w-4 mr-2" />
+									)}
+									{isLoading ? "Signing in..." : "Sign In"}
+								</Button>
+							</form>
+						</CardContent>
+					</Card>
 
 					{/* Footer Note */}
 					<div className="text-center">
 						<p className="text-sm text-muted-foreground">
-							This is a <span className="font-medium">demo application</span> for UI
-							demonstration purposes.
+							This is a <span className="font-medium">demo application</span>{" "}
+							for UI demonstration purposes.
 							<br />
-							No authentication required.
+							Use the dropdown above to quickly prefill credentials.
 						</p>
 					</div>
 				</div>
@@ -205,4 +250,3 @@ export default function LoginPage() {
 		</div>
 	);
 }
-
