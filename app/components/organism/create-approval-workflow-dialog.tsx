@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
@@ -187,18 +187,10 @@ export function CreateApprovalWorkflowDialog({
 										<FormItem>
 											<FormLabel>Min Amount</FormLabel>
 											<FormControl>
-												<Input
-													type="number"
+												<FormattedNumberInput
 													placeholder="0.00"
-													{...field}
-													value={field.value || ""}
-													onChange={(e) =>
-														field.onChange(
-															e.target.value
-																? Number(e.target.value)
-																: null,
-														)
-													}
+													value={field.value ?? null}
+													onChange={field.onChange}
 												/>
 											</FormControl>
 											<FormMessage />
@@ -212,18 +204,10 @@ export function CreateApprovalWorkflowDialog({
 										<FormItem>
 											<FormLabel>Max Amount</FormLabel>
 											<FormControl>
-												<Input
-													type="number"
+												<FormattedNumberInput
 													placeholder="Optional"
-													{...field}
-													value={field.value || ""}
-													onChange={(e) =>
-														field.onChange(
-															e.target.value
-																? Number(e.target.value)
-																: null,
-														)
-													}
+													value={field.value ?? null}
+													onChange={field.onChange}
 												/>
 											</FormControl>
 											<FormMessage />
@@ -263,4 +247,75 @@ export function CreateApprovalWorkflowDialog({
 			</DialogContent>
 		</Dialog>
 	);
+}
+
+function FormattedNumberInput({
+	value,
+	onChange,
+	...props
+}: {
+	value: number | null;
+	onChange: (value: number | null) => void;
+} & Omit<React.ComponentProps<typeof Input>, "value" | "onChange">) {
+	const format = (val: string) => {
+		// Only allow numbers and one decimal point
+		const clean = val.replace(/[^\d.]/g, "");
+		const parts = clean.split(".");
+		// Format integer part with commas
+		parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		// Rejoin with decimal part (limit to one decimal point)
+		return parts.slice(0, 2).join(".");
+	};
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const raw = e.target.value;
+		const formatted = format(raw);
+		const numericValue = parseFloat(formatted.replace(/,/g, ""));
+
+		if (raw === "") {
+			onChange(null);
+		} else if (!isNaN(numericValue)) {
+			onChange(numericValue);
+		}
+	};
+
+	// Display formatted value, but allow typing by not controlling strictly if we wanted to preserve cursor
+	// However, for this simple requirement, controlling value with formatting is usually what's requested despite cursor jumping
+	// To fix cursor jumping in a simple way without extra libs, we can just use the formatted value as display
+	// stored in local state if needed, but here we can just derive it from props for simplicity if updates are fast enough
+	// But dealing with "1000." needing to show "1,000." while value is 1000 is tricky with just props.
+	// So we need local state to handle the "intermediate" typing states like trailing dot or zeros.
+
+	const [displayValue, setDisplayValue] = useState("");
+
+	useEffect(() => {
+		if (value === null) {
+			setDisplayValue("");
+		} else {
+			// Check if the current display value matches the numeric value (ignoring formatting)
+			// This prevents overwriting user input like "1.00" with "1" while they are typing
+			const currentNumeric = parseFloat(displayValue.replace(/,/g, ""));
+			if (currentNumeric !== value) {
+				setDisplayValue(value.toLocaleString());
+			}
+		}
+	}, [value]);
+
+	const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const raw = e.target.value;
+		// Allow digits, commas, and one dot
+		if (!/^[\d,]*\.?[\d,]*$/.test(raw)) return;
+
+		const formatted = format(raw);
+		setDisplayValue(formatted);
+
+		const numericValue = parseFloat(formatted.replace(/,/g, ""));
+		if (!isNaN(numericValue)) {
+			onChange(numericValue);
+		} else if (formatted === "") {
+			onChange(null);
+		}
+	};
+
+	return <Input {...props} value={displayValue} onChange={onInputChange} />;
 }
