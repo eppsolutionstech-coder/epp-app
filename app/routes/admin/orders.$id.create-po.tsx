@@ -64,6 +64,8 @@ export default function CreatePurchaseOrderPage() {
 			contactName: "",
 			contactNumber: "",
 			contactEmail: "",
+			contactDesignation: "",
+			contactDepartment: "",
 		},
 	});
 
@@ -190,8 +192,7 @@ export default function CreatePurchaseOrderPage() {
 											<FormLabel>Supplier *</FormLabel>
 											<Select
 												onValueChange={field.onChange}
-												value={field.value}
-											>
+												value={field.value}>
 												<FormControl>
 													<SelectTrigger>
 														<SelectValue placeholder="Select a supplier" />
@@ -199,7 +200,9 @@ export default function CreatePurchaseOrderPage() {
 												</FormControl>
 												<SelectContent>
 													{suppliers.map((supplier: any) => (
-														<SelectItem key={supplier.id} value={supplier.id}>
+														<SelectItem
+															key={supplier.id}
+															value={supplier.id}>
 															{supplier.name}
 														</SelectItem>
 													))}
@@ -239,6 +242,40 @@ export default function CreatePurchaseOrderPage() {
 														{...field}
 														value={field.value || ""}
 														placeholder="+63..."
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="contactDesignation"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Contact Designation</FormLabel>
+												<FormControl>
+													<Input
+														{...field}
+														value={field.value || ""}
+														placeholder="Position"
+													/>
+												</FormControl>
+												<FormMessage />
+											</FormItem>
+										)}
+									/>
+									<FormField
+										control={form.control}
+										name="contactDepartment"
+										render={({ field }) => (
+											<FormItem>
+												<FormLabel>Contact Department</FormLabel>
+												<FormControl>
+													<Input
+														{...field}
+														value={field.value || ""}
+														placeholder="Department"
 													/>
 												</FormControl>
 												<FormMessage />

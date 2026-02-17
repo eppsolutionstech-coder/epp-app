@@ -11,7 +11,7 @@ interface PurchaseOrderModalProps {
 export function PurchaseOrderModal({ open, onOpenChange, purchaseOrder }: PurchaseOrderModalProps) {
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
-			<DialogContent className="max-w-5xl w-full max-h-[95vh] overflow-y-auto p-10 gap-0">
+			<DialogContent className="max-w-6xl w-full max-h-[95vh] overflow-y-auto p-10 gap-0">
 				<PurchaseOrderDetails purchaseOrder={purchaseOrder} />
 			</DialogContent>
 		</Dialog>

@@ -148,8 +148,8 @@ export function PurchaseOrderDetails({ purchaseOrder }: PurchaseOrderDetailsProp
 
 					<div className="font-bold">Designation:</div>
 					<div>{poData.contact.designation}</div>
-					<div className="font-bold whitespace-nowrap">Contact Mobile:</div>
-					<div>{poData.contact.contactMobile}</div>
+					{/* <div className="font-bold whitespace-nowrap">Contact Mobile:</div>
+					<div>{poData.contact.contactMobile}</div> */}
 
 					<div className="font-bold">Department:</div>
 					<div>{poData.contact.department}</div>
