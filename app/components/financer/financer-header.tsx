@@ -6,7 +6,6 @@ import {
 	Wallet,
 	LayoutDashboard,
 	FileText,
-	CreditCard,
 	PieChart,
 	ReceiptText,
 	BookOpen,
@@ -19,7 +18,6 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";

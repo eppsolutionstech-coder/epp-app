@@ -1,5 +1,5 @@
-﻿import { useState } from "react";
-import { Link } from "react-router";
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -17,6 +17,7 @@ import { useApiParams } from "~/hooks/util-hooks/use-api-params";
 import { useDeleteSupplier, useGetSuppliers } from "~/hooks/use-supplier";
 
 export default function AdminsuppliersPage() {
+	const navigate = useNavigate();
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const [selectedsupplierId, setSelectedsupplierId] = useState<string | null>(null);
 
@@ -43,6 +44,10 @@ export default function AdminsuppliersPage() {
 		if (confirm("Are you sure you want to deactivate this supplier?")) {
 			await deletesupplier.mutateAsync(supplierId);
 		}
+	};
+
+	const handleViewSupplierDetails = (supplierId: string) => {
+		navigate(`/admin/suppliers/${supplierId}`);
 	};
 
 	return (
@@ -94,7 +99,16 @@ export default function AdminsuppliersPage() {
 						suppliers.map((supplier) => (
 							<Card
 								key={supplier.id}
-								className="hover:shadow-md transition-shadow duration-200">
+								role="button"
+								tabIndex={0}
+								onClick={() => handleViewSupplierDetails(supplier.id)}
+								onKeyDown={(event) => {
+									if (event.key === "Enter" || event.key === " ") {
+										event.preventDefault();
+										handleViewSupplierDetails(supplier.id);
+									}
+								}}
+								className="cursor-pointer hover:shadow-md transition-shadow duration-200">
 								<CardContent className="px-6">
 									<div className="flex flex-col lg:flex-row lg:items-center gap-6">
 										{/* Icon & Identity */}
@@ -104,12 +118,15 @@ export default function AdminsuppliersPage() {
 											</div>
 											<div className="space-y-1">
 												<div className="flex items-center gap-2">
-													<h3 className="font-semibold text-lg hover:text-primary transition-colors cursor-pointer">
-														<Link
-															to={`/admin/suppliers/${supplier.id}`}>
-															{supplier.name}
-														</Link>
-													</h3>
+													<button
+														type="button"
+														onClick={(event) => {
+															event.stopPropagation();
+															handleViewSupplierDetails(supplier.id);
+														}}
+														className="font-semibold text-lg hover:text-primary transition-colors text-left">
+														{supplier.name}
+													</button>
 													<Badge
 														variant={
 															supplier.isActive
@@ -178,30 +195,40 @@ export default function AdminsuppliersPage() {
 										<div className="flex items-center justify-end">
 											<DropdownMenu>
 												<DropdownMenuTrigger asChild>
-													<Button variant="ghost" className="h-8 w-8 p-0">
+													<Button
+														variant="ghost"
+														className="h-8 w-8 p-0"
+														onClick={(event) =>
+															event.stopPropagation()
+														}>
 														<span className="sr-only">Open menu</span>
 														<MoreHorizontal className="h-4 w-4" />
 													</Button>
 												</DropdownMenuTrigger>
-												<DropdownMenuContent align="end">
+												<DropdownMenuContent
+													align="end"
+													onClick={(event) => event.stopPropagation()}>
 													<DropdownMenuLabel>Actions</DropdownMenuLabel>
 													<DropdownMenuItem
-														onClick={() =>
-															handleOpenEditDialog(supplier.id)
-														}>
+														onClick={(event) => {
+															event.stopPropagation();
+															handleOpenEditDialog(supplier.id);
+														}}>
 														Edit supplier
 													</DropdownMenuItem>
-													<DropdownMenuItem asChild>
-														<Link
-															to={`/admin/suppliers/${supplier.id}`}>
-															View Details
-														</Link>
+													<DropdownMenuItem
+														onClick={(event) => {
+															event.stopPropagation();
+															handleViewSupplierDetails(supplier.id);
+														}}>
+														View details
 													</DropdownMenuItem>
 													<DropdownMenuItem
 														className="text-red-600"
-														onClick={() =>
-															handleDeletesupplier(supplier.id)
-														}>
+														onClick={(event) => {
+															event.stopPropagation();
+															handleDeletesupplier(supplier.id);
+														}}>
 														Deactivate supplier
 													</DropdownMenuItem>
 												</DropdownMenuContent>

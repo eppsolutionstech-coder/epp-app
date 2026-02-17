@@ -1,44 +1,71 @@
 import { useState } from "react";
-import { useParams, Link, useNavigate } from "react-router";
-import { Button } from "@/components/ui/button";
+import { Link, useNavigate, useParams } from "react-router";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
 	ArrowLeft,
-	Store,
+	Edit,
+	ExternalLink,
 	Loader2,
 	Mail,
-	Phone,
-	User,
-	Calendar,
 	MapPin,
-	Globe,
-	Edit,
+	Phone,
+	Store,
 	Trash2,
-	ExternalLink,
+	User,
 } from "lucide-react";
-import { useGetSupplierById, useDeleteSupplier } from "~/hooks/use-supplier";
 import { SupplierUpsertDialog } from "~/components/organism/supplier-upsert-dialog";
-import { cn } from "@/lib/utils";
+import { useDeleteSupplier, useGetSupplierById } from "~/hooks/use-supplier";
+import { useGetUsers } from "~/hooks/use-user";
+
+const formatDate = (value: Date | string | null | undefined) => {
+	if (!value) {
+		return "-";
+	}
+
+	const parsedDate = new Date(value);
+	if (Number.isNaN(parsedDate.getTime())) {
+		return "-";
+	}
+
+	return parsedDate.toLocaleDateString();
+};
 
 export default function AdminSupplierDetailsPage() {
-	const { id } = useParams();
+	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-	const { data: supplier, isLoading, isError } = useGetSupplierById(id || "");
+	const {
+		data: supplier,
+		isLoading,
+		isError,
+	} = useGetSupplierById(id || "", {
+		fields: "id, organizationId, name, code, description, contactName, email, phone, website, address, isActive, createdAt, updatedAt",
+	});
+
+	const {data: supplierAdmins, isLoading: isLoadingAdmins} = useGetUsers({
+		filter: "metadata.employee.id:6984324e98d330714c6d7f65"
+	});
+
 	const deleteSupplier = useDeleteSupplier();
 
 	const handleDeleteSupplier = async () => {
+		if (!id) {
+			return;
+		}
+
 		if (
-			confirm(
+			!confirm(
 				"Are you sure you want to deactivate this supplier? This action cannot be undone.",
 			)
 		) {
-			await deleteSupplier.mutateAsync(id!);
-			navigate("/admin/suppliers");
+			return;
 		}
+
+		await deleteSupplier.mutateAsync(id);
+		navigate("/admin/suppliers");
 	};
 
 	if (isLoading) {
@@ -51,44 +78,81 @@ export default function AdminSupplierDetailsPage() {
 
 	if (isError || !supplier) {
 		return (
-			<div className="flex flex-col items-center justify-center py-12 gap-4">
-				<div className="bg-muted p-4 rounded-full">
+			<div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
+				<div className="rounded-full bg-muted p-4">
 					<Store className="h-8 w-8 text-muted-foreground" />
 				</div>
-				<h1 className="text-2xl font-bold">Supplier Not Found</h1>
-				<p className="text-muted-foreground">
+				<h1 className="text-2xl font-bold tracking-tight">Supplier not found</h1>
+				<p className="max-w-md text-muted-foreground">
 					The supplier you are looking for does not exist or has been removed.
 				</p>
 				<Button asChild variant="outline">
-					<Link to="/admin/suppliers">Back to Suppliers</Link>
+					<Link to="/admin/suppliers">Back to suppliers</Link>
 				</Button>
 			</div>
 		);
 	}
 
+	const websiteHref = supplier.website
+		? supplier.website.startsWith("http")
+			? supplier.website
+			: `https://${supplier.website}`
+		: null;
+	const organizationLabel = supplier.organizationId || "Unassigned";
+
 	return (
-		<div className="max-w-7xl mx-auto space-y-6">
-			{/* Header */}
-			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-				<div className="flex items-center gap-4">
-					<Button
-						variant="ghost"
-						size="icon"
-						asChild
-						className="h-10 w-10 rounded-full hover:bg-muted/50 transition-colors">
-						<Link to="/admin/suppliers">
-							<ArrowLeft className="h-5 w-5" />
-						</Link>
+		<div className="mx-auto max-w-7xl space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+			<div className="flex items-center justify-between gap-3">
+				<Button
+					variant="ghost"
+					size="icon"
+					asChild
+					className="h-10 w-10 rounded-full transition-colors hover:bg-muted/60">
+					<Link to="/admin/suppliers">
+						<ArrowLeft className="h-5 w-5" />
+					</Link>
+				</Button>
+				<div className="flex items-center gap-2">
+					<Button variant="outline" onClick={() => setIsDialogOpen(true)}>
+						<Edit className="mr-2 h-4 w-4" />
+						Edit Supplier
 					</Button>
-					<div className="flex items-center gap-3">
-						<div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-							<Store className="h-5 w-5" />
-						</div>
-						<div>
-							<h1 className="text-2xl font-bold tracking-tight">{supplier.name}</h1>
-							<div className="flex items-center gap-2 text-sm text-muted-foreground">
-								<span className="font-mono">{supplier.code}</span>
-								<span>•</span>
+					<Button
+						variant="destructive"
+						size="icon"
+						onClick={handleDeleteSupplier}
+						disabled={deleteSupplier.isPending}>
+						{deleteSupplier.isPending ? (
+							<Loader2 className="h-4 w-4 animate-spin" />
+						) : (
+							<Trash2 className="h-4 w-4" />
+						)}
+					</Button>
+				</div>
+			</div>
+
+			<Card className="relative overflow-hidden border-border/50 shadow-md">
+				<div className="absolute inset-0 bg-gradient-to-r from-chart-1/10 via-chart-2/10 to-chart-4/10" />
+				<CardContent className="relative py-6">
+					<div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+						<div className="space-y-3">
+							<div className="flex items-center gap-3">
+								<div className="rounded-xl bg-primary/10 p-3 text-primary">
+									<Store className="h-6 w-6" />
+								</div>
+								<div>
+									<h1 className="text-4xl font-bold tracking-tight">
+										{supplier.name}
+									</h1>
+									<p className="text-sm text-muted-foreground">
+										Supplier profile and partnership details
+									</p>
+								</div>
+							</div>
+							<div className="flex flex-wrap items-center gap-2">
+								<span className="rounded-md bg-muted px-2 py-1 font-mono text-xs text-muted-foreground">
+									{supplier.code}
+								</span>
 								<Badge
 									variant={supplier.isActive ? "default" : "secondary"}
 									className={
@@ -100,159 +164,160 @@ export default function AdminSupplierDetailsPage() {
 								</Badge>
 							</div>
 						</div>
+						<div className="grid gap-2 text-sm sm:grid-cols-2 lg:min-w-[330px]">
+							<div className="rounded-lg border border-border/50 bg-background/80 px-3 py-2">
+								<p className="text-xs text-muted-foreground">Email</p>
+								<p className="truncate font-medium">{supplier.email || "-"}</p>
+							</div>
+							<div className="rounded-lg border border-border/50 bg-background/80 px-3 py-2">
+								<p className="text-xs text-muted-foreground">Phone</p>
+								<p className="font-medium">{supplier.phone || "-"}</p>
+							</div>
+							<div className="rounded-lg border border-border/50 bg-background/80 px-3 py-2 sm:col-span-2">
+								<p className="text-xs text-muted-foreground">Organization</p>
+								<p className="font-medium">{organizationLabel}</p>
+							</div>
+						</div>
 					</div>
-				</div>
-				<div className="flex items-center gap-2">
-					<Button variant="outline" onClick={() => setIsDialogOpen(true)}>
-						<Edit className="mr-2 h-4 w-4" />
-						Edit Supplier
-					</Button>
-					<Button variant="destructive" size="icon" onClick={handleDeleteSupplier}>
-						<Trash2 className="h-4 w-4" />
-					</Button>
-				</div>
-			</div>
+				</CardContent>
+			</Card>
 
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-				{/* Left Column: Contact & Address */}
-				<div className="md:col-span-1 space-y-6">
-					<Card>
-						<CardHeader>
-							<CardTitle className="text-lg">Contact Information</CardTitle>
-						</CardHeader>
-						<CardContent className="space-y-4">
-							<div className="flex items-start gap-3">
-								<Mail className="h-4 w-4 text-muted-foreground mt-0.5" />
-								<div className="space-y-0.5">
-									<p className="text-sm font-medium">Email</p>
-									<p className="text-sm text-muted-foreground break-all">
-										{supplier.email || "-"}
-									</p>
-								</div>
-							</div>
-							<Separator />
-							<div className="flex items-start gap-3">
-								<Phone className="h-4 w-4 text-muted-foreground mt-0.5" />
-								<div className="space-y-0.5">
-									<p className="text-sm font-medium">Phone</p>
-									<p className="text-sm text-muted-foreground">
-										{supplier.phone || "-"}
-									</p>
-								</div>
-							</div>
-							<Separator />
-							<div className="flex items-start gap-3">
-								<User className="h-4 w-4 text-muted-foreground mt-0.5" />
-								<div className="space-y-0.5">
-									<p className="text-sm font-medium">Contact Person</p>
-									<p className="text-sm text-muted-foreground">
-										{supplier.contactName || "-"}
-									</p>
-								</div>
-							</div>
-							<Separator />
-							<div className="flex items-start gap-3">
-								<Globe className="h-4 w-4 text-muted-foreground mt-0.5" />
-								<div className="space-y-0.5">
-									<p className="text-sm font-medium">Website</p>
-									{supplier.website ? (
-										<a
-											href={supplier.website}
-											target="_blank"
-											rel="noopener noreferrer"
-											className="text-sm text-primary hover:underline flex items-center gap-1">
-											{supplier.website}
-											<ExternalLink className="h-3 w-3" />
-										</a>
-									) : (
-										<p className="text-sm text-muted-foreground">-</p>
-									)}
-								</div>
-							</div>
-						</CardContent>
-					</Card>
-
-					<Card>
-						<CardHeader>
-							<CardTitle className="text-lg">Address</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<div className="flex items-start gap-3">
-								<MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-								<div className="space-y-0.5">
-									<p className="text-sm font-medium">Physical Address</p>
-									<p className="text-sm text-muted-foreground whitespace-pre-wrap">
-										{supplier.address || "No address provided"}
-									</p>
-								</div>
-							</div>
-						</CardContent>
-					</Card>
-
-					<Card>
-						<CardHeader>
-							<CardTitle className="text-lg">System Information</CardTitle>
-						</CardHeader>
-						<CardContent className="space-y-4">
-							<div className="flex items-center justify-between">
-								<span className="text-sm text-muted-foreground flex items-center gap-2">
-									<Calendar className="h-4 w-4" /> Created
-								</span>
-								<span className="text-sm font-medium">
-									{new Date(supplier.createdAt).toLocaleDateString()}
-								</span>
-							</div>
-							<Separator />
-							<div className="flex items-center justify-between">
-								<span className="text-sm text-muted-foreground flex items-center gap-2">
-									<Calendar className="h-4 w-4" /> Last Updated
-								</span>
-								<span className="text-sm font-medium">
-									{new Date(supplier.updatedAt).toLocaleDateString()}
-								</span>
-							</div>
-						</CardContent>
-					</Card>
-				</div>
-
-				{/* Right Column: Overview & Stats (Placeholder for now) */}
-				<div className="md:col-span-2 space-y-6">
-					<Card>
-						<CardHeader>
-							<CardTitle className="text-lg">About</CardTitle>
-						</CardHeader>
-						<CardContent>
-							<p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">
-								{supplier.description ||
-									"No description available for this supplier."}
+			<div className="grid gap-6 lg:grid-cols-12">
+				<Card className="border-border/50 shadow-md lg:col-span-7">
+					<CardHeader>
+						<CardTitle className="text-xl font-semibold">Overview</CardTitle>
+						<CardDescription>
+							General supplier profile and identification details.
+						</CardDescription>
+					</CardHeader>
+					<CardContent className="space-y-4">
+						<div className="rounded-lg border border-border/50 bg-muted/20 p-4">
+							<p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+								{supplier.description || "No description has been added yet."}
 							</p>
-						</CardContent>
-					</Card>
+						</div>
+						<div className="grid gap-3 sm:grid-cols-2">
+							<div className="rounded-lg border border-border/50 px-3 py-2">
+								<p className="text-xs text-muted-foreground">Supplier Code</p>
+								<p className="font-mono text-sm font-medium">{supplier.code}</p>
+							</div>
+							<div className="rounded-lg border border-border/50 px-3 py-2">
+								<p className="text-xs text-muted-foreground">Organization ID</p>
+								<p className="text-sm font-medium">{organizationLabel}</p>
+							</div>
+							<div className="rounded-lg border border-border/50 px-3 py-2">
+								<p className="text-xs text-muted-foreground">Contact Person</p>
+								<p className="text-sm font-medium">{supplier.contactName || "-"}</p>
+							</div>
+							<div className="rounded-lg border border-border/50 px-3 py-2">
+								<p className="text-xs text-muted-foreground">Status</p>
+								<p className="text-sm font-medium">
+									{supplier.isActive ? "Active" : "Inactive"}
+								</p>
+							</div>
+							<div className="rounded-lg border border-border/50 px-3 py-2 sm:col-span-2">
+								<p className="text-xs text-muted-foreground">Address</p>
+								<p className="whitespace-pre-wrap text-sm font-medium">
+									{supplier.address || "-"}
+								</p>
+							</div>
+						</div>
+					</CardContent>
+				</Card>
 
-					{/* Future Integration: Products List */}
-					<Card className="border-dashed">
-						<CardHeader>
-							<CardTitle className="text-lg text-muted-foreground">
-								Products
-							</CardTitle>
-						</CardHeader>
-						<CardContent className="py-8 text-center text-muted-foreground">
-							<p>Product list integration coming soon.</p>
-						</CardContent>
-					</Card>
+				<Card className="border-border/50 shadow-md lg:col-span-5">
+					<CardHeader>
+						<CardTitle className="text-xl font-semibold">Contact Details</CardTitle>
+						<CardDescription>
+							Direct communication channels for this supplier.
+						</CardDescription>
+					</CardHeader>
+					<CardContent className="space-y-3">
+						<div className="flex items-start gap-3 rounded-lg border border-border/50 p-3">
+							<div className="rounded-full bg-muted p-2">
+								<Mail className="h-4 w-4 text-muted-foreground" />
+							</div>
+							<div className="min-w-0">
+								<p className="text-xs text-muted-foreground">Email</p>
+								<p className="break-all text-sm font-medium">
+									{supplier.email || "-"}
+								</p>
+							</div>
+						</div>
+						<div className="flex items-start gap-3 rounded-lg border border-border/50 p-3">
+							<div className="rounded-full bg-muted p-2">
+								<Phone className="h-4 w-4 text-muted-foreground" />
+							</div>
+							<div>
+								<p className="text-xs text-muted-foreground">Phone</p>
+								<p className="text-sm font-medium">{supplier.phone || "-"}</p>
+							</div>
+						</div>
+						<div className="flex items-start gap-3 rounded-lg border border-border/50 p-3">
+							<div className="rounded-full bg-muted p-2">
+								<User className="h-4 w-4 text-muted-foreground" />
+							</div>
+							<div>
+								<p className="text-xs text-muted-foreground">Contact Person</p>
+								<p className="text-sm font-medium">{supplier.contactName || "-"}</p>
+							</div>
+						</div>
+						<div className="flex items-start gap-3 rounded-lg border border-border/50 p-3">
+							<div className="rounded-full bg-muted p-2">
+								<MapPin className="h-4 w-4 text-muted-foreground" />
+							</div>
+							<div>
+								<p className="text-xs text-muted-foreground">Address</p>
+								<p className="whitespace-pre-wrap text-sm font-medium">
+									{supplier.address || "-"}
+								</p>
+							</div>
+						</div>
+						<div className="flex items-start gap-3 rounded-lg border border-border/50 p-3">
+							<div className="rounded-full bg-muted p-2">
+								<ExternalLink className="h-4 w-4 text-muted-foreground" />
+							</div>
+							<div className="min-w-0">
+								<p className="text-xs text-muted-foreground">Website</p>
+								{websiteHref ? (
+									<a
+										href={websiteHref}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="inline-flex items-center gap-1 break-all text-sm font-medium text-primary hover:underline">
+										{supplier.website}
+										<ExternalLink className="h-3 w-3" />
+									</a>
+								) : (
+									<p className="text-sm font-medium">-</p>
+								)}
+							</div>
+						</div>
+					</CardContent>
+				</Card>
 
-					{/* Future Integration: Purchase Orders */}
-					<Card className="border-dashed">
-						<CardHeader>
-							<CardTitle className="text-lg text-muted-foreground">
-								Purchase Orders
-							</CardTitle>
-						</CardHeader>
-						<CardContent className="py-8 text-center text-muted-foreground">
-							<p>Purchase order history integration coming soon.</p>
-						</CardContent>
-					</Card>
-				</div>
+				<Card className="border-border/50 shadow-md lg:col-span-12">
+					<CardHeader>
+						<CardTitle className="text-xl font-semibold">System Information</CardTitle>
+						<CardDescription>
+							Audit and lifecycle details for this record.
+						</CardDescription>
+					</CardHeader>
+					<CardContent className="grid gap-3 sm:grid-cols-3">
+						<div className="rounded-lg border border-border/50 px-3 py-2">
+							<p className="text-xs text-muted-foreground">Supplier ID</p>
+							<p className="break-all font-mono text-sm font-medium">{supplier.id}</p>
+						</div>
+						<div className="rounded-lg border border-border/50 px-3 py-2">
+							<p className="text-xs text-muted-foreground">Created</p>
+							<p className="text-sm font-medium">{formatDate(supplier.createdAt)}</p>
+						</div>
+						<div className="rounded-lg border border-border/50 px-3 py-2">
+							<p className="text-xs text-muted-foreground">Last Updated</p>
+							<p className="text-sm font-medium">{formatDate(supplier.updatedAt)}</p>
+						</div>
+					</CardContent>
+				</Card>
 			</div>
 
 			<SupplierUpsertDialog
