@@ -28,8 +28,8 @@ const navItems = [
 	{ href: "/financer/applications", icon: FileText, label: "Applications" },
 	// { href: "/financer/loans", icon: Wallet, label: "Loans" },
 	// { href: "/financer/payments", icon: CreditCard, label: "Payments" },
-	{ href: "/financer/reports", icon: PieChart, label: "Reports" },
-	{ href: "/financer/statements", icon: ReceiptText, label: "SOA" },
+	// { href: "/financer/reports", icon: PieChart, label: "Reports" },
+	// { href: "/financer/statements", icon: ReceiptText, label: "SOA" },
 	{ href: "/financer/ledger", icon: BookOpen, label: "Ledger" },
 ];
 

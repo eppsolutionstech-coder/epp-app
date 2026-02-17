@@ -1,4 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Link } from "react-router";
+import { useGetFinancierConfigs } from "~/hooks/use-financier-config";
 import {
 	MOCK_FINANCER_STATS,
 	MOCK_LOAN_APPLICATIONS,
@@ -11,6 +13,7 @@ import {
 	AlertTriangle,
 	ArrowUpRight,
 	DollarSign,
+	Settings,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { StatCard } from "~/components/stat-card";
@@ -65,6 +68,10 @@ export default function FinancerDashboard() {
 
 	const recentPayments = MOCK_PAYMENTS.filter((p) => p.status === "paid").slice(0, 5);
 
+	const { data: configData, isLoading: isConfigLoading } = useGetFinancierConfigs();
+	const configs = configData?.financierConfigs || [];
+	const hasNoConfigs = !isConfigLoading && configs.length === 0;
+
 	return (
 		<div className="space-y-6">
 			<div>
@@ -73,6 +80,30 @@ export default function FinancerDashboard() {
 					Overview of your financing portfolio and activity.
 				</p>
 			</div>
+
+			{hasNoConfigs && (
+				<Card className="border-amber-200 bg-amber-50">
+					<CardContent className="flex items-center gap-4 p-4">
+						<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-100">
+							<Settings className="h-5 w-5 text-amber-600" />
+						</div>
+						<div className="flex-1">
+							<h3 className="font-medium text-amber-900">
+								No Loan Configurations Found
+							</h3>
+							<p className="text-sm text-amber-700">
+								You haven't set up any loan configurations yet. Please configure
+								your loan settings to start processing applications.
+							</p>
+						</div>
+						<Link
+							to="/financer/profile/loan-settings"
+							className="rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700">
+							Go to Settings
+						</Link>
+					</CardContent>
+				</Card>
+			)}
 
 			<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
 				{stats.map((stat) => (
