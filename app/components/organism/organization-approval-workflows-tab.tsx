@@ -196,7 +196,7 @@ export function OrganizationApprovalWorkflowsTab() {
 			</Card>
 
 			<WorkflowTypesEditor
-				workflow={editingWorkflow}
+				workflow={workflows.find((w) => w.id === editingWorkflow?.id) || editingWorkflow}
 				open={!!editingWorkflow}
 				onOpenChange={(open) => !open && setEditingWorkflow(null)}
 			/>
