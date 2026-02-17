@@ -1,9 +1,10 @@
 ﻿import { useParams, Link } from "react-router";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Printer, Loader2, Calendar } from "lucide-react";
-import { useGetPurchaseOrderById } from "~/hooks/use-purchase-order";
+import { ArrowLeft, Printer, Loader2, Calendar, CheckCircle } from "lucide-react";
+import { useGetPurchaseOrderById, useUpdatePurchaseOrder } from "~/hooks/use-purchase-order";
 import { PurchaseOrderDetails } from "~/components/organism/order/purchase-order-details";
 import { type PurchaseOrderWithRelations } from "~/zod/purchaseOrder.zod";
+import { toast } from "sonner";
 
 export default function supplierOrderDetailsPage() {
 	const { id } = useParams();
@@ -11,6 +12,8 @@ export default function supplierOrderDetailsPage() {
 	const { data: purchaseOrderResponse, isLoading } = useGetPurchaseOrderById(id!, {
 		fields: "id,poNumber,orderId,supplierId,status,items,approvedAt,sentToSupplierAt,notes,createdAt,updatedAt,supplier,totalAmount,requisitioner,contactName,contactDesignation,contactDepartment,contactNumber,contactMobile,contactEmail,approvedBy,leadTime,availability,delivery,pdc,organizationId",
 	});
+
+	const { mutate: updatePurchaseOrder, isPending: isUpdating } = useUpdatePurchaseOrder();
 
 	// Handle potential wrapper in response (e.g., { purchaseOrder: ... }) or direct object
 	const purchaseOrder = (purchaseOrderResponse as any)?.purchaseOrder || purchaseOrderResponse;
@@ -41,6 +44,23 @@ export default function supplierOrderDetailsPage() {
 		window.print();
 	};
 
+	const handleConfirmPO = () => {
+		updatePurchaseOrder(
+			{
+				id: purchaseOrder.id,
+				data: { status: "CONFIRMED" },
+			},
+			{
+				onSuccess: () => {
+					toast.success("Purchase Order confirmed successfully");
+				},
+				onError: (error) => {
+					toast.error(`Failed to confirm purchase order: ${error.message}`);
+				},
+			},
+		);
+	};
+
 	return (
 		<div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
 			{/* Header */}
@@ -68,6 +88,19 @@ export default function supplierOrderDetailsPage() {
 					</div>
 				</div>
 				<div className="flex items-center gap-2">
+					{purchaseOrder.status === "PENDING" && (
+						<Button
+							onClick={handleConfirmPO}
+							disabled={isUpdating}
+							className="gap-2 rounded-full h-9 bg-green-600 hover:bg-green-700 text-white">
+							{isUpdating ? (
+								<Loader2 className="h-4 w-4 animate-spin" />
+							) : (
+								<CheckCircle className="h-4 w-4" />
+							)}
+							Confirm PO
+						</Button>
+					)}
 					<Button
 						variant="outline"
 						className="gap-2 rounded-full h-9"
