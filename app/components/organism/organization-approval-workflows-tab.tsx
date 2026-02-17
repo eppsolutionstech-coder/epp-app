@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 import type { ApprovalWorkflow } from "~/zod/approval-workflow.zod";
 import { useGetApprovalWorkflows } from "~/hooks/use-approval-workflow";
-import { WorkflowLevelsEditor } from "./workflow-levels-editor";
+import { WorkflowTypesEditor } from "./workflow-types-editor";
 import { CreateApprovalWorkflowDialog } from "./create-approval-workflow-dialog";
 import { ManageApprovalTypesDialog } from "./manage-approval-types-dialog";
 
@@ -20,7 +20,7 @@ export function OrganizationApprovalWorkflowsTab() {
 	const [editingWorkflow, setEditingWorkflow] = useState<ApprovalWorkflow | null>(null);
 	const [isWorkflowDialogOpen, setIsWorkflowDialogOpen] = useState(false);
 	const [editingWorkflowId, setEditingWorkflowId] = useState<string | null>(null);
-	const [isManageLevelsOpen, setIsManageLevelsOpen] = useState(false);
+	const [isManageTypesOpen, setIsManageTypesOpen] = useState(false);
 
 	const handleOpenCreateDialog = () => {
 		setEditingWorkflowId(null);
@@ -59,9 +59,9 @@ export function OrganizationApprovalWorkflowsTab() {
 							<Button
 								size="sm"
 								variant="outline"
-								onClick={() => setIsManageLevelsOpen(true)}>
+								onClick={() => setIsManageTypesOpen(true)}>
 								<Settings className="mr-2 h-4 w-4" />
-								Manage Levels
+								Manage Types
 							</Button>
 							<Button size="sm" onClick={handleOpenCreateDialog}>
 								<Plus className="mr-2 h-4 w-4" />
@@ -183,7 +183,7 @@ export function OrganizationApprovalWorkflowsTab() {
 													className="h-7 px-2"
 													onClick={() => setEditingWorkflow(workflow)}>
 													<Layers className="mr-1.5 h-3.5 w-3.5" />
-													Levels
+													Types
 												</Button>
 											</div>
 										</div>
@@ -195,7 +195,7 @@ export function OrganizationApprovalWorkflowsTab() {
 				</CardContent>
 			</Card>
 
-			<WorkflowLevelsEditor
+			<WorkflowTypesEditor
 				workflow={editingWorkflow}
 				open={!!editingWorkflow}
 				onOpenChange={(open) => !open && setEditingWorkflow(null)}
@@ -206,8 +206,8 @@ export function OrganizationApprovalWorkflowsTab() {
 				workflowId={editingWorkflowId}
 			/>
 			<ManageApprovalTypesDialog
-				open={isManageLevelsOpen}
-				onOpenChange={setIsManageLevelsOpen}
+				open={isManageTypesOpen}
+				onOpenChange={setIsManageTypesOpen}
 			/>
 		</>
 	);

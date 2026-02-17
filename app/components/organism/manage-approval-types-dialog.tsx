@@ -54,19 +54,19 @@ export function ManageApprovalTypesDialog({ open, onOpenChange }: ManageApproval
 		onOpenChange(newOpen);
 	};
 
-	const handleEdit = (level: ApprovalType) => {
-		setEditingLevel(level);
+	const handleEdit = (type: ApprovalType) => {
+		setEditingLevel(type);
 		setView("edit");
 	};
 
 	const handleDelete = (id: string) => {
-		if (confirm("Are you sure you want to delete this approval level?")) {
+		if (confirm("Are you sure you want to delete this approval type?")) {
 			deleteLevel(id, {
 				onSuccess: () => {
-					toast.success("Approval level deleted successfully");
+					toast.success("Approval type deleted successfully");
 				},
 				onError: (error) => {
-					toast.error(error.message || "Failed to delete approval level");
+					toast.error(error.message || "Failed to delete approval type");
 				},
 			});
 		}
@@ -75,22 +75,22 @@ export function ManageApprovalTypesDialog({ open, onOpenChange }: ManageApproval
 	const getTitle = () => {
 		switch (view) {
 			case "list":
-				return "Manage Approval Levels";
+				return "Manage Approval Types";
 			case "create":
-				return "Create Approval Level";
+				return "Create Approval Type";
 			case "edit":
-				return "Edit Approval Level";
+				return "Edit Approval Type";
 		}
 	};
 
 	const getDescription = () => {
 		switch (view) {
 			case "list":
-				return "View and manage all available approval levels. These are reusable across different workflows.";
+				return "View and manage all available approval types. These are reusable across different workflows.";
 			case "create":
-				return "Define a new reusable approval level.";
+				return "Define a new reusable approval type.";
 			case "edit":
-				return "Modify existing approval level details.";
+				return "Modify existing approval type details.";
 		}
 	};
 
@@ -111,7 +111,7 @@ export function ManageApprovalTypesDialog({ open, onOpenChange }: ManageApproval
 									setView("create");
 								}}>
 								<Plus className="mr-2 h-4 w-4" />
-								Create Level
+								Create Type
 							</Button>
 						) : (
 							<Button size="sm" variant="ghost" onClick={() => setView("list")}>
@@ -153,9 +153,9 @@ export function ManageApprovalTypesDialog({ open, onOpenChange }: ManageApproval
 							<div className="p-3 bg-muted/20 rounded-full mb-4">
 								<Settings className="h-6 w-6 text-muted-foreground" />
 							</div>
-							<h3 className="text-sm font-medium">No levels defined</h3>
+							<h3 className="text-sm font-medium">No types defined</h3>
 							<p className="text-sm text-muted-foreground mt-1 mb-4 max-w-xs">
-								Create your first approval level to start building workflows.
+								Create your first approval type to start building workflows.
 							</p>
 							<Button
 								size="sm"
@@ -164,7 +164,7 @@ export function ManageApprovalTypesDialog({ open, onOpenChange }: ManageApproval
 									setEditingLevel(null);
 									setView("create");
 								}}>
-								Create Level
+								Create Type
 							</Button>
 						</div>
 					) : (
@@ -182,18 +182,18 @@ export function ManageApprovalTypesDialog({ open, onOpenChange }: ManageApproval
 									</TableRow>
 								</TableHeader>
 								<TableBody>
-									{levels.map((level) => (
-										<TableRow key={level.id}>
+									{levels.map((type) => (
+										<TableRow key={type.id}>
 											<TableCell className="font-medium">
-												<Badge variant="outline">{level.role}</Badge>
+												<Badge variant="outline">{type.role}</Badge>
 											</TableCell>
 											<TableCell>
 												<span className="text-muted-foreground text-sm">
-													{level.description || "—"}
+													{type.description || "—"}
 												</span>
 											</TableCell>
 											<TableCell>
-												{level.isRequired ? (
+												{type.isRequired ? (
 													<Badge
 														variant="secondary"
 														className="font-normal text-xs">
@@ -206,11 +206,11 @@ export function ManageApprovalTypesDialog({ open, onOpenChange }: ManageApproval
 												)}
 											</TableCell>
 											<TableCell>
-												{level.autoApproveUnder ? (
+												{type.autoApproveUnder ? (
 													<span className="font-mono text-xs">
 														₱
 														{Number(
-															level.autoApproveUnder,
+															type.autoApproveUnder,
 														).toLocaleString()}
 													</span>
 												) : (
@@ -220,11 +220,11 @@ export function ManageApprovalTypesDialog({ open, onOpenChange }: ManageApproval
 												)}
 											</TableCell>
 											<TableCell>
-												{level.timeoutDays ? (
+												{type.timeoutDays ? (
 													<Badge
 														variant="secondary"
 														className="font-normal text-xs">
-														{level.timeoutDays} days
+														{type.timeoutDays} days
 													</Badge>
 												) : (
 													<span className="text-muted-foreground text-xs">
@@ -233,7 +233,7 @@ export function ManageApprovalTypesDialog({ open, onOpenChange }: ManageApproval
 												)}
 											</TableCell>
 											<TableCell className="text-muted-foreground text-xs">
-												{new Date(level.createdAt).toLocaleDateString()}
+												{new Date(type.createdAt).toLocaleDateString()}
 											</TableCell>
 											<TableCell className="text-right">
 												<DropdownMenu>
@@ -252,13 +252,13 @@ export function ManageApprovalTypesDialog({ open, onOpenChange }: ManageApproval
 															Actions
 														</DropdownMenuLabel>
 														<DropdownMenuItem
-															onClick={() => handleEdit(level)}>
+															onClick={() => handleEdit(type)}>
 															<Pencil className="mr-2 h-4 w-4" />
 															Edit
 														</DropdownMenuItem>
 														<DropdownMenuItem
 															className="text-destructive focus:text-destructive"
-															onClick={() => handleDelete(level.id)}>
+															onClick={() => handleDelete(type.id)}>
 															<Trash className="mr-2 h-4 w-4" />
 															Delete
 														</DropdownMenuItem>

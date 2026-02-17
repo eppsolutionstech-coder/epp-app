@@ -68,22 +68,22 @@ export function CreateApprovalTypeForm({
 				{ id: levelId, data: data as CreateApprovalType },
 				{
 					onSuccess: () => {
-						toast.success("Approval level updated successfully");
+						toast.success("Approval type updated successfully");
 						onSuccess();
 					},
 					onError: (error) => {
-						toast.error(error.message || "Failed to update approval level");
+						toast.error(error.message || "Failed to update approval type");
 					},
 				},
 			);
 		} else {
 			createLevel(data as CreateApprovalType, {
 				onSuccess: () => {
-					toast.success("Approval level created successfully");
+					toast.success("Approval type created successfully");
 					onSuccess();
 				},
 				onError: (error) => {
-					toast.error(error.message || "Failed to create approval level");
+					toast.error(error.message || "Failed to create approval type");
 				},
 			});
 		}
@@ -149,7 +149,7 @@ export function CreateApprovalTypeForm({
 							<div className="space-y-1 leading-none">
 								<FormLabel>Required</FormLabel>
 								<FormDescription>
-									If checked, this approval level cannot be skipped.
+									If checked, this approval type cannot be skipped.
 								</FormDescription>
 							</div>
 						</FormItem>
@@ -209,7 +209,7 @@ export function CreateApprovalTypeForm({
 					)}
 					<Button type="submit" disabled={isPending}>
 						{isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-						{levelId ? "Update Level" : "Create Level"}
+						{levelId ? "Update Type" : "Create Type"}
 					</Button>
 				</div>
 			</form>
