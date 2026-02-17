@@ -40,7 +40,7 @@ const roleOptions: RoleOption[] = [
 		id: "supplier",
 		title: "Supplier",
 		route: "/supplier/dashboard",
-		email: "ca-vendor@gmail.com",
+		email: "ca-supplier@gmail.com",
 		password: "Test123!",
 	},
 	{

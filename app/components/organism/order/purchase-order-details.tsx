@@ -58,21 +58,24 @@ export function PurchaseOrderDetails({ purchaseOrder }: PurchaseOrderDetailsProp
 				description: item.description || "-",
 				unitPrice: formatCurrency(unitPrice),
 				total: formatCurrency(total),
+				rawValue: total, // For calculation
 			};
 		}),
-		subTotal: "36,000,000.00",
-		totalVatInc: "36,000,000.00",
+
 		checkedBy: {
-			name: "Lonaly Maderazo",
+			name: "Lonaly Maderazo", // Default or from config if not in API
 			title: "PROCUREMENT MANAGER",
-			date: "04-Feb-26",
+			date: formatDate(new Date()), // Should ideally be from approval flow
 		},
 		approvedBy: {
-			name: "Archie Roño",
-			title: "CHIEF EXECUTIVE OFFICER",
-			date: "04-Feb-26",
+			name: purchaseOrder?.approvedBy || "-", // Use approvedBy from API
+			title: "CHIEF EXECUTIVE OFFICER", // This role might be static or needs to be fetched
+			date: formatDate(purchaseOrder?.approvedAt),
 		},
 	};
+
+	const subTotalValue = poData.items.reduce((acc, item) => acc + (item.rawValue || 0), 0);
+	const totalVatIncValue = subTotalValue;
 
 	return (
 		<div className="w-full bg-white text-slate-900 section-to-print">
@@ -217,12 +220,12 @@ export function PurchaseOrderDetails({ purchaseOrder }: PurchaseOrderDetailsProp
 				<div className="flex gap-4 text-xs font-bold">
 					<span className="w-48 text-right">SUB-TOTAL</span>
 					<span className="w-4">₱</span>
-					<span className="w-48 text-right">{poData.subTotal}</span>
+					<span className="w-48 text-right">{formatCurrency(subTotalValue)}</span>
 				</div>
 				<div className="flex gap-4 text-sm font-bold">
 					<span className="w-48 text-right">TOTAL VAT-INC</span>
 					<span className="w-4">₱</span>
-					<span className="w-48 text-right">{poData.totalVatInc}</span>
+					<span className="w-48 text-right">{formatCurrency(totalVatIncValue)}</span>
 				</div>
 			</div>
 

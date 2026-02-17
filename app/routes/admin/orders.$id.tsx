@@ -114,7 +114,11 @@ export default function AdminOrderDetailsPage() {
 	return (
 		<div className="max-w-7xl mx-auto space-y-6">
 			<PageHeader />
-			<PurchaseOrderModal open={isPOModalOpen} onOpenChange={setIsPOModalOpen} purchaseOrder={order.purchaseOrders[0]} />
+			<PurchaseOrderModal
+				open={isPOModalOpen}
+				onOpenChange={setIsPOModalOpen}
+				purchaseOrderId={order.purchaseOrders[0]?.id}
+			/>
 
 			<div className="grid grid-cols-1 md:grid-cols-12 gap-4">
 				{/* MAIN CONTENT - Left Side (8 cols) */}
