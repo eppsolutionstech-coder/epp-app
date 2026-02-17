@@ -1,44 +1,42 @@
-﻿import { useState, useMemo } from "react";
+﻿import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Eye, Truck, CheckCircle, Package, Clock } from "lucide-react";
 import { DataTable, type DataTableColumn } from "@/components/molecule/data-table-updated";
-import { useGetOrders } from "~/hooks/use-order";
-import type { Order } from "~/zod/order.zod";
 import { useGetPurchaseOrders } from "~/hooks/use-purchase-order";
 import { useAuth } from "~/hooks/use-auth";
+import type { PurchaseOrderWithRelations } from "~/zod/purchaseOrder.zod";
 
 export default function supplierOrdersPage() {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
 	const { user } = useAuth();
 
-	const { data: purchaseOrders } = useGetPurchaseOrders({
-		fields: "id, organizationId, poNumber, orderId, supplierId, status, items, approved, approvedAt, sentToSupplierAt, notes, createdAtm updatedAt, supplier",
+	const { data: purchaseOrdersResponse, isLoading } = useGetPurchaseOrders({
+		fields: "id,poNumber,orderId,supplierId,status,items,approvedAt,sentToSupplierAt,notes,createdAt,updatedAt,supplier,totalAmount",
 		filter: `supplier.code:${user?.metadata?.supplier?.code}`,
-	});
-
-	const { data: ordersResponse, isLoading } = useGetOrders({
-		fields: "id, orderNumber, userId, status, orderItems.id, total, orderDate",
 		count: true,
 	});
 
-	const orders = ordersResponse?.orders || [];
-	const totalDocs = ordersResponse?.count || 0;
+	const purchaseOrders = purchaseOrdersResponse?.purchaseOrders || [];
+	const totalDocs = purchaseOrdersResponse?.count || 0;
 
 	const getStatusColor = (status: string) => {
 		switch (status) {
-			case "PENDING_APPROVAL":
+			case "PENDING":
 				return "bg-yellow-500 hover:bg-yellow-600";
 			case "APPROVED":
-				return "bg-emerald-500 hover:bg-emerald-600";
-			case "PROCESSING":
+				return "bg-blue-500 hover:bg-blue-600";
+			case "SENT":
 				return "bg-purple-500 hover:bg-purple-600";
-			case "SHIPPED":
+			case "CONFIRMED":
 				return "bg-indigo-500 hover:bg-indigo-600";
-			case "DELIVERED":
+			case "SHIPPED":
+				return "bg-orange-500 hover:bg-orange-600";
+			case "RECEIVED":
+			case "COMPLETED":
 				return "bg-green-500 hover:bg-green-600";
 			case "CANCELLED":
 				return "bg-red-500 hover:bg-red-600";
@@ -47,42 +45,35 @@ export default function supplierOrdersPage() {
 		}
 	};
 
-	const handleViewDetails = (order: Order) => {
-		navigate(`/supplier/orders/${order.id}`);
+	const handleViewDetails = (po: PurchaseOrderWithRelations) => {
+		navigate(`/supplier/orders/${po.id}`);
 	};
 
-	const columns: DataTableColumn<any>[] = [
+	const columns: DataTableColumn<PurchaseOrderWithRelations>[] = [
 		{
-			key: "orderNumber",
-			label: "Order ID",
+			key: "poNumber",
+			label: "PO Number",
 			sortable: true,
 			searchable: true,
 			className: "font-mono",
-			render: (value) => <span>{value || "N/A"}</span>,
+			render: (value) => <span>{(value as string) || "N/A"}</span>,
 		},
 		{
-			key: "orderItems",
+			key: "items",
 			label: "Items",
 			render: (_, row) => (
 				<Badge variant="outline" className="font-normal">
-					{row.orderItems?.length || 0} item
-					{(row.orderItems?.length || 0) !== 1 ? "s" : ""}
+					{row.items?.length || 0} item
+					{(row.items?.length || 0) !== 1 ? "s" : ""}
 				</Badge>
 			),
 		},
-
 		{
-			key: "total",
-			label: "Amount",
+			key: "createdAt",
+			label: "Date Created",
 			sortable: true,
 			render: (value) =>
-				`₱${Number(value || 0).toLocaleString("en-PH", { minimumFractionDigits: 2 })}`,
-		},
-		{
-			key: "orderDate",
-			label: "Date",
-			sortable: true,
-			render: (value) => (value ? new Date(value).toLocaleDateString() : "-"),
+				value ? new Date(value as string | Date).toLocaleDateString() : "-",
 		},
 		{
 			key: "status",
@@ -90,11 +81,12 @@ export default function supplierOrdersPage() {
 			sortable: true,
 			filterable: true,
 			filterOptions: [
-				{ label: "Pending", value: "PENDING_APPROVAL" },
+				{ label: "Pending", value: "PENDING" },
 				{ label: "Approved", value: "APPROVED" },
-				{ label: "Processing", value: "PROCESSING" },
+				{ label: "Sent", value: "SENT" },
+				{ label: "Confirmed", value: "CONFIRMED" },
 				{ label: "Shipped", value: "SHIPPED" },
-				{ label: "Delivered", value: "DELIVERED" },
+				{ label: "Received", value: "RECEIVED" },
 				{ label: "Cancelled", value: "CANCELLED" },
 			],
 			render: (value) => (
@@ -128,12 +120,12 @@ export default function supplierOrdersPage() {
 			{/* Header */}
 			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
 				<div>
-					<h1 className="text-3xl font-bold tracking-tight">Orders</h1>
-					<p className="text-muted-foreground">Manage and fulfill employee orders.</p>
+					<h1 className="text-3xl font-bold tracking-tight">Purchase Orders</h1>
+					<p className="text-muted-foreground">Manage and fulfill purchase orders.</p>
 				</div>
 			</div>
 
-			{/* Summary Cards - TODO: Wire up with aggregation API */}
+			{/* Summary Cards - Placeholder for now */}
 			<div className="grid gap-4 sm:grid-cols-4">
 				<Card>
 					<CardContent className="pt-6">
@@ -151,12 +143,12 @@ export default function supplierOrdersPage() {
 				<Card>
 					<CardContent className="pt-6">
 						<div className="flex items-center gap-3">
-							<div className="h-10 w-10 rounded-lg bg-purple-50 dark:bg-purple-950/50 flex items-center justify-center">
-								<Package className="h-5 w-5 text-purple-600" />
+							<div className="h-10 w-10 rounded-lg bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center">
+								<CheckCircle className="h-5 w-5 text-blue-600" />
 							</div>
 							<div>
 								<p className="text-2xl font-bold">--</p>
-								<p className="text-xs text-muted-foreground">Processing</p>
+								<p className="text-xs text-muted-foreground">Approved</p>
 							</div>
 						</div>
 					</CardContent>
@@ -164,8 +156,8 @@ export default function supplierOrdersPage() {
 				<Card>
 					<CardContent className="pt-6">
 						<div className="flex items-center gap-3">
-							<div className="h-10 w-10 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center">
-								<Truck className="h-5 w-5 text-indigo-600" />
+							<div className="h-10 w-10 rounded-lg bg-orange-50 dark:bg-orange-950/50 flex items-center justify-center">
+								<Truck className="h-5 w-5 text-orange-600" />
 							</div>
 							<div>
 								<p className="text-2xl font-bold">--</p>
@@ -178,11 +170,11 @@ export default function supplierOrdersPage() {
 					<CardContent className="pt-6">
 						<div className="flex items-center gap-3">
 							<div className="h-10 w-10 rounded-lg bg-green-50 dark:bg-green-950/50 flex items-center justify-center">
-								<CheckCircle className="h-5 w-5 text-green-600" />
+								<Package className="h-5 w-5 text-green-600" />
 							</div>
 							<div>
 								<p className="text-2xl font-bold">--</p>
-								<p className="text-xs text-muted-foreground">Delivered</p>
+								<p className="text-xs text-muted-foreground">Completed</p>
 							</div>
 						</div>
 					</CardContent>
@@ -192,7 +184,7 @@ export default function supplierOrdersPage() {
 			{/* Orders Table */}
 			<Card>
 				<CardHeader>
-					<CardTitle>All Orders</CardTitle>
+					<CardTitle>All Purchase Orders</CardTitle>
 					<CardDescription>
 						{totalDocs} order{totalDocs !== 1 ? "s" : ""} found
 					</CardDescription>
@@ -200,7 +192,7 @@ export default function supplierOrdersPage() {
 				<CardContent>
 					<DataTable
 						columns={columns}
-						data={orders}
+						data={purchaseOrders}
 						onRowClick={(row) => handleViewDetails(row)}
 						isLoading={isLoading}
 					/>

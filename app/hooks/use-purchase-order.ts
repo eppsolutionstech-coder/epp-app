@@ -3,17 +3,32 @@ import purchaseOrderService from "~/services/purchase-order-service";
 import { queryClient } from "~/lib/query-client";
 import type { CreatePurchaseOrder, UpdatePurchaseOrder } from "~/zod/purchaseOrder.zod";
 
-export const useGetPurchaseOrders = (params?: any) => {
+import type { ApiQueryParams } from "~/services/api-service";
+
+export const useGetPurchaseOrders = (apiParams?: ApiQueryParams) => {
 	return useQuery({
-		queryKey: ["purchase-orders", params],
-		queryFn: () => purchaseOrderService.getAllPurchaseOrders(),
+		queryKey: ["purchase-orders", apiParams],
+		queryFn: () => {
+			return purchaseOrderService
+				.select(apiParams?.fields || "")
+				.search(apiParams?.query || "")
+				.paginate(apiParams?.page || 1, apiParams?.limit || 10)
+				.sort(apiParams?.sort, apiParams?.order)
+				.filter(apiParams?.filter || "")
+				.count(apiParams?.count ?? false)
+				.document(apiParams?.document ?? true)
+				.pagination(apiParams?.pagination ?? true)
+				.getAllPurchaseOrders();
+		},
 	});
 };
 
-export const useGetPurchaseOrderById = (id: string) => {
+export const useGetPurchaseOrderById = (id: string, apiParams?: ApiQueryParams) => {
 	return useQuery({
-		queryKey: ["purchase-order", id],
-		queryFn: () => purchaseOrderService.getPurchaseOrderById(id),
+		queryKey: ["purchase-order", id, apiParams],
+		queryFn: () => {
+			return purchaseOrderService.select(apiParams?.fields || "").getPurchaseOrderById(id);
+		},
 		enabled: !!id,
 	});
 };
