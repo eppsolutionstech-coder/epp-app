@@ -61,6 +61,21 @@
 		DELETE: "/order/:id", // Soft delete
 	},
 
+	TRANSACTION: {
+		GET_ALL: "/transaction",
+		GET_BY_ID: "/transaction/:id",
+		CREATE: "/transaction",
+		UPDATE: "/transaction/:id",
+		DELETE: "/transaction/:id",
+	},
+	DELIVERY_DOCUMENT: {
+		GET_ALL: "/delivery-document",
+		GET_BY_ID: "/delivery-document/:id",
+		CREATE: "/delivery-document",
+		UPDATE: "/delivery-document/:id",
+		DELETE: "/delivery-document/:id",
+	},
+
 	ORGANIZATION: {
 		GET_ALL: "/organization",
 		GET_BY_ID: "/organization/:id",

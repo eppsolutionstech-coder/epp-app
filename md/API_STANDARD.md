@@ -260,9 +260,9 @@ Copy the Zod schema file directly from the backend API project (`{projectName}-a
 2. Copy it to `app/zod/{resource}.zod.ts`
 3. **Replace `mongoose` ObjectId validation with `ObjectIdSchema`:**
     - Remove the `import { isValidObjectId } from "mongoose"` import
-    - Add `import { ObjectIdSchema } from "./object-id.zod"` instead
+    - Add `import { ObjectIdSchema } from "./common.zod"` instead
     - Replace all `z.string().refine((val) => isValidObjectId(val))` with `ObjectIdSchema`
-    - The `ObjectIdSchema` (defined in `app/zod/object-id.zod.ts`) uses a regex check: `z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId format")`
+    - The `ObjectIdSchema` (defined in `app/zod/common.zod.ts`) uses a regex check: `z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId format")`
 4. **Ensure `PaginationSchema` imports from the shared `common.zod.ts`:**
     - The API Zod file imports `PaginationSchema` from `./common.zod` — verify this import resolves in `app/zod/`
     - If `app/zod/common.zod.ts` does not exist yet, copy it from `{projectName}-api/zod/common.zod.ts` (no modifications needed — it has no mongoose dependency)
