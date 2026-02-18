@@ -96,7 +96,7 @@ const columns: DataTableColumn<OrderWithRelation>[] = [
 		className: "text-right",
 		render: (value) => (
 			<Button variant="ghost" size="sm" asChild>
-				<Link to={`/financer/applications/${value}`}>
+				<Link to={`/financier/applications/${value}`}>
 					<Eye className="h-4 w-4 mr-1" />
 					View
 				</Link>
