@@ -113,7 +113,7 @@ export default function FinancerApplications() {
 			filter: `approvals.approverId=${user?.id}`,
 		},
 		{ enabled: !!user?.id },
-	);
+	); 
 
 	return (
 		<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
