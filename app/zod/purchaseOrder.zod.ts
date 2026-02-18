@@ -82,6 +82,7 @@ export type UpdatePurchaseOrder = z.infer<typeof UpdatePurchaseOrderSchema>;
 export interface PurchaseOrderWithRelations extends PurchaseOrder {
 	order: OrderWithRelation;
 	supplier: supplierWithRelations;
+	deliveryDocuments?: { id: string; documentType: string }[];
 }
 
 export type GetAllPurchaseOrders = {

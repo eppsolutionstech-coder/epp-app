@@ -1,6 +1,7 @@
 ﻿import { useParams, Link } from "react-router";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Printer, Loader2, Calendar, CheckCircle } from "lucide-react";
+import { ArrowLeft, Printer, Loader2, Calendar, CheckCircle, Truck } from "lucide-react";
 import {
 	Dialog,
 	DialogContent,
@@ -13,6 +14,7 @@ import {
 } from "~/components/ui/dialog";
 import { useGetPurchaseOrderById, useUpdatePurchaseOrder } from "~/hooks/use-purchase-order";
 import { PurchaseOrderDetails } from "~/components/organism/order/purchase-order-details";
+import { DeliveryOrderModal } from "~/components/organism/order/delivery-order-modal";
 import { type PurchaseOrderWithRelations } from "~/zod/purchaseOrder.zod";
 import { toast } from "sonner";
 
@@ -20,10 +22,15 @@ export default function supplierOrderDetailsPage() {
 	const { id } = useParams();
 
 	const { data: purchaseOrder, isLoading } = useGetPurchaseOrderById(id!, {
-		fields: "id,poNumber,orderId,supplierId,status,items,approvedAt,sentToSupplierAt,notes,createdAt,updatedAt,supplier,totalAmount,requisitioner,contactName,contactDesignation,contactDepartment,contactNumber,contactMobile,contactEmail,approvedBy,leadTime,availability,delivery,pdc,organizationId,deliveryDocuments.id",
+		fields: "id,poNumber,orderId,supplierId,status,items,approvedAt,sentToSupplierAt,notes,createdAt,updatedAt,supplier,totalAmount,requisitioner,contactName,contactDesignation,contactDepartment,contactNumber,contactMobile,contactEmail,approvedBy,leadTime,availability,delivery,pdc,organizationId,deliveryDocuments.id,deliveryDocuments.documentType",
 	});
 
 	const { mutate: updatePurchaseOrder, isPending: isUpdating } = useUpdatePurchaseOrder();
+	const [showDeliveryOrderModal, setShowDeliveryOrderModal] = useState(false);
+
+	const deliveryOrderId = purchaseOrder?.deliveryDocuments?.find(
+		(doc: any) => doc.documentType === "DELIVERY_ORDER",
+	)?.id;
 
 	if (isLoading) {
 		return (
@@ -134,6 +141,14 @@ export default function supplierOrderDetailsPage() {
 							</DialogContent>
 						</Dialog>
 					)}
+					{purchaseOrder.status === "CONFIRMED" && deliveryOrderId && (
+						<Button
+							className="gap-2 rounded-full h-9 bg-orange-600 hover:bg-orange-700 text-white"
+							onClick={() => setShowDeliveryOrderModal(true)}>
+							<Truck className="h-4 w-4" />
+							Delivery Order
+						</Button>
+					)}
 					<Button
 						variant="outline"
 						className="gap-2 rounded-full h-9"
@@ -148,6 +163,12 @@ export default function supplierOrderDetailsPage() {
 			<div className="border rounded-lg shadow-sm p-10 bg-white">
 				<PurchaseOrderDetails purchaseOrder={purchaseOrder} />
 			</div>
+
+			<DeliveryOrderModal
+				open={showDeliveryOrderModal}
+				onOpenChange={setShowDeliveryOrderModal}
+				deliveryDocumentId={deliveryOrderId}
+			/>
 		</div>
 	);
 }

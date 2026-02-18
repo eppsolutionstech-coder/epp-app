@@ -68,13 +68,6 @@
 		UPDATE: "/transaction/:id",
 		DELETE: "/transaction/:id",
 	},
-	DELIVERY_DOCUMENT: {
-		GET_ALL: "/delivery-document",
-		GET_BY_ID: "/delivery-document/:id",
-		CREATE: "/delivery-document",
-		UPDATE: "/delivery-document/:id",
-		DELETE: "/delivery-document/:id",
-	},
 
 	ORGANIZATION: {
 		GET_ALL: "/organization",
@@ -158,4 +151,14 @@
 		// GET_ADMIN_SOA_BY_ID: "/financier-disbursement/ledger/admin/:financierConfigId",
 		// GET_FINANCIER_SOA: "/financier-disbursement/ledger/financier/:financierConfigId",
 	},
+
+		DELIVERY_DOCUMENT: {
+		GET_ALL: "/deliveryDocument",
+		GET_BY_ID: "/deliveryDocument/:id",
+		CREATE: "/deliveryDocument",
+		UPDATE: "/deliveryDocument/:id",
+		DELETE: "/deliveryDocument/:id",
+		RECEIVE: "/deliveryDocument/:id/receive",
+	},
+
 };
