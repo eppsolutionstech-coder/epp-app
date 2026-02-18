@@ -97,7 +97,7 @@ export default function FinancerDashboard() {
 							</p>
 						</div>
 						<Link
-							to="/financer/profile/loan-settings"
+							to="/financier/profile/loan-settings"
 							className="rounded-md bg-amber-600 px-4 py-2 text-sm font-medium text-white hover:bg-amber-700">
 							Go to Settings
 						</Link>

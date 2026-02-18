@@ -26,7 +26,7 @@ export function PurchaseOrderModal({
 						<Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
 					</div>
 				) : (
-					<PurchaseOrderDetails purchaseOrder={(purchaseOrder as any)?.purchaseOrder} />
+					<PurchaseOrderDetails purchaseOrder={purchaseOrder} />
 				)}
 			</DialogContent>
 		</Dialog>

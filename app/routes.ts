@@ -76,5 +76,5 @@ export default [
 	layout("layouts/employee-layout.tsx", prefix("employee", employeeRoutes)),
 	layout("layouts/supplier-layout.tsx", prefix("supplier", supplierRoutes)),
 	layout("layouts/admin-layout.tsx", prefix("admin", adminRoutes)),
-	layout("layouts/financer-layout.tsx", prefix("financer", financerRoutes)),
+	layout("layouts/financer-layout.tsx", prefix("financier", financerRoutes)),
 ] satisfies RouteConfig;

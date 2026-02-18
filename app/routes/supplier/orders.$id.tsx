@@ -1,6 +1,16 @@
 ﻿import { useParams, Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Printer, Loader2, Calendar, CheckCircle } from "lucide-react";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+	DialogClose,
+} from "~/components/ui/dialog";
 import { useGetPurchaseOrderById, useUpdatePurchaseOrder } from "~/hooks/use-purchase-order";
 import { PurchaseOrderDetails } from "~/components/organism/order/purchase-order-details";
 import { type PurchaseOrderWithRelations } from "~/zod/purchaseOrder.zod";
@@ -9,14 +19,11 @@ import { toast } from "sonner";
 export default function supplierOrderDetailsPage() {
 	const { id } = useParams();
 
-	const { data: purchaseOrderResponse, isLoading } = useGetPurchaseOrderById(id!, {
-		fields: "id,poNumber,orderId,supplierId,status,items,approvedAt,sentToSupplierAt,notes,createdAt,updatedAt,supplier,totalAmount,requisitioner,contactName,contactDesignation,contactDepartment,contactNumber,contactMobile,contactEmail,approvedBy,leadTime,availability,delivery,pdc,organizationId",
+	const { data: purchaseOrder, isLoading } = useGetPurchaseOrderById(id!, {
+		fields: "id,poNumber,orderId,supplierId,status,items,approvedAt,sentToSupplierAt,notes,createdAt,updatedAt,supplier,totalAmount,requisitioner,contactName,contactDesignation,contactDepartment,contactNumber,contactMobile,contactEmail,approvedBy,leadTime,availability,delivery,pdc,organizationId,deliveryDocuments.id",
 	});
 
 	const { mutate: updatePurchaseOrder, isPending: isUpdating } = useUpdatePurchaseOrder();
-
-	// Handle potential wrapper in response (e.g., { purchaseOrder: ... }) or direct object
-	const purchaseOrder = (purchaseOrderResponse as any)?.purchaseOrder || purchaseOrderResponse;
 
 	if (isLoading) {
 		return (
@@ -89,17 +96,43 @@ export default function supplierOrderDetailsPage() {
 				</div>
 				<div className="flex items-center gap-2">
 					{purchaseOrder.status === "PENDING" && (
-						<Button
-							onClick={handleConfirmPO}
-							disabled={isUpdating}
-							className="gap-2 rounded-full h-9 bg-green-600 hover:bg-green-700 text-white">
-							{isUpdating ? (
-								<Loader2 className="h-4 w-4 animate-spin" />
-							) : (
-								<CheckCircle className="h-4 w-4" />
-							)}
-							Confirm PO
-						</Button>
+						<Dialog>
+							<DialogTrigger asChild>
+								<Button
+									disabled={isUpdating}
+									className="gap-2 rounded-full h-9 bg-green-600 hover:bg-green-700 text-white">
+									{isUpdating ? (
+										<Loader2 className="h-4 w-4 animate-spin" />
+									) : (
+										<CheckCircle className="h-4 w-4" />
+									)}
+									Confirm PO
+								</Button>
+							</DialogTrigger>
+							<DialogContent>
+								<DialogHeader>
+									<DialogTitle>Confirm Purchase Order</DialogTitle>
+									<DialogDescription>
+										After confirming this purchase order, it will automatically
+										create a delivery order.
+									</DialogDescription>
+								</DialogHeader>
+								<DialogFooter>
+									<DialogClose asChild>
+										<Button variant="outline">Cancel</Button>
+									</DialogClose>
+									<Button
+										onClick={handleConfirmPO}
+										disabled={isUpdating}
+										className="bg-green-600 hover:bg-green-700 text-white">
+										{isUpdating && (
+											<Loader2 className="h-4 w-4 animate-spin mr-2" />
+										)}
+										Confirm PO
+									</Button>
+								</DialogFooter>
+							</DialogContent>
+						</Dialog>
 					)}
 					<Button
 						variant="outline"

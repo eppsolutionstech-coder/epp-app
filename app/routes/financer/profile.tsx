@@ -22,7 +22,7 @@ export default function FinancerProfile() {
 	const activeTab = tab && validTabs.includes(tab) ? tab : "profile";
 
 	const handleTabChange = (tabId: string) => {
-		navigate(`/financer/profile/${tabId}`);
+		navigate(`/financier/profile/${tabId}`);
 	};
 
 	return (

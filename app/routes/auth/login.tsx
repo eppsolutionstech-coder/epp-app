@@ -44,9 +44,9 @@ const roleOptions: RoleOption[] = [
 		password: "Test123!",
 	},
 	{
-		id: "financer",
-		title: "Financer",
-		route: "/financer",
+		id: "financier",
+		title: "Financier",
+		route: "/financier",
 		email: "ca-financier@gmail.com",
 		password: "Test123!",
 	},
