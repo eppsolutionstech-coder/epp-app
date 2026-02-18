@@ -4,117 +4,70 @@ import { useMemo, useState, useEffect, type ChangeEvent } from "react";
 import { useSearchParams } from "react-router-dom";
 import type { ApiQueryParams } from "~/services/api-service";
 
-const getValidOrder = (order: string | null | undefined): "asc" | "desc" => {
-	const validOrders: ("asc" | "desc")[] = ["asc", "desc"];
-	return validOrders.includes(order as "asc" | "desc") ? (order as "asc" | "desc") : "asc";
-};
-
-const getParamsFromSearch = (searchParams: URLSearchParams): Partial<ApiQueryParams> => ({
-	query: searchParams.get("search") ?? "",
-	filter: searchParams.get("filter") ?? "",
+// Merge URL search params with initial params, giving URL priority only when a value exists
+const mergeParams = (
+	searchParams: URLSearchParams,
+	initialParams: ApiQueryParams,
+): ApiQueryParams => ({
+	...initialParams,
+	query: searchParams.get("search") ?? initialParams.query ?? "",
+	filter: [initialParams.filter, searchParams.get("filter")].filter(Boolean).join(","),
 	page: parseInt(searchParams.get("page") ?? "1", 10),
-	sort: searchParams.get("sort") ?? "",
-	order: getValidOrder(searchParams.get("order")),
+	sort: searchParams.get("sort") || initialParams.sort || "",
+	order: (searchParams.get("order") as "asc" | "desc") || initialParams.order || "asc",
 });
 
 export const useApiParams = (initialParams: ApiQueryParams = {}) => {
 	const [searchParams, setSearchParams] = useSearchParams();
-	const paramsFromSearch = getParamsFromSearch(searchParams);
-
-	// Helper function to combine filters
-	const combineFilters = (initialFilter?: string, urlFilter?: string): string => {
-		const filters = [initialFilter, urlFilter].filter(Boolean);
-		return filters.join(",");
-	};
-
-	const [apiParams, setApiParams] = useState<ApiQueryParams>({
-		...initialParams,
-		...paramsFromSearch,
-		fields: initialParams.fields ?? "",
-		limit: initialParams.limit ?? 10,
-		filter: combineFilters(initialParams.filter, paramsFromSearch.filter),
-	});
+	const [apiParams, setApiParams] = useState<ApiQueryParams>(() =>
+		mergeParams(searchParams, initialParams),
+	);
 	const [searchTerm, setSearchTerm] = useState(apiParams.query ?? "");
 
-	// NEW: Sync apiParams and searchTerm whenever searchParams (URL) changes.
-	// This handles external updates like filter changes from outside the hook.
+	// Sync state when URL changes (e.g. browser back/forward, external filter changes)
 	useEffect(() => {
-		const newParamsFromSearch = getParamsFromSearch(searchParams);
-		setApiParams((prev) => ({
-			...prev,
-			...newParamsFromSearch,
-			// Preserve non-URL params like fields/limit from initial or prior state
-			fields: prev.fields ?? initialParams.fields ?? "",
-			limit: prev.limit ?? initialParams.limit ?? 10,
-			// Combine initial filter with URL filter
-			filter: combineFilters(initialParams.filter, newParamsFromSearch.filter),
-		}));
-		setSearchTerm(newParamsFromSearch.query ?? "");
-	}, [searchParams, initialParams.fields, initialParams.limit, initialParams.filter]); // Dependencies: searchParams triggers the sync; initialParams for preservation
+		setApiParams(mergeParams(searchParams, initialParams));
+		setSearchTerm(searchParams.get("search") ?? "");
+	}, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
-	// Debounced function to update apiParams.query and URL
+	const updateSearchParam = (key: string, value: string) => {
+		setSearchParams(
+			(prev) => {
+				const next = new URLSearchParams(prev);
+				value ? next.set(key, value) : next.delete(key);
+				return next;
+			},
+			{ replace: true },
+		);
+	};
+
 	const debouncedUpdateSearch = useMemo(
 		() =>
 			debounce((value: string) => {
 				setApiParams((prev) => ({ ...prev, query: value, page: 1 }));
-				setSearchParams(
-					(prev) => {
-						const newParams = new URLSearchParams(prev);
-						if (value) {
-							newParams.set("search", value);
-						} else {
-							newParams.delete("search");
-						}
-						// newParams.set("page", "1");
-						return newParams;
-					},
-					{ replace: true },
-				);
+				updateSearchParam("search", value);
 			}, 500),
 		[setSearchParams],
 	);
 
-	// Handle search input changes
 	const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value;
-		setSearchTerm(value); // Update input immediately
-		debouncedUpdateSearch(value); // Update apiParams.query and URL after debounce
+		setSearchTerm(value);
+		debouncedUpdateSearch(value);
 	};
 
-	// Update pagination
 	const handlePageChange = (page: number) => {
 		setApiParams((prev) => ({ ...prev, page }));
-		setSearchParams(
-			(prev) => {
-				const newParams = new URLSearchParams(prev);
-				newParams.set("page", page.toString());
-				return newParams;
-			},
-			{ replace: true },
-		);
+		updateSearchParam("page", page.toString());
 	};
 
-	// Increment page for infinite scrolling
-	const incrementPage = () => {
-		setApiParams((prev) => ({ ...prev, page: (prev.page ?? 1) + 1 }));
-	};
-
-	// Update filters and reset to first page
 	const handleFilterChange = (filter: string) => {
 		setApiParams((prev) => ({ ...prev, filter, page: 1 }));
-		setSearchParams(
-			(prev) => {
-				const newParams = new URLSearchParams(prev);
-				if (filter) {
-					newParams.set("filter", filter);
-				} else {
-					newParams.delete("filter");
-				}
-				// newParams.set("page", "1");
-				return newParams;
-			},
-			{ replace: true },
-		);
+		updateSearchParam("filter", filter);
+	};
+
+	const incrementPage = () => {
+		setApiParams((prev) => ({ ...prev, page: (prev.page ?? 1) + 1 }));
 	};
 
 	return {
@@ -122,7 +75,7 @@ export const useApiParams = (initialParams: ApiQueryParams = {}) => {
 		searchTerm,
 		handleSearchChange,
 		handlePageChange,
-		incrementPage,
 		handleFilterChange,
+		incrementPage,
 	};
 };

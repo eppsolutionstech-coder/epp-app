@@ -44,6 +44,8 @@ export default function supplierProductsPage() {
 	const { apiParams, searchTerm, handleSearchChange } = useApiParams({
 		limit: 100,
 		fields: "id, sku, name, description, categoryId, category.name, retailPrice, sellingPrice, stockQuantity, isActive, status, imageUrl, images",
+		sort: "createdAt",
+		order: "desc",
 	});
 
 	// Fetch products
