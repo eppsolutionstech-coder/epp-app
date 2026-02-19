@@ -23,7 +23,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetItems, useUpdateItem } from "~/hooks/use-item";
 import { useGetCategories } from "~/hooks/use-category";
 import type { Category } from "~/zod/category.zod";
-import type { supplier } from "~/zod/supplier.zod";
+import { type supplier } from "~/zod/supplier.zod";
 import type { Item, ItemWithRelation } from "~/zod/item.zod";
 import { useApiParams } from "~/hooks/util-hooks/use-api-params";
 import { cn } from "~/lib/utils";
@@ -69,9 +69,11 @@ export default function AdminProductsPage() {
 	};
 
 	const { apiParams, searchTerm, handleSearchChange, handleFilterChange } = useApiParams({
-		limit: 100,
+		limit: 1000,
 		fields: "id, sku, name, description, category.id, category.name, supplier.id, supplier.name, retailPrice, sellingPrice, costPrice, stockQuantity, isActive, status, imageUrl, images",
 		filter: statusFilter !== "all" ? `status:${statusFilter}` : undefined,
+		sort: "createdAt",
+		order: "desc",
 	});
 
 	// Fetch products with server-side filtering
@@ -299,7 +301,11 @@ export default function AdminProductsPage() {
 									onValueChange={(value) => {
 										setStatusFilter(value);
 										handleFilterChange(
-											buildFilterString(categoryFilter, supplierFilter, value),
+											buildFilterString(
+												categoryFilter,
+												supplierFilter,
+												value,
+											),
 										);
 									}}>
 									<SelectTrigger className="w-[180px]">
@@ -417,4 +423,3 @@ export default function AdminProductsPage() {
 		</div>
 	);
 }
-
