@@ -11,6 +11,35 @@ export interface ProductCardProps {
 	onClick?: (product: Item | ItemWithRelation) => void;
 }
 
+interface StatusBadgeProps {
+	status: string;
+	className?: string;
+}
+
+export const getStatusVariant = (status: string) => {
+	switch (status.toUpperCase()) {
+		case "APPROVED":
+		case "ACTIVE":
+			return "default";
+		case "PENDING":
+			return "secondary";
+		case "REJECTED":
+			return "destructive";
+		default:
+			return "outline";
+	}
+};
+
+export function StatusBadge({ status, className = "" }: StatusBadgeProps) {
+	return (
+		<Badge
+			variant={getStatusVariant(status)}
+			className={`font-normal capitalize ${className}`.trim()}>
+			{status.toLowerCase()}
+		</Badge>
+	);
+}
+
 export function ProductCard({ product, variant = "admin", onClick }: ProductCardProps) {
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
@@ -30,20 +59,6 @@ export function ProductCard({ product, variant = "admin", onClick }: ProductCard
 		e.preventDefault();
 		e.stopPropagation();
 		setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-	};
-
-	const getStatusVariant = (status: string) => {
-		switch (status.toUpperCase()) {
-			case "APPROVED":
-			case "ACTIVE":
-				return "default";
-			case "PENDING":
-				return "secondary";
-			case "REJECTED":
-				return "destructive";
-			default:
-				return "outline";
-		}
 	};
 
 	if (variant === "employee" || variant === "landing") {
@@ -282,11 +297,7 @@ export function ProductCard({ product, variant = "admin", onClick }: ProductCard
 				</div> */}
 				{/* Status Badge */}
 				<div className="absolute left-2 top-2">
-					<Badge
-						variant={getStatusVariant(product.status)}
-						className=" font-normal backdrop-blur-sm capitalize">
-						{product.status.toLowerCase()}
-					</Badge>
+					<StatusBadge status={product.status} className="backdrop-blur-sm" />
 				</div>
 			</div>
 			<div className="p-4">

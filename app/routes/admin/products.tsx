@@ -18,17 +18,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Plus, MoreHorizontal, Package, LayoutGrid, List, Check, X } from "lucide-react";
 import { DataTable, type DataTableColumn } from "~/components/molecule/data-table-updated";
-import { ProductCard } from "~/components/molecule/product-card";
+import { ProductCard, StatusBadge } from "~/components/molecule/product-card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetItems, useUpdateItem } from "~/hooks/use-item";
 import { useGetCategories } from "~/hooks/use-category";
 import type { Category } from "~/zod/category.zod";
-import { type supplier } from "~/zod/supplier.zod";
+import type { Supplier } from "~/zod/supplier.zod";
 import type { Item, ItemWithRelation } from "~/zod/item.zod";
 import { useApiParams } from "~/hooks/util-hooks/use-api-params";
 import { cn } from "~/lib/utils";
 import { toast } from "sonner";
-import { Badge } from "~/components/ui/badge";
 import { useGetSuppliers } from "~/hooks/use-supplier";
 
 export default function AdminProductsPage() {
@@ -96,7 +95,7 @@ export default function AdminProductsPage() {
 		limit: 100,
 		fields: "id, name",
 	});
-	const suppliers: supplier[] = suppliersResponse?.suppliers || [];
+	const suppliers: Supplier[] = suppliersResponse?.suppliers || [];
 
 	const handleRowClick = (product: Item | ItemWithRelation) => {
 		navigate(`/admin/products/${product.id}`);
@@ -194,9 +193,7 @@ export default function AdminProductsPage() {
 				{ label: "Rejected", value: "REJECTED" },
 			],
 			render: (value) => (
-				<Badge variant="outline" className="h-5 text-[10px] px-1.5 py-0 lowercase">
-					{String(value)}
-				</Badge>
+				<StatusBadge status={String(value)} className="h-5 px-1.5 py-0 text-[10px]" />
 			),
 		},
 		{
