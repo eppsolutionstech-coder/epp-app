@@ -1,7 +1,7 @@
 ﻿import { z } from "zod";
 import type { CategoryWithRelation } from "./category.zod";
-import type { supplier } from "./supplier.zod";
-import type { Pagination } from "~/types/pagination";
+import type { Supplier } from "./supplier.zod";
+import type { Pagination } from "./common.zod";
 
 // Enums
 export const ItemTypeEnum = z.enum(["PRODUCT", "LOAN"]);
@@ -57,6 +57,8 @@ export const ItemSchema = z.object({
 	retailPrice: decimalSchema,
 	sellingPrice: decimalSchema,
 	costPrice: decimalSchema.optional().nullable(),
+	rentalPrice: decimalSchema.optional().nullable(),
+	wholeSalePrice: decimalSchema.optional().nullable(),
 
 	// Inventory
 	stockQuantity: z.number().int().min(0).default(0),
@@ -84,19 +86,28 @@ export const CreateItemSchema = ItemSchema.omit({
 	id: true,
 	createdAt: true,
 	updatedAt: true,
-}).partial({
-	description: true,
-	costPrice: true,
-	imageUrl: true,
-	images: true,
-	specifications: true,
-	stockQuantity: true,
-	lowStockThreshold: true,
-	isActive: true,
-	isFeatured: true,
-	isAvailable: true,
-	itemType: true,
-});
+})
+	.partial({
+		description: true,
+		costPrice: true,
+		rentalPrice: true,
+		wholeSalePrice: true,
+		imageUrl: true,
+		images: true,
+		specifications: true,
+		stockQuantity: true,
+		lowStockThreshold: true,
+		isActive: true,
+		isFeatured: true,
+		isAvailable: true,
+		itemType: true,
+	})
+	.extend({
+		organizationId: z
+			.string()
+			.optional()
+			.nullable(),
+	});
 
 export type CreateItem = z.infer<typeof CreateItemSchema>;
 
@@ -109,9 +120,10 @@ export const UpdateItemSchema = ItemSchema.omit({
 
 export type UpdateItem = z.infer<typeof UpdateItemSchema>;
 
+
 export interface ItemWithRelation extends Item {
 	category: CategoryWithRelation;
-	supplier: supplier;
+	supplier: Supplier;
 }
 
 export type GetAllItems = {
