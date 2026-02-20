@@ -1,4 +1,4 @@
-﻿import { NavLink, useNavigate } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { useAuth } from "~/hooks/use-auth";
 import {
 	LayoutDashboard,
@@ -11,6 +11,7 @@ import {
 	Package,
 	Store,
 	ShoppingCart,
+	BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -28,6 +29,7 @@ const navItems = [
 	{ href: "/admin/suppliers", icon: Store, label: "Suppliers" },
 	{ href: "/admin/employees", icon: Users, label: "Employees" },
 	{ href: "/admin/reports", icon: PieChart, label: "Reports" },
+	{ href: "/admin/ledger", icon: BookOpen, label: "Ledger" },
 	{ href: "/admin/settings", icon: Settings, label: "Settings" },
 ];
 

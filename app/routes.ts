@@ -51,6 +51,7 @@ const adminRoutes: RouteConfig = [
 	route("suppliers", "routes/admin/suppliers.tsx"),
 	route("suppliers/:id", "routes/admin/suppliers.$id.tsx"),
 	route("reports", "routes/admin/reports.tsx"),
+	route("ledger", "routes/admin/ledger.tsx"),
 ];
 
 // Financer routes
