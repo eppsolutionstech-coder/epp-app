@@ -1,4 +1,4 @@
-﻿import { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,10 @@ interface ProductDetailsViewProps {
 	headerActions?: React.ReactNode;
 	/** Whether to show supplier info in additional details (for admin view) */
 	showsupplierInfo?: boolean;
+	/** Whether to show admin pricing block (cost/retailer/wholesale) */
+	showAdminPriceSection?: boolean;
+	/** Optional action shown in admin pricing section (e.g., Edit Prices button) */
+	adminPriceAction?: React.ReactNode;
 }
 
 export function ProductDetailsView({
@@ -29,6 +33,8 @@ export function ProductDetailsView({
 	isError,
 	headerActions,
 	showsupplierInfo = false,
+	showAdminPriceSection = false,
+	adminPriceAction,
 }: ProductDetailsViewProps) {
 	const navigate = useNavigate();
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -57,6 +63,13 @@ export function ProductDetailsView({
 				return "secondary";
 		}
 	};
+
+	const getSafePrice = (value: unknown) => {
+		const parsedPrice = Number(value ?? 0);
+		return Number.isFinite(parsedPrice) ? parsedPrice : 0;
+	};
+
+	const formatPrice = (value: unknown) => `\u20B1${getSafePrice(value).toLocaleString()}`;
 
 	if (isLoading) {
 		return (
@@ -190,22 +203,20 @@ export function ProductDetailsView({
 								<div>
 									<p className="text-sm text-muted-foreground">Retail Price</p>
 									<p className="text-2xl font-bold">
-										₱{Number(product.retailPrice).toLocaleString()}
+										{formatPrice(product.retailPrice)}
 									</p>
 								</div>
 								<div>
 									<p className="text-sm text-muted-foreground">Selling Price</p>
 									<p className="text-2xl font-bold text-primary">
-										₱{Number(product.sellingPrice).toLocaleString()}
+										{formatPrice(product.sellingPrice)}
 									</p>
 								</div>
 							</div>
 							{/* {product.costPrice && (
 								<div>
 									<p className="text-sm text-muted-foreground">Cost Price</p>
-									<p className="text-lg font-medium">
-										₱{Number(product.costPrice).toLocaleString()}
-									</p>
+									<p className="text-lg font-medium">{formatPrice(product.costPrice)}</p>
 								</div>
 							)} */}
 							<Separator />
@@ -230,6 +241,48 @@ export function ProductDetailsView({
 							</div>
 						</CardContent>
 					</Card>
+
+					{/* Admin Pricing */}
+					{showAdminPriceSection && (
+						<Card>
+							<CardHeader>
+								<div className="flex items-center justify-between gap-2">
+									<CardTitle>Price Settings</CardTitle>
+									{adminPriceAction && (
+										<div className="flex items-center gap-2">
+											{adminPriceAction}
+										</div>
+									)}
+								</div>
+							</CardHeader>
+							<CardContent>
+								<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+									<div>
+										<p className="text-sm text-muted-foreground">Cost Price</p>
+										<p className="text-lg font-semibold">
+											{formatPrice(product.costPrice)}
+										</p>
+									</div>
+									<div>
+										<p className="text-sm text-muted-foreground">
+											Retailer Price
+										</p>
+										<p className="text-lg font-semibold">
+											{formatPrice(product.retailerPrice)}
+										</p>
+									</div>
+									<div>
+										<p className="text-sm text-muted-foreground">
+											Wholesale Price
+										</p>
+										<p className="text-lg font-semibold">
+											{formatPrice(product.wholeSalePrice)}
+										</p>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					)}
 
 					{/* Description */}
 					<Card>
@@ -394,4 +447,3 @@ export function ProductDetailsView({
 		</div>
 	);
 }
-
