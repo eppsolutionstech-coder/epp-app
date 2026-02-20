@@ -16,7 +16,7 @@ import { useGetItems } from "~/hooks/use-item";
 import { useGetCategories } from "~/hooks/use-category";
 import { useApiParams } from "~/hooks/util-hooks/use-api-params";
 import type { Category } from "~/zod/category.zod";
-import type { supplier } from "~/zod/supplier.zod";
+import type { Supplier } from "~/zod/supplier.zod";
 import { useGetSuppliers } from "~/hooks/use-supplier";
 import { cn } from "@/lib/utils";
 
@@ -63,7 +63,7 @@ export default function EmployeeCatalog() {
 		limit: 100,
 		fields: "id, name",
 	});
-	const suppliers: supplier[] = suppliersResponse?.suppliers || [];
+	const suppliers: Supplier[] = suppliersResponse?.suppliers || [];
 
 	// Client-side price filtering (since API might not support price ranges)
 	const filteredProducts = itemsResponse?.items.filter((product) => {
@@ -135,7 +135,7 @@ export default function EmployeeCatalog() {
 					<div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
 						<div className="space-y-2">
 							<h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-primary to-chart-4 bg-clip-text text-transparent pb-1">
-								Catalog
+								Products
 							</h1>
 							<p className="text-muted-foreground text-base max-w-2xl">
 								Browse and manage your organization's equipment and supplies

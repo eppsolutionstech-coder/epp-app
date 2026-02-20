@@ -20,6 +20,7 @@ import { Plus, MoreHorizontal, Package, LayoutGrid, List, Check, X } from "lucid
 import { DataTable, type DataTableColumn } from "~/components/molecule/data-table-updated";
 import { ProductCard, StatusBadge } from "~/components/molecule/product-card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useGetItems, useUpdateItem } from "~/hooks/use-item";
 import { useGetCategories } from "~/hooks/use-category";
 import type { Category } from "~/zod/category.zod";
@@ -82,6 +83,7 @@ export default function AdminProductsPage() {
 		isError: isProductsError,
 	} = useGetItems(apiParams);
 	const products = itemsResponse?.items || [];
+	const productGridSkeletonCount = 8;
 
 	// Fetch categories for filter dropdown
 	const { data: categoriesResponse } = useGetCategories({
@@ -388,7 +390,25 @@ export default function AdminProductsPage() {
 
 				<div className="space-y-4">
 					{viewMode === "grid" ? (
-						products.length === 0 ? (
+						isLoadingProducts ? (
+							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+								{Array.from({ length: productGridSkeletonCount }).map(
+									(_, index) => (
+										<div
+											key={`product-skeleton-${index}`}
+											className="rounded-lg border bg-card p-4 space-y-3">
+											<Skeleton className="aspect-square w-full rounded-md" />
+											<Skeleton className="h-4 w-3/4" />
+											<Skeleton className="h-3 w-1/2" />
+											<div className="flex items-center justify-between pt-2">
+												<Skeleton className="h-4 w-16" />
+												<Skeleton className="h-4 w-12" />
+											</div>
+										</div>
+									),
+								)}
+							</div>
+						) : products.length === 0 ? (
 							<div className="flex flex-col items-center justify-center py-10 text-center">
 								<p className="text-muted-foreground">No products found.</p>
 							</div>
