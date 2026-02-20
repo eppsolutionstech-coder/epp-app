@@ -66,10 +66,13 @@ export default function LoginPage() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const navigate = useNavigate();
-	const { login } = useAuth();
+	const { login, error, clearError } = useAuth();
 
 	const handleRoleChange = (roleId: string) => {
 		setSelectedRoleId(roleId);
+		if (error) {
+			clearError();
+		}
 		const role = roleOptions.find((r) => r.id === roleId);
 		if (role) {
 			setEmail(role.email);
@@ -111,9 +114,7 @@ export default function LoginPage() {
 						<h1 className="text-3xl font-bold tracking-tight">
 							Employee Purchase Program
 						</h1>
-						<p className="text-muted-foreground text-lg">
-							Sign in to your account
-						</p>
+						<p className="text-muted-foreground text-lg">Sign in to your account</p>
 					</div>
 
 					{/* Login Form */}
@@ -122,9 +123,7 @@ export default function LoginPage() {
 							{/* Quick Role Select */}
 							<div className="space-y-2">
 								<Label htmlFor="role-select">Quick Login As</Label>
-								<Select
-									value={selectedRoleId}
-									onValueChange={handleRoleChange}>
+								<Select value={selectedRoleId} onValueChange={handleRoleChange}>
 									<SelectTrigger id="role-select">
 										<SelectValue placeholder="Select a role to prefill..." />
 									</SelectTrigger>
@@ -157,7 +156,13 @@ export default function LoginPage() {
 										type="email"
 										placeholder="Enter your email"
 										value={email}
-										onChange={(e) => setEmail(e.target.value)}
+										onChange={(e) => {
+											if (error) {
+												clearError();
+											}
+											setEmail(e.target.value);
+										}}
+										aria-invalid={!!error}
 										required
 									/>
 								</div>
@@ -170,8 +175,14 @@ export default function LoginPage() {
 											type={showPassword ? "text" : "password"}
 											placeholder="Enter your password"
 											value={password}
-											onChange={(e) => setPassword(e.target.value)}
+											onChange={(e) => {
+												if (error) {
+													clearError();
+												}
+												setPassword(e.target.value);
+											}}
 											className="pr-10"
+											aria-invalid={!!error}
 											required
 										/>
 										<button
@@ -187,6 +198,15 @@ export default function LoginPage() {
 										</button>
 									</div>
 								</div>
+
+								{error ? (
+									<p
+										className="text-sm text-destructive"
+										role="alert"
+										aria-live="polite">
+										{error}
+									</p>
+								) : null}
 
 								<Button
 									type="submit"
@@ -206,8 +226,8 @@ export default function LoginPage() {
 					{/* Footer Note */}
 					<div className="text-center">
 						<p className="text-sm text-muted-foreground">
-							This is a <span className="font-medium">demo application</span>{" "}
-							for UI demonstration purposes.
+							This is a <span className="font-medium">demo application</span> for UI
+							demonstration purposes.
 							<br />
 							Use the dropdown above to quickly prefill credentials.
 						</p>
