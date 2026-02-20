@@ -11,7 +11,7 @@ export default function AdminProductDetailsPage() {
 			product={product}
 			isLoading={isLoading}
 			isError={isError}
-			showsupplierInfo={true}
+			showsupplierInfo
 		/>
 	);
 }
