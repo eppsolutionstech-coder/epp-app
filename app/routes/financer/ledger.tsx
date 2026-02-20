@@ -117,7 +117,7 @@ export default function FinancerLedger() {
 		data: ledgerData,
 		isLoading: isLedgerLoading,
 		isError,
-	} = useGetLedger(activeConfigId);
+	} = useGetLedger(activeConfigId, "financier");
 
 	const summary = ledgerData?.summary;
 	const entries = ledgerData?.entries || [];

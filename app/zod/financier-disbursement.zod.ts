@@ -240,12 +240,12 @@ export const FinancierDisbursementSoaViewEnum = z.enum(["ADMIN_TO_FINANCIER", "F
 export type FinancierDisbursementSoaView = z.infer<typeof FinancierDisbursementSoaViewEnum>;
 
 export const FinancierDisbursementSoaEntrySchema = z.object({
-	date: z.coerce.date(),
+	date: z.string(),
 	description: z.string(),
 	debit: decimalSchema,
 	credit: decimalSchema,
 	balance: decimalSchema,
-	eventType: z.enum(["LOAN", "PAYMENT"]),
+	eventType: z.enum(["LOAN", "PAYMENT", "REPAYMENT"]),
 	disbursementId: z.string(),
 	orderNumber: z.string().optional().nullable(),
 	status: DisbursementStatusEnum,

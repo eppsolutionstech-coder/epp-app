@@ -1,5 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import financierDisbursementService from "~/services/financier-disbursement-service";
+import financierDisbursementService, {
+	type LedgerRole,
+} from "~/services/financier-disbursement-service";
 import type { ApiQueryParams } from "~/services/api-service";
 import { queryClient } from "~/lib/query-client";
 import type {
@@ -89,11 +91,14 @@ export const useDeleteFinancierDisbursement = () => {
 	});
 };
 
-export const useGetLedger = (financierConfigId: string) => {
+export const useGetLedger = (
+	financierConfigId: string,
+	role: LedgerRole = "financier",
+) => {
 	return useQuery({
-		queryKey: ["ledger", financierConfigId],
+		queryKey: ["ledger", role, financierConfigId],
 		queryFn: () => {
-			return financierDisbursementService.getLedger(financierConfigId);
+			return financierDisbursementService.getLedger(financierConfigId, role);
 		},
 		enabled: !!financierConfigId,
 	});

@@ -10,11 +10,11 @@ import type {
 	CreateFinancierDisbursementRemittance,
 	FinancierDisbursementRemittanceCreateResponse,
 	FinancierDisbursementRemittancesResponse,
-	FinancierDisbursementLedger,
 	FinancierDisbursementSoa,
 } from "~/zod/financier-disbursement.zod";
 
 const { FINANCIER_DISBURSEMENT } = API_ENDPOINTS;
+export type LedgerRole = "financier" | "admin";
 
 class FinancierDisbursementService extends APIService {
 	getAllFinancierDisbursements = async () => {
@@ -101,10 +101,16 @@ class FinancierDisbursementService extends APIService {
 		}
 	};
 
-	getLedger = async (financierConfigId: string) => {
+	getLedger = async (
+		financierConfigId: string,
+		role: LedgerRole = "financier",
+	) => {
 		try {
-			const response: ApiResponse<FinancierDisbursementLedger> = await apiClient.get(
-				FINANCIER_DISBURSEMENT.GET_LEDGER.replace(":financierConfigId", financierConfigId),
+			const response: ApiResponse<FinancierDisbursementSoa> = await apiClient.get(
+				FINANCIER_DISBURSEMENT.GET_LEDGER.replace(":role", role).replace(
+					":financierConfigId",
+					financierConfigId,
+				),
 			);
 			return response.data;
 		} catch (error: any) {

@@ -142,7 +142,7 @@
 		CREATE: "/financier-disbursement",
 		UPDATE: "/financier-disbursement/:id",
 		DELETE: "/financier-disbursement/:id", // Hard delete in API
-		GET_LEDGER: "/ledger/financier/:financierConfigId",
+		GET_LEDGER: "/ledger/:role/:financierConfigId",
 		// RECONCILE: "/financier-disbursement/:id/reconcile",
 		// CREATE_REMITTANCE: "/financier-disbursement/:id/remittance",
 		// GET_REMITTANCES: "/financier-disbursement/:id/remittances",
