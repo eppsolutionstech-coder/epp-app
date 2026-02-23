@@ -1,11 +1,5 @@
 import { useState } from "react";
-import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardTitle,
-	CardDescription,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -62,8 +56,7 @@ const getUserTypeBadgeStyle = (userType: string) => {
 
 export function FinancerLoanSettingsTab() {
 	const [isModalOpen, setIsModalOpen] = useState(false);
-	const [editingConfig, setEditingConfig] =
-		useState<FinancierConfigWithRelation | null>(null);
+	const [editingConfig, setEditingConfig] = useState<FinancierConfigWithRelation | null>(null);
 
 	const { data, isLoading, isError } = useGetFinancierConfigs();
 	const configs = (data?.financierConfigs || []) as FinancierConfigWithRelation[];
@@ -93,9 +86,7 @@ export function FinancerLoanSettingsTab() {
 		}
 	};
 
-	const handleSubmit = async (
-		data: CreateFinancierConfig | UpdateFinancierConfig,
-	) => {
+	const handleSubmit = async (data: CreateFinancierConfig | UpdateFinancierConfig) => {
 		try {
 			if (editingConfig) {
 				await updateMutation.mutateAsync({
@@ -149,16 +140,12 @@ export function FinancerLoanSettingsTab() {
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<div>
-					<h2 className="text-xl font-semibold tracking-tight">
-						Loan Configurations
-					</h2>
+					<h2 className="text-xl font-semibold tracking-tight">Loan Configurations</h2>
 					<p className="text-sm text-muted-foreground">
 						Manage your financing configurations, credit limits, and installment rates.
 					</p>
 				</div>
-				<Button
-					onClick={handleOpenCreate}
-					className="bg-emerald-600 hover:bg-emerald-700">
+				<Button onClick={handleOpenCreate} className="bg-emerald-600 hover:bg-emerald-700">
 					<Plus className="h-4 w-4 mr-2" />
 					Add Configuration
 				</Button>
@@ -187,9 +174,7 @@ export function FinancerLoanSettingsTab() {
 			{configs.map((config) => {
 				const utilization =
 					config.maxCreditLimit > 0
-						? Math.round(
-								((config.usedCredits || 0) / config.maxCreditLimit) * 100,
-							)
+						? Math.round(((config.usedCredits || 0) / config.maxCreditLimit) * 100)
 						: 0;
 
 				return (
@@ -212,9 +197,7 @@ export function FinancerLoanSettingsTab() {
 										<Badge
 											variant={config.isActive ? "default" : "secondary"}
 											className={
-												config.isActive
-													? "bg-green-100 text-green-700"
-													: ""
+												config.isActive ? "bg-green-100 text-green-700" : ""
 											}>
 											{config.isActive ? "Active" : "Inactive"}
 										</Badge>
@@ -278,9 +261,7 @@ export function FinancerLoanSettingsTab() {
 							{/* Credit Utilization Bar */}
 							<div className="space-y-1">
 								<div className="flex justify-between text-xs text-muted-foreground">
-									<span>
-										{formatCurrency(config.usedCredits || 0)} used
-									</span>
+									<span>{formatCurrency(config.usedCredits || 0)} used</span>
 									<span>{utilization}%</span>
 								</div>
 								<div className="h-2 bg-gray-100 rounded-full overflow-hidden">
@@ -311,7 +292,11 @@ export function FinancerLoanSettingsTab() {
 													key={tier.installmentCount}
 													variant="outline"
 													className="bg-emerald-50 border-emerald-200 text-emerald-700">
-													{tier.installmentCount}mo @ {tier.rate}%
+													{tier.installmentCount}{" "}
+													{tier.installmentCount > 1
+														? "installments"
+														: "installment"}{" "}
+													@ {tier.rate}%
 												</Badge>
 											))}
 										</div>

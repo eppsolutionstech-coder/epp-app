@@ -60,7 +60,7 @@ const initialFormData: FormData = {
 	notes: "",
 };
 
-const defaultInstallmentTerms = [3, 6, 12, 18, 24];
+const defaultInstallmentTerms = [1, 3, 6, 12];
 
 export function FinancierConfigUpsertModal({
 	open,
@@ -141,9 +141,7 @@ export function FinancierConfigUpsertModal({
 			availableCredits: parseFloat(formData.maxCreditLimit) || 0,
 			autoApproveLimit: parseFloat(formData.autoApproveLimit) || 0,
 			installmentRateConfig:
-				formData.installmentRateConfig.length > 0
-					? formData.installmentRateConfig
-					: null,
+				formData.installmentRateConfig.length > 0 ? formData.installmentRateConfig : null,
 			notes: formData.notes || null,
 		};
 		onSubmit(submitData);
@@ -155,9 +153,7 @@ export function FinancierConfigUpsertModal({
 	};
 
 	const isFormValid =
-		formData.name.trim() &&
-		formData.maxCreditLimit &&
-		formData.autoApproveLimit;
+		formData.name.trim() && formData.maxCreditLimit && formData.autoApproveLimit;
 
 	return (
 		<Dialog open={open} onOpenChange={handleClose}>
@@ -254,9 +250,7 @@ export function FinancierConfigUpsertModal({
 
 						<div className="grid gap-4 md:grid-cols-2">
 							<div className="space-y-2">
-								<Label htmlFor="maxCreditLimit">
-									Maximum Credit Limit (₱) *
-								</Label>
+								<Label htmlFor="maxCreditLimit">Maximum Credit Limit (₱) *</Label>
 								<Input
 									id="maxCreditLimit"
 									type="number"
@@ -276,9 +270,7 @@ export function FinancierConfigUpsertModal({
 							</div>
 
 							<div className="space-y-2">
-								<Label htmlFor="autoApproveLimit">
-									Auto-Approve Limit (₱) *
-								</Label>
+								<Label htmlFor="autoApproveLimit">Auto-Approve Limit (₱) *</Label>
 								<Input
 									id="autoApproveLimit"
 									type="number"
@@ -311,7 +303,7 @@ export function FinancierConfigUpsertModal({
 							Click to enable installment terms and set their interest rates:
 						</p>
 
-						<div className="grid gap-4 md:grid-cols-5">
+						<div className="grid gap-4 md:grid-cols-4">
 							{defaultInstallmentTerms.map((term) => {
 								const existingTier = formData.installmentRateConfig.find(
 									(tier) => tier.installmentCount === term,
@@ -357,7 +349,9 @@ export function FinancierConfigUpsertModal({
 													<CheckCircle className="h-5 w-5 text-emerald-600" />
 												)}
 											</div>
-											<p className="text-sm text-muted-foreground">months</p>
+											<p className="text-sm text-muted-foreground">
+												{term > 1 ? "installments" : "installment"}
+											</p>
 											<p className="text-xs text-muted-foreground mt-1">
 												{term <= 6
 													? "Short-term"
@@ -419,7 +413,7 @@ export function FinancierConfigUpsertModal({
 							<div className="flex items-end gap-3">
 								<div className="space-y-1 flex-1">
 									<Label htmlFor="tierMonths" className="text-xs">
-										Months
+										Installments
 									</Label>
 									<Input
 										id="tierMonths"
@@ -480,7 +474,10 @@ export function FinancierConfigUpsertModal({
 												key={tier.installmentCount}
 												className="flex items-center gap-2 p-2 border rounded-lg bg-blue-50/50 border-blue-200">
 												<span className="text-sm font-medium">
-													{tier.installmentCount}mo
+													{tier.installmentCount}{" "}
+													{tier.installmentCount > 1
+														? "installments"
+														: "installment"}
 												</span>
 												<Input
 													type="number"

@@ -131,14 +131,14 @@ export function FinancerHeader() {
 							</div>
 							<DropdownMenuSeparator className="my-1" />
 							<DropdownMenuItem asChild>
-								<Link to="/financer/profile" className="cursor-pointer gap-2 p-2">
+								<Link to="/financier/profile" className="cursor-pointer gap-2 p-2">
 									<User className="h-4 w-4" />
 									<span>Profile</span>
 								</Link>
 							</DropdownMenuItem>
 							<DropdownMenuItem asChild>
 								<Link
-									to="/financer/profile/security"
+									to="/financier/profile/security"
 									className="cursor-pointer gap-2 p-2">
 									<Settings className="h-4 w-4" />
 									<span>Settings</span>

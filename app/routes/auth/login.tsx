@@ -96,34 +96,6 @@ export default function LoginPage() {
 		<div className="h-screen overflow-hidden flex">
 			{/* Left Panel — 1/3 */}
 			<div className="w-1/2 relative flex items-center justify-center px-8 lg:px-12 bg-background overflow-hidden">
-				{/* Corner blobs */}
-				<div
-					className="absolute -top-24 -right-24 w-72 h-72 rounded-full pointer-events-none"
-					style={{
-						background: "var(--primary)",
-						filter: "blur(64px)",
-						animation: "blob-float 9s ease-in-out infinite",
-					}}
-				/>
-				<div
-					className="absolute -bottom-20 -left-20 w-64 h-64 rounded-full pointer-events-none"
-					style={{
-						background: "oklch(0.75 0.1 280)",
-						filter: "blur(64px)",
-						animation: "blob-drift 13s ease-in-out infinite",
-						animationDelay: "3s",
-					}}
-				/>
-				<div
-					className="absolute top-1/2 -right-10 w-40 h-40 rounded-full pointer-events-none"
-					style={{
-						background: "oklch(0.7 0.12 220)",
-						filter: "blur(48px)",
-						animation: "blob-pulse 10s ease-in-out infinite",
-						animationDelay: "1.5s",
-					}}
-				/>
-
 				<div className="relative w-full max-w-sm space-y-10">
 					{/* Logo */}
 					<div className="flex items-center gap-2.5">
@@ -230,9 +202,7 @@ export default function LoginPage() {
 							type="submit"
 							className="w-full mt-2"
 							disabled={isLoading || !email || !password}>
-							{isLoading ? (
-								<Loader2 className="h-4 w-4 animate-spin mr-2" />
-							) : null}
+							{isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
 							{isLoading ? "Signing in..." : "Sign in"}
 						</Button>
 					</form>
@@ -259,7 +229,7 @@ export default function LoginPage() {
 
 				{/* Blobs */}
 				<div
-					className="absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full pointer-events-none"
+					className="absolute -top-32 -right-32 w-[520px] h-[520px] rounded-full pointer-events-none opacity-20"
 					style={{
 						background: "oklch(0.65 0.13 245)",
 						filter: "blur(80px)",
@@ -267,7 +237,7 @@ export default function LoginPage() {
 					}}
 				/>
 				<div
-					className="absolute top-1/3 -left-24 w-96 h-96 rounded-full pointer-events-none"
+					className="absolute top-1/3 -left-24 w-96 h-96 rounded-full pointer-events-none opacity-20"
 					style={{
 						background: "oklch(0.7 0.12 220)",
 						filter: "blur(72px)",
@@ -276,7 +246,7 @@ export default function LoginPage() {
 					}}
 				/>
 				<div
-					className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full pointer-events-none"
+					className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full pointer-events-none opacity-20"
 					style={{
 						background: "oklch(0.75 0.1 280)",
 						filter: "blur(72px)",
@@ -285,7 +255,7 @@ export default function LoginPage() {
 					}}
 				/>
 				<div
-					className="absolute w-56 h-56 rounded-full pointer-events-none"
+					className="absolute w-56 h-56 rounded-full pointer-events-none opacity-20"
 					style={{
 						background: "oklch(0.75 0.12 180)",
 						filter: "blur(56px)",
@@ -307,8 +277,8 @@ export default function LoginPage() {
 						Employee Purchases
 					</h2>
 					<p className="text-sm text-white/50 leading-relaxed">
-						Quality products through convenient installment plans, all managed
-						through one unified platform.
+						Quality products through convenient installment plans, all managed through
+						one unified platform.
 					</p>
 					<div className="flex gap-8 pt-6 border-t border-white/10">
 						<div>
