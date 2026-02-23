@@ -115,10 +115,7 @@ export function ProductDetailsView({
 					<Button variant="ghost" size="icon" onClick={() => navigate(-1)}>
 						<ArrowLeft className="h-4 w-4" />
 					</Button>
-					<div>
-						<h1 className="text-3xl font-bold tracking-tight">{product.name}</h1>
-						<p className="text-muted-foreground">SKU: {product.sku}</p>
-					</div>
+					<h1 className="text-3xl font-bold tracking-tight">Product Details</h1>
 				</div>
 				{headerActions && <div className="flex items-center gap-2">{headerActions}</div>}
 			</div>
@@ -186,40 +183,24 @@ export function ProductDetailsView({
 
 				{/* Product Info */}
 				<div className="space-y-3">
-					{/* Status & Pricing */}
+					{/* Product Information */}
 					<Card>
 						<CardHeader>
-							<div className="flex items-center justify-between">
-								<CardTitle>Product Information</CardTitle>
+							<div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+								<div>
+									<CardTitle className="text-2xl">{product.name}</CardTitle>
+									<p className="text-sm text-muted-foreground mt-1">
+										SKU: {product.sku}
+									</p>
+								</div>
 								<Badge
 									variant={getStatusVariant(product.status)}
-									className="capitalize">
+									className="capitalize w-fit mt-1">
 									{product.status.toLowerCase()}
 								</Badge>
 							</div>
 						</CardHeader>
 						<CardContent className="space-y-4">
-							<div className="grid grid-cols-2 gap-4">
-								<div>
-									<p className="text-sm text-muted-foreground">Retail Price</p>
-									<p className="text-2xl font-bold">
-										{formatPrice(product.retailPrice)}
-									</p>
-								</div>
-								<div>
-									<p className="text-sm text-muted-foreground">Selling Price</p>
-									<p className="text-2xl font-bold text-primary">
-										{formatPrice(product.sellingPrice)}
-									</p>
-								</div>
-							</div>
-							{/* {product.costPrice && (
-								<div>
-									<p className="text-sm text-muted-foreground">Cost Price</p>
-									<p className="text-lg font-medium">{formatPrice(product.costPrice)}</p>
-								</div>
-							)} */}
-							<Separator />
 							<div className="grid grid-cols-2 gap-4">
 								<div>
 									<p className="text-sm text-muted-foreground">Stock Quantity</p>
@@ -242,47 +223,67 @@ export function ProductDetailsView({
 						</CardContent>
 					</Card>
 
-					{/* Admin Pricing */}
-					{showAdminPriceSection && (
-						<Card>
-							<CardHeader>
-								<div className="flex items-center justify-between gap-2">
-									<CardTitle>Price Settings</CardTitle>
-									{adminPriceAction && (
-										<div className="flex items-center gap-2">
-											{adminPriceAction}
+					{/* Price Settings */}
+					<Card>
+						<CardHeader>
+							<div className="flex items-center justify-between gap-2">
+								<CardTitle>Price Settings</CardTitle>
+								{showAdminPriceSection && adminPriceAction && (
+									<div className="flex items-center gap-2">
+										{adminPriceAction}
+									</div>
+								)}
+							</div>
+						</CardHeader>
+						<CardContent className="space-y-6">
+							<div className="grid grid-cols-2 gap-4">
+								<div>
+									<p className="text-sm text-muted-foreground">Retail Price</p>
+									<p className="text-2xl font-bold">
+										{formatPrice(product.retailPrice)}
+									</p>
+								</div>
+								<div>
+									<p className="text-sm text-muted-foreground">Selling Price</p>
+									<p className="text-2xl font-bold text-primary">
+										{formatPrice(product.sellingPrice)}
+									</p>
+								</div>
+							</div>
+
+							{showAdminPriceSection && (
+								<>
+									<Separator />
+									<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+										<div>
+											<p className="text-sm text-muted-foreground">
+												Cost Price
+											</p>
+											<p className="text-lg font-semibold">
+												{formatPrice(product.costPrice)}
+											</p>
 										</div>
-									)}
-								</div>
-							</CardHeader>
-							<CardContent>
-								<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-									<div>
-										<p className="text-sm text-muted-foreground">Cost Price</p>
-										<p className="text-lg font-semibold">
-											{formatPrice(product.costPrice)}
-										</p>
+										<div>
+											<p className="text-sm text-muted-foreground">
+												Retailer Price
+											</p>
+											<p className="text-lg font-semibold">
+												{formatPrice(product.retailerPrice)}
+											</p>
+										</div>
+										<div>
+											<p className="text-sm text-muted-foreground">
+												Wholesale Price
+											</p>
+											<p className="text-lg font-semibold">
+												{formatPrice(product.wholeSalePrice)}
+											</p>
+										</div>
 									</div>
-									<div>
-										<p className="text-sm text-muted-foreground">
-											Retailer Price
-										</p>
-										<p className="text-lg font-semibold">
-											{formatPrice(product.retailerPrice)}
-										</p>
-									</div>
-									<div>
-										<p className="text-sm text-muted-foreground">
-											Wholesale Price
-										</p>
-										<p className="text-lg font-semibold">
-											{formatPrice(product.wholeSalePrice)}
-										</p>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-					)}
+								</>
+							)}
+						</CardContent>
+					</Card>
 
 					{/* Description */}
 					<Card>
