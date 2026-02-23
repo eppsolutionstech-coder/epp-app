@@ -173,7 +173,11 @@ export default function EmployeeProductDetailsPage() {
 
 						<Separator />
 
-						<ProductPricing costPrice={costPrice} retailPrice={retailPrice} />
+						<ProductPricing
+							costPrice={costPrice}
+							retailPrice={retailPrice}
+							selectedInstallment={selectedInstallment}
+						/>
 
 						<InstallmentOptions
 							costPrice={costPrice}
