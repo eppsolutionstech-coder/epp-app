@@ -1,4 +1,4 @@
-﻿import { useState, useRef, useCallback } from "react";
+﻿import { useState, useRef, useCallback, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -7,6 +7,7 @@ import { useGetItemById } from "~/hooks/use-item";
 import { useCreateCartItem } from "~/hooks/use-cart-item";
 import type { ItemImage, ItemWithRelation } from "~/zod/item.zod";
 import { useAuth } from "~/hooks/use-auth";
+import { useGetFinancierConfigs } from "~/hooks/use-financier-config";
 import {
 	FloatingCartBubbles,
 	ProductImageGallery,
@@ -22,7 +23,7 @@ export default function EmployeeProductDetailsPage() {
 	const { id } = useParams<{ id: string }>();
 	const navigate = useNavigate();
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
-	const [selectedInstallment, setSelectedInstallment] = useState(6);
+	const [selectedInstallment, setSelectedInstallment] = useState<number | null>(null);
 	const { user } = useAuth();
 	const { mutate: createCartItem, isPending: isAddingToCart } = useCreateCartItem();
 
@@ -30,6 +31,8 @@ export default function EmployeeProductDetailsPage() {
 	const [floatingBubbles, setFloatingBubbles] = useState<FloatingBubble[]>([]);
 	const addToCartButtonRef = useRef<HTMLButtonElement>(null);
 	const bubbleIdRef = useRef(0);
+
+	const { data: configsData } = useGetFinancierConfigs();
 
 	const {
 		data: item,
@@ -109,6 +112,32 @@ export default function EmployeeProductDetailsPage() {
 		setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
 	};
 
+	useEffect(() => {
+		if (selectedInstallment === null && configsData && item) {
+			const firstConfig = configsData.financierConfigs?.[0];
+			const installmentRateConfig = firstConfig?.installmentRateConfig;
+
+			if (installmentRateConfig && installmentRateConfig.length > 0) {
+				let lowestTier = installmentRateConfig[0].installmentCount;
+				let lowestPayment = Infinity;
+				const currentCostPrice = Number(item.costPrice);
+
+				installmentRateConfig.forEach((tier) => {
+					const payment =
+						(currentCostPrice * (1 + tier.rate / 100)) / tier.installmentCount;
+					if (payment < lowestPayment) {
+						lowestPayment = payment;
+						lowestTier = tier.installmentCount;
+					}
+				});
+
+				setSelectedInstallment(lowestTier);
+			} else {
+				setSelectedInstallment(0); // fallback if no config
+			}
+		}
+	}, [configsData, item, selectedInstallment]);
+
 	// Loading state
 	if (isLoading) {
 		return (
@@ -134,6 +163,8 @@ export default function EmployeeProductDetailsPage() {
 
 	const costPrice = Number(item.costPrice);
 	const retailPrice = Number(item.retailPrice);
+
+	const activeInstallment = selectedInstallment || 0;
 
 	return (
 		<>
@@ -176,13 +207,13 @@ export default function EmployeeProductDetailsPage() {
 						<ProductPricing
 							costPrice={costPrice}
 							retailPrice={retailPrice}
-							selectedInstallment={selectedInstallment}
+							selectedInstallment={activeInstallment}
 						/>
 
 						<InstallmentOptions
 							costPrice={costPrice}
-							selectedInstallment={selectedInstallment}
-							onSelectInstallment={setSelectedInstallment}
+							selectedInstallment={activeInstallment}
+							onSelectInstallment={(val) => setSelectedInstallment(val)}
 						/>
 
 						{/* Action Buttons */}
