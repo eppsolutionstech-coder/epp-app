@@ -95,10 +95,20 @@ export default function EmployeeProductDetailsPage() {
 		const currentImage = images[currentImageIndex]?.url || "/placeholder.png";
 		triggerFloatingBubble(currentImage);
 
+		const installmentRateConfig =
+			configsData?.financierConfigs?.[0]?.installmentRateConfig;
+		const selectedTier = installmentRateConfig?.find(
+			(tier) => tier.installmentCount === selectedInstallment,
+		);
+
+		console.log(selectedTier?.installmentCount)
+
 		createCartItem({
 			userId: user.id,
 			itemId: item.id,
 			quantity: 1,
+			installmentCount: selectedTier?.installmentCount ?? null,
+			rate: selectedTier?.rate ?? null,
 		});
 	};
 

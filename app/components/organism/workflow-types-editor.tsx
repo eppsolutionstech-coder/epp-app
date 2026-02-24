@@ -37,6 +37,7 @@ export function WorkflowTypesEditor({ workflow, open, onOpenChange }: WorkflowTy
 	const { mutate: addType, isPending } = useCreateWorkflowApprovalType();
 	const { data: users, isLoading } = useGetUsers({
 		fields: "id, userName, email, metadata, userRoles",
+		limit: 1000
 	});
 
 	// Cast data to expected type

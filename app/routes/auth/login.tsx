@@ -95,7 +95,7 @@ export default function LoginPage() {
 	return (
 		<div className="h-screen overflow-hidden flex">
 			{/* Left Panel — 1/3 */}
-			<div className="w-1/2 relative flex items-center justify-center px-8 lg:px-12 bg-background overflow-hidden">
+			<div className="w-full lg:w-1/2 relative flex items-center justify-center px-8 lg:px-12 bg-background overflow-hidden">
 				<div className="relative w-full max-w-sm space-y-10">
 					{/* Logo */}
 					<div className="flex items-center gap-2.5">

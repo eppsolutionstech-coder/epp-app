@@ -16,7 +16,7 @@ export default function EmployeeCart() {
 		isLoading,
 		isError,
 	} = useGetCartItems({
-		fields: "id, userId, itemId, item.id, item.sku, item.name, item.retailPrice, item.costPrice, item.stockQuantity, item.images, quantity, item.supplier.name, createdAt, updatedAt",
+		fields: "id, userId, installmentCount, rate, itemId, item.id, item.sku, item.name, item.retailPrice, item.costPrice, item.stockQuantity, item.images, quantity, item.supplier.name, createdAt, updatedAt",
 		limit: 50,
 	});
 	const updateCartItem = useUpdateCartItem();
