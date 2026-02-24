@@ -15,6 +15,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const navigate = useNavigate();
+	const appCode = "CAA";
 
 	// Clear error function
 	const clearError = () => setError(null);
@@ -41,7 +42,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
 			setIsLoading(true);
 			setError(null);
 
-			const response = await authService.login({ email, password });
+			const response = await authService.login({ email, password, appCode });
 
 			setUser(response as any);
 
