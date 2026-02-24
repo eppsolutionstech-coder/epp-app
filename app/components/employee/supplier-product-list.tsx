@@ -5,9 +5,10 @@ import type { supplierWithRelations } from "~/zod/supplier.zod";
 
 interface SupplierProductListProps {
 	suppliers: supplierWithRelations[];
+	isEppEmployee?: boolean;
 }
 
-export function SupplierProductList({ suppliers }: SupplierProductListProps) {
+export function SupplierProductList({ suppliers, isEppEmployee = false }: SupplierProductListProps) {
 	// Filter suppliers that actually have items
 	const suppliersWithItems = suppliers.filter((supplier) => supplier.items && supplier.items.length > 0);
 
@@ -50,6 +51,7 @@ export function SupplierProductList({ suppliers }: SupplierProductListProps) {
 												imageUrl: item.images?.[0]?.url || item.imageUrl,
 											}}
 											variant="landing"
+											isEppEmployee={isEppEmployee}
 										/>
 									</Link>
 								</div>

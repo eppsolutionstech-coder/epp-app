@@ -31,7 +31,7 @@ export default function LandingPage() {
 			<CatalogHero />
 			<CategorySection />
 			<PartnerBrandsSection />
-			<SupplierProductList suppliers={suppliers} />
+			<SupplierProductList suppliers={suppliers} isEppEmployee={(user?.role as string) === "epp-employee"} />
 			<LoanTypesSection />
 		</div>
 	);

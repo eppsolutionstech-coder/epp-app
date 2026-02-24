@@ -19,8 +19,11 @@ import type { Category } from "~/zod/category.zod";
 import type { Supplier } from "~/zod/supplier.zod";
 import { useGetSuppliers } from "~/hooks/use-supplier";
 import { cn } from "@/lib/utils";
+import { useAuth } from "~/hooks/use-auth";
 
 export default function EmployeeCatalog() {
+	const { user } = useAuth();
+	const isEppEmployee = (user?.role as string) === "epp-employee";
 	const [categoryFilter, setCategoryFilter] = useState<string>("all");
 	const [supplierFilter, setsupplierFilter] = useState<string>("all");
 	const [priceRange, setPriceRange] = useState<string>("all");
@@ -263,6 +266,7 @@ export default function EmployeeCatalog() {
 										updatedAt: product.updatedAt,
 									}}
 									variant="employee"
+									isEppEmployee={isEppEmployee}
 								/>
 							</Link>
 						))}

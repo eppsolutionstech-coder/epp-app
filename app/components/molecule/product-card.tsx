@@ -9,6 +9,7 @@ export interface ProductCardProps {
 	product: Item | ItemWithRelation;
 	variant?: "admin" | "employee" | "supplier" | "landing";
 	onClick?: (product: Item | ItemWithRelation) => void;
+	isEppEmployee?: boolean;
 }
 
 interface StatusBadgeProps {
@@ -40,7 +41,7 @@ export function StatusBadge({ status, className = "" }: StatusBadgeProps) {
 	);
 }
 
-export function ProductCard({ product, variant = "admin", onClick }: ProductCardProps) {
+export function ProductCard({ product, variant = "admin", onClick, isEppEmployee = false }: ProductCardProps) {
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
 	// Get images array, filter out nulls
@@ -126,9 +127,11 @@ export function ProductCard({ product, variant = "admin", onClick }: ProductCard
 								title={product.name}>
 								{product.name}
 							</h3>
-							<p className="text-sm text-muted-foreground">
-								₱{monthlyPayment.toLocaleString()}/mo • {minInstallment} mos
-							</p>
+							{isEppEmployee && (
+								<p className="text-sm text-muted-foreground">
+									₱{monthlyPayment.toLocaleString()}/mo • {minInstallment} mos
+								</p>
+							)}
 						</div>
 						<div className="flex flex-col items-end shrink-0">
 							<span className="font-bold text-base">
@@ -199,9 +202,11 @@ export function ProductCard({ product, variant = "admin", onClick }: ProductCard
 							title={product.name}>
 							{product.name}
 						</h3>
-						<p className="text-[11px] text-muted-foreground">
-							₱{monthlyPayment.toLocaleString()}/mo • {minInstallment} mos
-						</p>
+						{isEppEmployee && (
+							<p className="text-[11px] text-muted-foreground">
+								₱{monthlyPayment.toLocaleString()}/mo • {minInstallment} mos
+							</p>
+						)}
 					</div>
 					<div className="flex flex-col items-end">
 						<span className="font-bold text-primary">
