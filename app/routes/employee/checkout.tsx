@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation, useSearchParams } from "react-router";
 import { toast } from "sonner";
 import {
@@ -16,6 +16,7 @@ import {
 import { useAuth } from "~/hooks/use-auth";
 import { useCreateOrder } from "~/hooks/use-order";
 import { useCheckoutCart } from "~/hooks/use-cart-item";
+import { useGetFinancierConfigs } from "~/hooks/use-financier-config";
 
 interface LocationState {
 	items?: CheckoutItem[];
@@ -27,11 +28,15 @@ export default function CheckoutPage() {
 	const location = useLocation();
 	const [searchParams, setSearchParams] = useSearchParams();
 	const currentStep = (searchParams.get("step") as CheckoutStep) || "summary";
-	const [selectedInstallments, setSelectedInstallments] = useState(6);
+	const [selectedInstallments, setSelectedInstallments] = useState<number | null>(null);
 	const [orderNumber, setOrderNumber] = useState<string>();
 	const { user } = useAuth();
 	const createOrder = useCreateOrder();
 	const checkoutCart = useCheckoutCart();
+
+	const { data: configsData } = useGetFinancierConfigs();
+	const firstConfig = configsData?.financierConfigs?.[0];
+	const installmentConfigs = firstConfig?.installmentRateConfig || [];
 
 	// Get items and source from navigation state
 	const locationState = location.state as LocationState | null;
@@ -43,8 +48,36 @@ export default function CheckoutPage() {
 		return <CheckoutEmpty />;
 	}
 
-	const { subtotal, total } = calculateTotals(checkoutItems);
-	const perInstallment = total / selectedInstallments;
+	const { subtotal, total: baseTotal } = calculateTotals(checkoutItems);
+
+	// Compute default selectedInstallments
+	useEffect(() => {
+		if (selectedInstallments === null && installmentConfigs.length > 0) {
+			let lowestTier = installmentConfigs[0].installmentCount;
+			let lowestPayment = Infinity;
+
+			installmentConfigs.forEach((tier) => {
+				const payment = (baseTotal * (1 + tier.rate / 100)) / tier.installmentCount;
+				if (payment < lowestPayment) {
+					lowestPayment = payment;
+					lowestTier = tier.installmentCount;
+				}
+			});
+
+			setSelectedInstallments(lowestTier);
+		} else if (selectedInstallments === null && configsData) {
+			setSelectedInstallments(0);
+		}
+	}, [installmentConfigs, selectedInstallments, baseTotal, configsData]);
+
+	const activeInstallments = selectedInstallments || 0;
+
+	// Calculate correct total and per installment values relative to the selected installment term interest
+	const selectedTier = installmentConfigs.find((t) => t.installmentCount === activeInstallments);
+	const activeRate = selectedTier?.rate || 0;
+	const totalWithInterest = baseTotal * (1 + activeRate / 100);
+	const perInstallment =
+		activeInstallments > 0 ? totalWithInterest / activeInstallments : totalWithInterest;
 
 	const handleNext = () => {
 		const steps: CheckoutStep[] = ["summary", "installment", "confirmation", "success"];
@@ -67,8 +100,8 @@ export default function CheckoutPage() {
 
 		const orderPayload = {
 			userId: user.id,
-			installmentMonths: selectedInstallments,
-			total: total,
+			installmentMonths: activeInstallments,
+			total: totalWithInterest,
 			subtotal: subtotal,
 			items: checkoutItems.map((item) => ({
 				itemId: item.item.id,
@@ -112,9 +145,10 @@ export default function CheckoutPage() {
 
 				{currentStep === "installment" && (
 					<InstallmentStep
-						total={total}
-						selectedInstallments={selectedInstallments}
+						total={baseTotal}
+						selectedInstallments={activeInstallments}
 						onSelectInstallments={setSelectedInstallments}
+						installmentConfigs={installmentConfigs}
 						onBack={handleBack}
 						onNext={handleNext}
 					/>
@@ -124,8 +158,8 @@ export default function CheckoutPage() {
 					<ConfirmationStep
 						items={checkoutItems}
 						subtotal={subtotal}
-						total={total}
-						selectedInstallments={selectedInstallments}
+						total={totalWithInterest}
+						selectedInstallments={activeInstallments}
 						perInstallment={perInstallment}
 						onBack={handleBack}
 						onConfirm={handleConfirm}

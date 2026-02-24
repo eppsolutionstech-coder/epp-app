@@ -3,24 +3,35 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Check, ArrowLeft, ArrowRight, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatPrice, installmentOptions } from "./checkout-utils";
+import { formatPrice } from "./checkout-utils";
+import type { InstallmentRateTier } from "~/zod/financier-config.zod";
 
 interface InstallmentStepProps {
 	total: number;
 	selectedInstallments: number;
 	onSelectInstallments: (count: number) => void;
+	installmentConfigs: InstallmentRateTier[];
 	onBack: () => void;
 	onNext: () => void;
 }
 
 export function InstallmentStep({
-	total,
+	total, // the subtotal basically. Cost of items.
 	selectedInstallments,
 	onSelectInstallments,
+	installmentConfigs,
 	onBack,
 	onNext,
 }: InstallmentStepProps) {
-	const perInstallment = total / selectedInstallments;
+	// Find the configuration for the selected term to calculate the exact total value & per-installment payment
+	const selectedTier = installmentConfigs?.find(
+		(t) => t.installmentCount === selectedInstallments,
+	);
+	const activeRate = selectedTier?.rate || 0;
+	// Calculate cost relative to interest
+	const totalWithInterest = total * (1 + activeRate / 100);
+	const perInstallment =
+		selectedInstallments > 0 ? totalWithInterest / selectedInstallments : total;
 
 	return (
 		<Card className="overflow-hidden">
@@ -34,14 +45,21 @@ export function InstallmentStep({
 					</div>
 
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-						{installmentOptions.map((option) => {
-							const payment = total / option.count;
-							const isSelected = selectedInstallments === option.count;
+						{installmentConfigs?.map((tier) => {
+							const termTotalWithInterest = total * (1 + tier.rate / 100);
+							const payment = termTotalWithInterest / tier.installmentCount;
+							const isSelected = selectedInstallments === tier.installmentCount;
+
+							const termLabel =
+								tier.installmentCount > 1
+									? `${tier.installmentCount} Installments`
+									: `${tier.installmentCount} Installment`;
+
 							return (
 								<button
-									key={option.count}
+									key={tier.installmentCount}
 									type="button"
-									onClick={() => onSelectInstallments(option.count)}
+									onClick={() => onSelectInstallments(tier.installmentCount)}
 									className={cn(
 										"relative p-5 rounded-xl border-2 text-left transition-all duration-200",
 										isSelected
@@ -53,7 +71,7 @@ export function InstallmentStep({
 											<Check className="h-4 w-4 text-primary-foreground" />
 										</div>
 									)}
-									<div className="font-semibold text-lg">{option.label}</div>
+									<div className="font-semibold text-lg">{termLabel}</div>
 									<div className="text-2xl font-bold text-primary mt-1">
 										{formatPrice(payment)}
 										<span className="text-sm font-normal text-muted-foreground">
@@ -61,7 +79,9 @@ export function InstallmentStep({
 										</span>
 									</div>
 									<p className="text-xs text-muted-foreground mt-2">
-										{option.description}
+										{tier.rate > 0
+											? `Includes ${tier.rate}% interest`
+											: "Interest-free"}
 									</p>
 								</button>
 							);
@@ -77,7 +97,9 @@ export function InstallmentStep({
 						<div className="grid grid-cols-2 gap-4 text-sm">
 							<div>
 								<p className="text-muted-foreground">Total Amount</p>
-								<p className="font-semibold text-lg">{formatPrice(total)}</p>
+								<p className="font-semibold text-lg">
+									{formatPrice(totalWithInterest)}
+								</p>
 							</div>
 							<div>
 								<p className="text-muted-foreground">Installments</p>
