@@ -6,6 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Minus, Plus, Trash2 } from "lucide-react";
 import type { CartItemWithRelation } from "~/zod/cartItem.zod";
 import { formatPrice, getProductImage } from "./cart-utils";
+import { calculateInstallmentPricing } from "../checkout/checkout-utils";
 
 interface CartItemCardProps {
 	item: CartItemWithRelation;
@@ -15,6 +16,7 @@ interface CartItemCardProps {
 	onRemove: () => void;
 	isUpdating: boolean;
 	isDeleting: boolean;
+	isEppEmployee?: boolean;
 }
 
 export function CartItemCard({
@@ -25,11 +27,20 @@ export function CartItemCard({
 	onRemove,
 	isUpdating,
 	isDeleting,
+	isEppEmployee = false,
 }: CartItemCardProps) {
 	const [localQuantity, setLocalQuantity] = useState(item.quantity);
 	const costPrice = item.item.costPrice ?? item.item.retailPrice;
 	const hasDiscount = item.item.retailPrice > costPrice;
 	const savings = item.item.retailPrice - costPrice;
+
+	const hasInstallment =
+		isEppEmployee &&
+		item.installmentCount != null &&
+		item.rate != null;
+	const installmentPricing = hasInstallment
+		? calculateInstallmentPricing(costPrice, item.installmentCount!, item.rate!)
+		: null;
 
 	// Prepare debounced update
 	useEffect(() => {
@@ -115,20 +126,39 @@ export function CartItemCard({
 						<div className="mt-auto pt-3 flex items-end justify-between">
 							{/* Price */}
 							<div>
-								<div className="flex items-baseline gap-2">
-									<span className="text-lg font-semibold">
-										{formatPrice(costPrice)}
-									</span>
-									{hasDiscount && (
-										<span className="text-sm text-muted-foreground line-through">
-											{formatPrice(item.item.retailPrice)}
-										</span>
-									)}
-								</div>
-								{hasDiscount && (
-									<p className="text-xs text-green-600 font-medium">
-										You save {formatPrice(savings)}
-									</p>
+								{installmentPricing ? (
+									<>
+										<div className="flex items-baseline gap-2">
+											<span className="text-lg font-semibold">
+												{formatPrice(installmentPricing.perInstallment)}
+											</span>
+											<span className="text-sm text-muted-foreground">
+												/ installment
+											</span>
+										</div>
+										<p className="text-xs text-muted-foreground">
+											{item.installmentCount}x · Total{" "}
+											{formatPrice(installmentPricing.totalWithInterest)}
+										</p>
+									</>
+								) : (
+									<>
+										<div className="flex items-baseline gap-2">
+											<span className="text-lg font-semibold">
+												{formatPrice(costPrice)}
+											</span>
+											{hasDiscount && (
+												<span className="text-sm text-muted-foreground line-through">
+													{formatPrice(item.item.retailPrice)}
+												</span>
+											)}
+										</div>
+										{hasDiscount && (
+											<p className="text-xs text-green-600 font-medium">
+												You save {formatPrice(savings)}
+											</p>
+										)}
+									</>
 								)}
 							</div>
 

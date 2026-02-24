@@ -9,6 +9,7 @@ import {
 	CartItemCard,
 	OrderSummary,
 } from "~/components/employee/cart";
+import { useAuth } from "~/hooks/use-auth";
 
 export default function EmployeeCart() {
 	const {
@@ -21,6 +22,8 @@ export default function EmployeeCart() {
 	});
 	const updateCartItem = useUpdateCartItem();
 	const deleteCartItem = useDeleteCartItem();
+	const { user } = useAuth();
+	const isEppEmployee = (user?.role as string) === "epp-employee";
 
 	// Extract the cartItems array from the response
 	const cartItems = cartItemsResponse?.cartItems ?? [];
@@ -123,6 +126,7 @@ export default function EmployeeCart() {
 							onRemove={() => handleRemoveItem(item.id)}
 							isUpdating={updateCartItem.isPending}
 							isDeleting={deleteCartItem.isPending}
+							isEppEmployee={isEppEmployee}
 						/>
 					))}
 				</div>
