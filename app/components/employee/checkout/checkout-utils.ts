@@ -46,6 +46,46 @@ export const getItemImage = (item: ItemWithRelation) => {
 	return coverImage?.url || item.images?.[0]?.url || "/placeholder.png";
 };
 
+export interface InstallmentRateTier {
+	installmentCount: number;
+	rate: number;
+}
+
+/**
+ * Returns the installmentCount of the tier that yields the lowest per-installment payment.
+ * Falls back to 0 if the tiers array is empty.
+ */
+export const getLowestInstallmentTier = (
+	price: number,
+	tiers: InstallmentRateTier[],
+): number => {
+	if (!tiers.length) return 0;
+	let lowestTier = tiers[0].installmentCount;
+	let lowestPayment = Infinity;
+	tiers.forEach((tier) => {
+		const payment = (price * (1 + tier.rate / 100)) / tier.installmentCount;
+		if (payment < lowestPayment) {
+			lowestPayment = payment;
+			lowestTier = tier.installmentCount;
+		}
+	});
+	return lowestTier;
+};
+
+/**
+ * Calculates the total price with interest and the per-installment payment amount.
+ */
+export const calculateInstallmentPricing = (
+	price: number,
+	installmentCount: number,
+	rate: number,
+): { totalWithInterest: number; perInstallment: number } => {
+	const totalWithInterest = price * (1 + rate / 100);
+	const perInstallment =
+		installmentCount > 0 ? totalWithInterest / installmentCount : totalWithInterest;
+	return { totalWithInterest, perInstallment };
+};
+
 export const calculateTotals = (items: CheckoutItem[]) => {
 	const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 	const costTotal = items.reduce(

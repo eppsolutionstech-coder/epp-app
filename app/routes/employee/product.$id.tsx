@@ -18,6 +18,7 @@ import {
 	ProductSpecifications,
 	type FloatingBubble,
 } from "~/components/employee/product";
+import { getLowestInstallmentTier } from "~/components/employee/checkout/checkout-utils";
 
 export default function EmployeeProductDetailsPage() {
 	const { id } = useParams<{ id: string }>();
@@ -101,8 +102,6 @@ export default function EmployeeProductDetailsPage() {
 			(tier) => tier.installmentCount === selectedInstallment,
 		);
 
-		console.log(selectedTier?.installmentCount)
-
 		createCartItem({
 			userId: user.id,
 			itemId: item.id,
@@ -128,20 +127,9 @@ export default function EmployeeProductDetailsPage() {
 			const installmentRateConfig = firstConfig?.installmentRateConfig;
 
 			if (installmentRateConfig && installmentRateConfig.length > 0) {
-				let lowestTier = installmentRateConfig[0].installmentCount;
-				let lowestPayment = Infinity;
-				const currentCostPrice = Number(item.costPrice);
-
-				installmentRateConfig.forEach((tier) => {
-					const payment =
-						(currentCostPrice * (1 + tier.rate / 100)) / tier.installmentCount;
-					if (payment < lowestPayment) {
-						lowestPayment = payment;
-						lowestTier = tier.installmentCount;
-					}
-				});
-
-				setSelectedInstallment(lowestTier);
+				setSelectedInstallment(
+					getLowestInstallmentTier(Number(item.costPrice), installmentRateConfig),
+				);
 			} else {
 				setSelectedInstallment(0); // fallback if no config
 			}

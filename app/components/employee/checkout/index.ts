@@ -10,6 +10,9 @@ export {
 	formatPrice,
 	calculateTotals,
 	installmentOptions,
+	getLowestInstallmentTier,
+	calculateInstallmentPricing,
 	type CheckoutItem,
 	type CheckoutStep,
+	type InstallmentRateTier,
 } from "./checkout-utils";

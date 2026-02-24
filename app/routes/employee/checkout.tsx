@@ -10,6 +10,8 @@ import {
 	ConfirmationStep,
 	SuccessStep,
 	calculateTotals,
+	getLowestInstallmentTier,
+	calculateInstallmentPricing,
 	type CheckoutItem,
 	type CheckoutStep,
 } from "~/components/employee/checkout";
@@ -53,18 +55,7 @@ export default function CheckoutPage() {
 	// Compute default selectedInstallments
 	useEffect(() => {
 		if (selectedInstallments === null && installmentConfigs.length > 0) {
-			let lowestTier = installmentConfigs[0].installmentCount;
-			let lowestPayment = Infinity;
-
-			installmentConfigs.forEach((tier) => {
-				const payment = (baseTotal * (1 + tier.rate / 100)) / tier.installmentCount;
-				if (payment < lowestPayment) {
-					lowestPayment = payment;
-					lowestTier = tier.installmentCount;
-				}
-			});
-
-			setSelectedInstallments(lowestTier);
+			setSelectedInstallments(getLowestInstallmentTier(baseTotal, installmentConfigs));
 		} else if (selectedInstallments === null && configsData) {
 			setSelectedInstallments(0);
 		}
@@ -75,9 +66,11 @@ export default function CheckoutPage() {
 	// Calculate correct total and per installment values relative to the selected installment term interest
 	const selectedTier = installmentConfigs.find((t) => t.installmentCount === activeInstallments);
 	const activeRate = selectedTier?.rate || 0;
-	const totalWithInterest = baseTotal * (1 + activeRate / 100);
-	const perInstallment =
-		activeInstallments > 0 ? totalWithInterest / activeInstallments : totalWithInterest;
+	const { totalWithInterest, perInstallment } = calculateInstallmentPricing(
+		baseTotal,
+		activeInstallments,
+		activeRate,
+	);
 
 	const handleNext = () => {
 		const steps: CheckoutStep[] = ["summary", "installment", "confirmation", "success"];

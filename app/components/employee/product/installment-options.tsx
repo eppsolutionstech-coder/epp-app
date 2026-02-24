@@ -1,6 +1,6 @@
 import { CreditCard, Check, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatPrice } from "../checkout/checkout-utils";
+import { formatPrice, calculateInstallmentPricing } from "../checkout/checkout-utils";
 import { useGetFinancierConfigs } from "~/hooks/use-financier-config";
 
 interface InstallmentOptionsProps {
@@ -35,8 +35,11 @@ export function InstallmentOptions({
 			<h3 className="font-medium">Payment Options</h3>
 			<div className="grid grid-cols-2 gap-3">
 				{installmentRateConfig.map((tier) => {
-					const totalWithInterest = costPrice * (1 + tier.rate / 100);
-					const payment = totalWithInterest / tier.installmentCount;
+					const { perInstallment: payment } = calculateInstallmentPricing(
+						costPrice,
+						tier.installmentCount,
+						tier.rate,
+					);
 
 					const isSelected = selectedInstallment === tier.installmentCount;
 					return (
