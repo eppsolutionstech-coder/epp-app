@@ -172,7 +172,7 @@ export default function EmployeeCatalog() {
 								categoryFilter === "all"
 									? "shadow-md hover:opacity-90"
 									: "bg-background border border-border hover:border-primary/50 hover:bg-muted",
-							)}
+							)}	
 							onClick={() => {
 								setCategoryFilter("all");
 								handleFilterChange(buildFilterString("all", supplierFilter));

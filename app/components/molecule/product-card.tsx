@@ -4,6 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Package, ChevronLeft, ChevronRight } from "lucide-react";
 import type { Item, ItemWithRelation } from "~/zod/item.zod";
+import { useGetFinancierConfigs } from "~/hooks/use-financier-config";
+import {
+	getLowestInstallmentTier,
+	calculateInstallmentPricing,
+} from "~/components/employee/checkout/checkout-utils";
 
 export interface ProductCardProps {
 	product: Item | ItemWithRelation;
@@ -43,6 +48,7 @@ export function StatusBadge({ status, className = "" }: StatusBadgeProps) {
 
 export function ProductCard({ product, variant = "admin", onClick, isEppEmployee = false }: ProductCardProps) {
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
+	const { data: configsData } = useGetFinancierConfigs();
 
 	// Get images array, filter out nulls
 	const images = (product.images?.filter((img) => img.url) || []) as { url?: string | null }[];
@@ -63,10 +69,14 @@ export function ProductCard({ product, variant = "admin", onClick, isEppEmployee
 	};
 
 	if (variant === "employee" || variant === "landing") {
-		const installmentOptions = [3, 6, 12]; // Default installment options
-		const minInstallment = Math.min(...installmentOptions);
+		const tiers = configsData?.financierConfigs?.[0]?.installmentRateConfig || [];
 		const priceToUse = product.costPrice || product.retailPrice;
-		const monthlyPayment = (priceToUse / minInstallment).toFixed(0);
+		const lowestTierCount = getLowestInstallmentTier(priceToUse, tiers);
+		const lowestTier = tiers.find((t) => t.installmentCount === lowestTierCount);
+		const { perInstallment: monthlyPayment } = lowestTier
+			? calculateInstallmentPricing(priceToUse, lowestTier.installmentCount, lowestTier.rate)
+			: { perInstallment: 0 };
+		const installmentCount = lowestTier?.installmentCount ?? 0;
 
 		if (variant === "landing") {
 			return (
@@ -117,7 +127,6 @@ export function ProductCard({ product, variant = "admin", onClick, isEppEmployee
 								</div>
 							</>
 						)}
-						{/* Status Badge - Removed for landing variant */}
 					</div>
 
 					<div className="flex justify-between items-start gap-4">
@@ -129,7 +138,7 @@ export function ProductCard({ product, variant = "admin", onClick, isEppEmployee
 							</h3>
 							{isEppEmployee && (
 								<p className="text-sm text-muted-foreground">
-									₱{monthlyPayment.toLocaleString()}/mo • {minInstallment} mos
+									₱{Math.round(monthlyPayment).toLocaleString()}/mo • {installmentCount} mos
 								</p>
 							)}
 						</div>
@@ -164,6 +173,7 @@ export function ProductCard({ product, variant = "admin", onClick, isEppEmployee
 					)}
 					{/* Image Navigation */}
 					{hasMultipleImages && (
+						
 						<>
 							<Button
 								type="button"
@@ -202,20 +212,26 @@ export function ProductCard({ product, variant = "admin", onClick, isEppEmployee
 							title={product.name}>
 							{product.name}
 						</h3>
-						{isEppEmployee && (
-							<p className="text-[11px] text-muted-foreground">
-								₱{monthlyPayment.toLocaleString()}/mo • {minInstallment} mos
-							</p>
-						)}
 					</div>
-					<div className="flex flex-col items-end">
-						<span className="font-bold text-primary">
-							₱{(product.costPrice || product.retailPrice).toLocaleString()}
-						</span>
-						{product.costPrice && product.costPrice < product.retailPrice && (
-							<span className="text-[11px] text-gray-400 line-through">
-								₱{product.retailPrice.toLocaleString()}
-							</span>
+					<div className="flex flex-col items-end shrink-0">
+						{isEppEmployee ? (
+							<>
+								<span className="font-bold text-primary">
+									₱{Math.round(monthlyPayment).toLocaleString()}
+								</span>
+								<span className="text-[11px] text-muted-foreground whitespace-nowrap">per installment</span>
+							</>
+						) : (
+							<>
+								<span className="font-bold text-primary">
+									₱{(product.costPrice || product.retailPrice).toLocaleString()}
+								</span>
+								{product.costPrice && product.costPrice < product.retailPrice && (
+									<span className="text-[11px] text-gray-400 line-through">
+										₱{product.retailPrice.toLocaleString()}
+									</span>
+								)}
+							</>
 						)}
 					</div>
 				</div>
