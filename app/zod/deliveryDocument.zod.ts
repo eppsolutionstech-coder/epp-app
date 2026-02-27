@@ -87,3 +87,7 @@ export type GetAllDeliveryDocuments = {
 	pagination: z.infer<typeof PaginationSchema>;
 	count: number;
 };
+
+export type CreateDOToAdminResponse = {
+	deliveryOrder: DeliveryDocument;
+};

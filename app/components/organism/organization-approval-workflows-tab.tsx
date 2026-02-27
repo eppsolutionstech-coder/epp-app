@@ -183,7 +183,7 @@ export function OrganizationApprovalWorkflowsTab() {
 													className="h-7 px-2"
 													onClick={() => setEditingWorkflow(workflow)}>
 													<Layers className="mr-1.5 h-3.5 w-3.5" />
-													Types
+													Approvers
 												</Button>
 											</div>
 										</div>

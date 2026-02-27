@@ -152,10 +152,11 @@
 		// GET_FINANCIER_SOA: "/financier-disbursement/ledger/financier/:financierConfigId",
 	},
 
-		DELIVERY_DOCUMENT: {
+	DELIVERY_DOCUMENT: {
 		GET_ALL: "/deliveryDocument",
 		GET_BY_ID: "/deliveryDocument/:id",
 		CREATE: "/deliveryDocument",
+		CREATE_DO_TO_ADMIN: "/deliveryDocument/:purchaseOrderId/dispatch",
 		UPDATE: "/deliveryDocument/:id",
 		DELETE: "/deliveryDocument/:id",
 		RECEIVE: "/deliveryDocument/:id/receive",

@@ -51,6 +51,19 @@ export const useCreateDeliveryDocument = () => {
 	});
 };
 
+export const useCreateDOToAdmin = () => {
+	return useMutation({
+		mutationFn: (purchaseOrderId: string) => {
+			return deliveryDocumentService.createDOToAdmin(purchaseOrderId);
+		},
+		onSuccess: (_response, purchaseOrderId) => {
+			queryClient.invalidateQueries({ queryKey: ["delivery-documents"] });
+			queryClient.invalidateQueries({ queryKey: ["purchase-orders"] });
+			queryClient.invalidateQueries({ queryKey: ["purchase-order", purchaseOrderId] });
+		},
+	});
+};
+
 // UPDATE
 export const useUpdateDeliveryDocument = () => {
 	return useMutation({
