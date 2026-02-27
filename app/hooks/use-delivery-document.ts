@@ -4,6 +4,7 @@ import type { ApiQueryParams } from "~/services/api-service";
 import type {
 	CreateDeliveryDocument,
 	UpdateDeliveryDocument,
+	CreateDOToClient,
 	CreateDRFromSupplier,
 } from "~/zod/deliveryDocument.zod";
 import { queryClient } from "~/lib/query-client";
@@ -64,6 +65,19 @@ export const useCreateDOToAdmin = () => {
 			queryClient.invalidateQueries({ queryKey: ["delivery-documents"] });
 			queryClient.invalidateQueries({ queryKey: ["purchase-orders"] });
 			queryClient.invalidateQueries({ queryKey: ["purchase-order", purchaseOrderId] });
+		},
+	});
+};
+
+export const useCreateDOToClient = () => {
+	return useMutation({
+		mutationFn: ({ orderId, data }: { orderId: string; data?: CreateDOToClient }) => {
+			return deliveryDocumentService.createDOToClient({ orderId, data });
+		},
+		onSuccess: (_response, variables) => {
+			queryClient.invalidateQueries({ queryKey: ["delivery-documents"] });
+			queryClient.invalidateQueries({ queryKey: ["orders"] });
+			queryClient.invalidateQueries({ queryKey: ["order-by-id", variables.orderId] });
 		},
 	});
 };

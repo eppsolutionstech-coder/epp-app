@@ -92,6 +92,23 @@ export type CreateDOToAdminResponse = {
 	deliveryOrder: DeliveryDocument;
 };
 
+export const CreateDOToClientSchema = z.object({
+	trackingNumber: z.string().optional().nullable(),
+	expectedDeliveryDate: z.coerce.date().optional().nullable(),
+	expectedDeliveryTime: z.string().optional().nullable(),
+	internalDeliveryPersonnel: z.string().optional().nullable(),
+	carrierInfo: z.string().optional().nullable(),
+	toName: z.string().optional().nullable(),
+	toAddress: z.string().optional().nullable(),
+	clientUserId: ObjectIdSchema.optional().nullable(),
+});
+
+export type CreateDOToClient = z.infer<typeof CreateDOToClientSchema>;
+
+export type CreateDOToClientResponse = {
+	deliveryOrder: DeliveryDocument;
+};
+
 export const CreateDRFromSupplierSchema = z.object({
 	receiverName: z.string().optional().nullable(),
 	receiverSignature: z.string().optional().nullable(),
