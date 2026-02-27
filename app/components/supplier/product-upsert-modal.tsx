@@ -27,8 +27,8 @@ export interface ItemFormData {
 	sku: string;
 	description: string;
 	categoryId: string;
-	retailPrice: string;
-	sellingPrice: string;
+	srp: string;
+	supplierPrice: string;
 	stockQuantity: string;
 	isActive: boolean;
 	featuredImages: File[];
@@ -48,8 +48,8 @@ const initialFormData: ItemFormData = {
 	sku: "",
 	description: "",
 	categoryId: "",
-	retailPrice: "",
-	sellingPrice: "",
+	srp: "",
+	supplierPrice: "",
 	stockQuantity: "0",
 	isActive: true,
 	featuredImages: [],
@@ -77,8 +77,8 @@ export function ProductUpsertModal({
 					sku: product.sku,
 					description: product.description || "",
 					categoryId: product.categoryId,
-					retailPrice: String(product.retailPrice),
-					sellingPrice: String(product.sellingPrice),
+					srp: String(product.srp),
+					supplierPrice: String(product.supplierPrice),
 					stockQuantity: String(product.stockQuantity),
 					isActive: product.isActive,
 					featuredImages: [],
@@ -119,8 +119,8 @@ export function ProductUpsertModal({
 		data.append("sku", formData.sku);
 		data.append("description", formData.description || "");
 		data.append("categoryId", formData.categoryId);
-		data.append("retailPrice", formData.retailPrice);
-		data.append("sellingPrice", formData.sellingPrice);
+		data.append("srp", formData.srp);
+		data.append("supplierPrice", formData.supplierPrice);
 		data.append("stockQuantity", formData.stockQuantity);
 		data.append("isActive", String(formData.isActive));
 		formData.featuredImages.forEach((file) => {
@@ -274,16 +274,16 @@ export function ProductUpsertModal({
 
 						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label htmlFor="retailPrice">Retail Price (₱) *</Label>
+								<Label htmlFor="srp">Retail Price (₱) *</Label>
 								<Input
-									id="retailPrice"
+									id="srp"
 									type="number"
 									placeholder="0.00"
-									value={formData.retailPrice}
+									value={formData.srp}
 									onChange={(e) =>
 										setFormData({
 											...formData,
-											retailPrice: e.target.value,
+											srp: e.target.value,
 										})
 									}
 									disabled={isLoading}
@@ -296,11 +296,11 @@ export function ProductUpsertModal({
 									id="employeePrice"
 									type="number"
 									placeholder="0.00"
-									value={formData.sellingPrice}
+									value={formData.supplierPrice}
 									onChange={(e) =>
 										setFormData({
 											...formData,
-											sellingPrice: e.target.value,
+											supplierPrice: e.target.value,
 										})
 									}
 									disabled={isLoading}
@@ -334,8 +334,8 @@ export function ProductUpsertModal({
 							!formData.name.trim() ||
 							!formData.sku.trim() ||
 							!formData.categoryId ||
-							!formData.retailPrice ||
-							!formData.sellingPrice ||
+							!formData.srp ||
+							!formData.supplierPrice ||
 							isLoading
 						}>
 						{isLoading ? (

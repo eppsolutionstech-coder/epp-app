@@ -17,9 +17,9 @@ import { ProductDetailsView } from "~/components/organism/product-details-view";
 import { useGetItemById, useUpdateItem } from "~/hooks/use-item";
 
 type PriceFormState = {
-	costPrice: string;
-	retailerPrice: string;
-	wholeSalePrice: string;
+	employeePrice: string;
+	standardPrice: string;
+	wholesalePrice: string;
 };
 
 const toInputPrice = (value: unknown) => {
@@ -32,9 +32,9 @@ export default function AdminProductDetailsPage() {
 	const itemId = id || "";
 	const [isEditPricesOpen, setIsEditPricesOpen] = useState(false);
 	const [priceForm, setPriceForm] = useState<PriceFormState>({
-		costPrice: "0",
-		retailerPrice: "0",
-		wholeSalePrice: "0",
+		employeePrice: "0",
+		standardPrice: "0",
+		wholesalePrice: "0",
 	});
 
 	const {
@@ -43,16 +43,16 @@ export default function AdminProductDetailsPage() {
 		isError,
 		refetch,
 	} = useGetItemById(itemId, {
-		fields: "id, sku, name, status, description, category.name, supplier.name, retailPrice, sellingPrice, costPrice, retailerPrice, wholeSalePrice, stockQuantity, lowStockThreshold, images, specifications, isActive, isFeatured, isAvailable, createdAt, updatedAt",
+		fields: "id, sku, name, status, description, category.name, supplier.name, srp, supplierPrice, employeePrice, standardPrice, wholesalePrice, stockQuantity, lowStockThreshold, images, specifications, isActive, isFeatured, isAvailable, createdAt, updatedAt",
 	});
 	const updateItem = useUpdateItem();
 
 	useEffect(() => {
 		if (!isEditPricesOpen || !product) return;
 		setPriceForm({
-			costPrice: toInputPrice(product.costPrice),
-			retailerPrice: toInputPrice(product.retailerPrice),
-			wholeSalePrice: toInputPrice(product.wholeSalePrice),
+			employeePrice: toInputPrice(product.employeePrice),
+			standardPrice: toInputPrice(product.standardPrice),
+			wholesalePrice: toInputPrice(product.wholesalePrice),
 		});
 	}, [isEditPricesOpen, product]);
 
@@ -60,9 +60,9 @@ export default function AdminProductDetailsPage() {
 		setIsEditPricesOpen(open);
 		if (open && product) {
 			setPriceForm({
-				costPrice: toInputPrice(product.costPrice),
-				retailerPrice: toInputPrice(product.retailerPrice),
-				wholeSalePrice: toInputPrice(product.wholeSalePrice),
+				employeePrice: toInputPrice(product.employeePrice),
+				standardPrice: toInputPrice(product.standardPrice),
+				wholesalePrice: toInputPrice(product.wholesalePrice),
 			});
 		}
 	};
@@ -77,12 +77,12 @@ export default function AdminProductDetailsPage() {
 	const handleUpdatePrices = async () => {
 		if (!itemId) return;
 
-		const costPrice = parsePrice(priceForm.costPrice);
-		const retailerPrice = parsePrice(priceForm.retailerPrice);
-		const wholeSalePrice = parsePrice(priceForm.wholeSalePrice);
+		const employeePrice = parsePrice(priceForm.employeePrice);
+		const standardPrice = parsePrice(priceForm.standardPrice);
+		const wholesalePrice = parsePrice(priceForm.wholesalePrice);
 
 		if (
-			[costPrice, retailerPrice, wholeSalePrice].some(
+			[employeePrice, standardPrice, wholesalePrice].some(
 				(price) => Number.isNaN(price) || price < 0,
 			)
 		) {
@@ -94,9 +94,9 @@ export default function AdminProductDetailsPage() {
 			await updateItem.mutateAsync({
 				itemId,
 				data: {
-					costPrice,
-					retailerPrice,
-					wholeSalePrice,
+					employeePrice,
+					standardPrice,
+					wholesalePrice,
 				},
 			});
 			toast.success("Prices updated successfully.");
@@ -133,11 +133,11 @@ export default function AdminProductDetailsPage() {
 								type="number"
 								min="0"
 								step="0.01"
-								value={priceForm.costPrice}
+								value={priceForm.employeePrice}
 								onChange={(e) =>
 									setPriceForm((prev) => ({
 										...prev,
-										costPrice: e.target.value,
+										employeePrice: e.target.value,
 									}))
 								}
 								disabled={updateItem.isPending}
@@ -150,11 +150,11 @@ export default function AdminProductDetailsPage() {
 								type="number"
 								min="0"
 								step="0.01"
-								value={priceForm.retailerPrice}
+								value={priceForm.standardPrice}
 								onChange={(e) =>
 									setPriceForm((prev) => ({
 										...prev,
-										retailerPrice: e.target.value,
+										standardPrice: e.target.value,
 									}))
 								}
 								disabled={updateItem.isPending}
@@ -167,11 +167,11 @@ export default function AdminProductDetailsPage() {
 								type="number"
 								min="0"
 								step="0.01"
-								value={priceForm.wholeSalePrice}
+								value={priceForm.wholesalePrice}
 								onChange={(e) =>
 									setPriceForm((prev) => ({
 										...prev,
-										wholeSalePrice: e.target.value,
+										wholesalePrice: e.target.value,
 									}))
 								}
 								disabled={updateItem.isPending}

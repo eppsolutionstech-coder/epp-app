@@ -4,13 +4,13 @@ import { formatPrice, calculateInstallmentPricing } from "../checkout/checkout-u
 import { useGetFinancierConfigs } from "~/hooks/use-financier-config";
 
 interface InstallmentOptionsProps {
-	costPrice: number;
+	employeePrice: number;
 	selectedInstallment: number;
 	onSelectInstallment: (count: number) => void;
 }
 
 export function InstallmentOptions({
-	costPrice,
+	employeePrice,
 	selectedInstallment,
 	onSelectInstallment,
 }: InstallmentOptionsProps) {
@@ -36,7 +36,7 @@ export function InstallmentOptions({
 			<div className="grid grid-cols-2 gap-3">
 				{installmentRateConfig.map((tier) => {
 					const { perInstallment: payment } = calculateInstallmentPricing(
-						costPrice,
+						employeePrice,
 						tier.installmentCount,
 						tier.rate,
 					);

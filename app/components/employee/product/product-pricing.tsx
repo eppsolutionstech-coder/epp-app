@@ -3,14 +3,14 @@ import { formatPrice } from "../checkout/checkout-utils";
 import { useGetFinancierConfigs } from "~/hooks/use-financier-config";
 
 interface ProductPricingProps {
-	costPrice: number;
-	retailPrice: number;
+	employeePrice: number;
+	srp: number;
 	selectedInstallment: number;
 }
 
 export function ProductPricing({
-	costPrice,
-	retailPrice,
+	employeePrice,
+	srp,
 	selectedInstallment,
 }: ProductPricingProps) {
 	const { data: configsData } = useGetFinancierConfigs();
@@ -22,11 +22,11 @@ export function ProductPricing({
 	);
 
 	const rate = selectedTier?.rate || 0;
-	const totalWithInterest = costPrice * (1 + rate / 100);
-	const payment = selectedInstallment > 0 ? totalWithInterest / selectedInstallment : costPrice;
+	const totalWithInterest = employeePrice * (1 + rate / 100);
+	const payment = selectedInstallment > 0 ? totalWithInterest / selectedInstallment : employeePrice;
 
-	const savings = retailPrice - totalWithInterest;
-	const savingsPercent = Math.round((savings / retailPrice) * 100);
+	const savings = srp - totalWithInterest;
+	const savingsPercent = Math.round((savings / srp) * 100);
 
 	return (
 		<div className="space-y-3">
@@ -42,7 +42,7 @@ export function ProductPricing({
 								SRP
 							</span>
 							<span className="text-md font-medium line-through opacity-80">
-								{formatPrice(retailPrice)}
+								{formatPrice(srp)}
 							</span>
 						</div>
 						<Badge className="bg-green-500/15 text-green-600 hover:bg-green-500/25 border border-green-500/20 transition-colors shadow-sm">

@@ -43,7 +43,7 @@ export default function EmployeeCatalog() {
 
 	const { apiParams, searchTerm, handleSearchChange, handleFilterChange } = useApiParams({
 		limit: 100,
-		fields: "id, sku, name, description, category.id, category.name, supplier.id, supplier.name, retailPrice, costPrice, stockQuantity, isActive, status, imageUrl, images",
+		fields: "id, sku, name, description, category.id, category.name, supplier.id, supplier.name, srp, employeePrice, stockQuantity, isActive, status, imageUrl, images",
 		filter: "status:APPROVED",
 	});
 
@@ -72,7 +72,7 @@ export default function EmployeeCatalog() {
 	const filteredProducts = itemsResponse?.items.filter((product) => {
 		if (priceRange !== "all") {
 			const [min, max] = priceRange.split("-").map(Number);
-			const price = Number(product.costPrice);
+			const price = Number(product.employeePrice);
 			if (max && (price < min || price > max)) return false;
 			if (!max && price < min) return false;
 		}
@@ -83,9 +83,9 @@ export default function EmployeeCatalog() {
 	const sortedProducts = [...(filteredProducts || [])].sort((a, b) => {
 		switch (sortBy) {
 			case "price-low":
-				return Number(a.costPrice) - Number(b.costPrice);
+				return Number(a.employeePrice) - Number(b.employeePrice);
 			case "price-high":
-				return Number(b.costPrice) - Number(a.costPrice);
+				return Number(b.employeePrice) - Number(a.employeePrice);
 			case "name":
 				return a.name.localeCompare(b.name);
 			default:
@@ -247,9 +247,9 @@ export default function EmployeeCatalog() {
 										id: product.id,
 										name: product.name,
 										sku: product.sku,
-										retailPrice: Number(product.retailPrice),
-										sellingPrice: Number(product.sellingPrice),
-										costPrice: Number(product.costPrice),
+										srp: Number(product.srp),
+										supplierPrice: Number(product.supplierPrice),
+										employeePrice: Number(product.employeePrice),
 										stockQuantity: product.stockQuantity,
 										lowStockThreshold: product.lowStockThreshold || 10,
 										status: product.status as any,

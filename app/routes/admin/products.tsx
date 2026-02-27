@@ -70,7 +70,7 @@ export default function AdminProductsPage() {
 
 	const { apiParams, searchTerm, handleSearchChange, handleFilterChange } = useApiParams({
 		limit: 1000,
-		fields: "id, sku, name, description, category.id, category.name, supplier.id, supplier.name, retailPrice, sellingPrice, costPrice, stockQuantity, isActive, status, imageUrl, images",
+		fields: "id, sku, name, description, category.id, category.name, supplier.id, supplier.name, srp, supplierPrice, employeePrice, stockQuantity, isActive, status, imageUrl, images",
 		filter: statusFilter !== "all" ? `status:${statusFilter}` : undefined,
 		sort: "createdAt",
 		order: "desc",
@@ -159,13 +159,13 @@ export default function AdminProductsPage() {
 			render: (_, row) => row.supplier?.name || "â€”",
 		},
 		{
-			key: "retailPrice",
+			key: "srp",
 			label: "Retail Price",
 			sortable: true,
 			render: (value) => <div className="text-right">₱{Number(value).toLocaleString()}</div>,
 		},
 		{
-			key: "sellingPrice",
+			key: "supplierPrice",
 			label: "Selling Price",
 			sortable: true,
 			render: (value) => <div className="text-right">₱{Number(value).toLocaleString()}</div>,

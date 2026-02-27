@@ -43,7 +43,7 @@ export default function OrganizationProductsPage() {
 
 	const { apiParams, searchTerm, handleSearchChange, handleFilterChange } = useApiParams({
 		limit: 100,
-		fields: "id, sku, name, description, category.id, category.name, supplier.id, supplier.name, retailPrice, sellingPrice, costPrice, stockQuantity, isActive, status, imageUrl, images",
+		fields: "id, sku, name, description, category.id, category.name, supplier.id, supplier.name, srp, supplierPrice, employeePrice, stockQuantity, isActive, status, imageUrl, images",
 		filter: "status:APPROVED",
 	});
 
@@ -127,19 +127,19 @@ export default function OrganizationProductsPage() {
 			render: (_, row) => row.supplier?.name || "â€”",
 		},
 		{
-			key: "retailPrice",
+			key: "srp",
 			label: "Retail Price",
 			sortable: true,
 			render: (value) => <div className="text-right">₱{Number(value).toLocaleString()}</div>,
 		},
 		{
-			key: "sellingPrice",
+			key: "supplierPrice",
 			label: "Selling Price",
 			sortable: true,
 			render: (value) => <div className="text-right">₱{Number(value).toLocaleString()}</div>,
 		},
 		{
-			key: "costPrice",
+			key: "employeePrice",
 			label: "Cost Price",
 			sortable: true,
 			render: (value) => <div className="text-right">₱{Number(value).toLocaleString()}</div>,

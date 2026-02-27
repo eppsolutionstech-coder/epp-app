@@ -44,9 +44,9 @@ export function SupplierProductList({ suppliers, isEppEmployee = false }: Suppli
 										<ProductCard
 											product={{
 												...item,
-												retailPrice: Number(item.retailPrice),
-												costPrice: item.costPrice
-													? Number(item.costPrice)
+												srp: Number(item.srp),
+												employeePrice: item.employeePrice
+													? Number(item.employeePrice)
 													: null,
 												imageUrl: item.images?.[0]?.url || item.imageUrl,
 											}}

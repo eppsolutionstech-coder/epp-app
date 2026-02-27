@@ -15,8 +15,8 @@ export function CheckoutItemCard({
 	isEppEmployee = false,
 }: CheckoutItemCardProps) {
 	const product = item.item;
-	const costPrice = product.costPrice ?? product.retailPrice;
-	const retailPrice = product.retailPrice;
+	const costPrice = product.employeePrice ?? product.srp;
+	const retailPrice = product.srp;
 	const hasDiscount = retailPrice > costPrice;
 	const savings = retailPrice - costPrice;
 	const imageUrl = getItemImage(product);

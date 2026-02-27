@@ -30,9 +30,9 @@ export function CartItemCard({
 	isEppEmployee = false,
 }: CartItemCardProps) {
 	const [localQuantity, setLocalQuantity] = useState(item.quantity);
-	const costPrice = item.item.costPrice ?? item.item.retailPrice;
-	const hasDiscount = item.item.retailPrice > costPrice;
-	const savings = item.item.retailPrice - costPrice;
+	const costPrice = item.item.employeePrice ?? item.item.srp;
+	const hasDiscount = item.item.srp > costPrice;
+	const savings = item.item.srp - costPrice;
 
 	const hasInstallment =
 		isEppEmployee &&
@@ -149,7 +149,7 @@ export function CartItemCard({
 											</span>
 											{hasDiscount && (
 												<span className="text-sm text-muted-foreground line-through">
-													{formatPrice(item.item.retailPrice)}
+													{formatPrice(item.item.srp)}
 												</span>
 											)}
 										</div>

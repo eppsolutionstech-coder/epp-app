@@ -70,7 +70,7 @@ export function ProductCard({ product, variant = "admin", onClick, isEppEmployee
 
 	if (variant === "employee" || variant === "landing") {
 		const tiers = configsData?.financierConfigs?.[0]?.installmentRateConfig || [];
-		const priceToUse = product.costPrice || product.retailPrice;
+		const priceToUse = product.employeePrice || product.srp;
 		const lowestTierCount = getLowestInstallmentTier(priceToUse, tiers);
 		const lowestTier = tiers.find((t) => t.installmentCount === lowestTierCount);
 		const { perInstallment: monthlyPayment } = lowestTier
@@ -144,11 +144,11 @@ export function ProductCard({ product, variant = "admin", onClick, isEppEmployee
 						</div>
 						<div className="flex flex-col items-end shrink-0">
 							<span className="font-bold text-base">
-								₱{(product.costPrice || product.retailPrice).toLocaleString()}
+								₱{(product.employeePrice || product.srp).toLocaleString()}
 							</span>
-							{product.costPrice && product.costPrice < product.retailPrice && (
+							{product.employeePrice && product.employeePrice < product.srp && (
 								<span className="text-xs text-muted-foreground line-through">
-									₱{product.retailPrice.toLocaleString()}
+									₱{product.srp.toLocaleString()}
 								</span>
 							)}
 						</div>
@@ -224,11 +224,11 @@ export function ProductCard({ product, variant = "admin", onClick, isEppEmployee
 						) : (
 							<>
 								<span className="font-bold text-primary">
-									₱{(product.costPrice || product.retailPrice).toLocaleString()}
+									₱{(product.employeePrice || product.srp).toLocaleString()}
 								</span>
-								{product.costPrice && product.costPrice < product.retailPrice && (
+								{product.employeePrice && product.employeePrice < product.srp && (
 									<span className="text-[11px] text-gray-400 line-through">
-										₱{product.retailPrice.toLocaleString()}
+										₱{product.srp.toLocaleString()}
 									</span>
 								)}
 							</>
@@ -329,7 +329,7 @@ export function ProductCard({ product, variant = "admin", onClick, isEppEmployee
 						{product.name}
 					</h3>
 					<span className="shrink-0 font-semibold text-sm">
-						₱{product.retailPrice.toLocaleString()}
+						₱{product.srp.toLocaleString()}
 					</span>
 				</div>
 				<div className="flex items-center justify-between text-xs text-muted-foreground">

@@ -88,10 +88,10 @@ export const calculateInstallmentPricing = (
 export const calculateTotals = (items: CheckoutItem[], isEppEmployee = false) => {
 	const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 	const costTotal = items.reduce(
-		(sum, item) => sum + (item.item.costPrice ?? 0) * item.quantity,
+		(sum, item) => sum + (item.item.employeePrice ?? 0) * item.quantity,
 		0,
 	);
-	const retailTotal = items.reduce((sum, item) => sum + item.item.retailPrice * item.quantity, 0);
+	const retailTotal = items.reduce((sum, item) => sum + item.item.srp * item.quantity, 0);
 
 	// Subtotal is Retail Price Sum
 	const subtotal = retailTotal;
@@ -101,7 +101,7 @@ export const calculateTotals = (items: CheckoutItem[], isEppEmployee = false) =>
 
 	let eppTotalWithInterest = 0;
 	items.forEach((item) => {
-		const costPrice = item.item.costPrice ?? item.item.retailPrice;
+		const costPrice = item.item.employeePrice ?? item.item.srp;
 		if (item.installmentCount != null && item.rate != null) {
 			const pricing = calculateInstallmentPricing(
 				costPrice,

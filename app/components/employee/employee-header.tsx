@@ -27,7 +27,7 @@ export function EmployeeHeader() {
 		isLoading,
 		isError,
 	} = useGetCartItems({
-		// fields: "id, employeeId, product.id, product.sku, product.name, product.retailPrice, product.employeePrice, product.stockQuantity, product.images, quantity, createdAt, updatedAt",
+		// fields: "id, employeeId, product.id, product.sku, product.name, product.srp, product.employeePrice, product.stockQuantity, product.images, quantity, createdAt, updatedAt",
 		limit: 100,
 		count: true,
 		document: false,

@@ -13,7 +13,7 @@ export default function supplierProductDetailsPage() {
 		isLoading,
 		isError,
 	} = useGetItemById(id!, {
-		fields: "id, sku, name, status, description, category.name, supplier.name, retailPrice, sellingPrice, stockQuantity, lowStockThreshold, images, specifications, isActive, isFeatured, isAvailable, createdAt, updatedAt",
+		fields: "id, sku, name, status, description, category.name, supplier.name, srp, supplierPrice, stockQuantity, lowStockThreshold, images, specifications, isActive, isFeatured, isAvailable, createdAt, updatedAt",
 	});
 
 	const headerActions = (

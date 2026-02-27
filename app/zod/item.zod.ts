@@ -54,11 +54,11 @@ export const ItemSchema = z.object({
 	itemType: ItemTypeEnum.default("PRODUCT"),
 
 	// Pricing
-	retailPrice: decimalSchema,
-	sellingPrice: decimalSchema,
-	costPrice: decimalSchema.optional().nullable(),
-	retailerPrice: decimalSchema.optional().nullable(),
-	wholeSalePrice: decimalSchema.optional().nullable(),
+	srp: decimalSchema,
+	supplierPrice: decimalSchema,
+	employeePrice: decimalSchema.optional().nullable(),
+	standardPrice: decimalSchema.optional().nullable(),
+	wholesalePrice: decimalSchema.optional().nullable(),
 
 	// Inventory
 	stockQuantity: z.number().int().min(0).default(0),
@@ -89,9 +89,9 @@ export const CreateItemSchema = ItemSchema.omit({
 })
 	.partial({
 		description: true,
-		costPrice: true,
-		retailerPrice: true,
-		wholeSalePrice: true,
+		employeePrice: true,
+		standardPrice: true,
+		wholesalePrice: true,
 		imageUrl: true,
 		images: true,
 		specifications: true,

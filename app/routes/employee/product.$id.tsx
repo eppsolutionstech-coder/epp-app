@@ -40,7 +40,7 @@ export default function EmployeeProductDetailsPage() {
 		isLoading,
 		isError,
 	} = useGetItemById(id!, {
-		fields: "id, sku, name, status, description, category.name, supplier.name, retailPrice, costPrice, stockQuantity, lowStockThreshold, images, specifications, isActive, isFeatured, isAvailable, createdAt, updatedAt",
+		fields: "id, sku, name, status, description, category.name, supplier.name, srp, employeePrice, stockQuantity, lowStockThreshold, images, specifications, isActive, isFeatured, isAvailable, createdAt, updatedAt",
 	});
 
 	const images = item?.images?.filter((img: ItemImage) => img.url) || [];
@@ -128,7 +128,7 @@ export default function EmployeeProductDetailsPage() {
 
 			if (installmentRateConfig && installmentRateConfig.length > 0) {
 				setSelectedInstallment(
-					getLowestInstallmentTier(Number(item.costPrice), installmentRateConfig),
+					getLowestInstallmentTier(Number(item.employeePrice), installmentRateConfig),
 				);
 			} else {
 				setSelectedInstallment(0); // fallback if no config
@@ -159,8 +159,8 @@ export default function EmployeeProductDetailsPage() {
 		);
 	}
 
-	const costPrice = Number(item.costPrice);
-	const retailPrice = Number(item.retailPrice);
+	const employeePrice = Number(item.employeePrice);
+	const srp = Number(item.srp);
 
 	const activeInstallment = selectedInstallment || 0;
 
@@ -203,13 +203,13 @@ export default function EmployeeProductDetailsPage() {
 						<Separator />
 
 						<ProductPricing
-							costPrice={costPrice}
-							retailPrice={retailPrice}
+							employeePrice={employeePrice}
+							srp={srp}
 							selectedInstallment={activeInstallment}
 						/>
 
 						<InstallmentOptions
-							costPrice={costPrice}
+							employeePrice={employeePrice}
 							selectedInstallment={activeInstallment}
 							onSelectInstallment={(val) => setSelectedInstallment(val)}
 						/>

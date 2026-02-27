@@ -43,7 +43,7 @@ export default function supplierProductsPage() {
 
 	const { apiParams, searchTerm, handleSearchChange } = useApiParams({
 		limit: 100,
-		fields: "id, sku, name, description, categoryId, category.name, retailPrice, sellingPrice, stockQuantity, isActive, status, imageUrl, images",
+		fields: "id, sku, name, description, categoryId, category.name, srp, supplierPrice, stockQuantity, isActive, status, imageUrl, images",
 		sort: "createdAt",
 		order: "desc",
 	});
@@ -166,13 +166,13 @@ export default function supplierProductsPage() {
 			render: (_, row) => (row as any).category?.name || "â€”",
 		},
 		{
-			key: "retailPrice",
+			key: "srp",
 			label: "Retail Price",
 			sortable: true,
 			render: (value) => `₱${Number(value).toLocaleString()}`,
 		},
 		{
-			key: "sellingPrice",
+			key: "supplierPrice",
 			label: "Selling Price",
 			sortable: true,
 			render: (value) => `₱${Number(value).toLocaleString()}`,

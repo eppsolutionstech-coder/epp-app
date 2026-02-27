@@ -240,13 +240,13 @@ export function ProductDetailsView({
 								<div>
 									<p className="text-sm text-muted-foreground">Retail Price</p>
 									<p className="text-2xl font-bold">
-										{formatPrice(product.retailPrice)}
+										{formatPrice(product.srp)}
 									</p>
 								</div>
 								<div>
 									<p className="text-sm text-muted-foreground">Selling Price</p>
 									<p className="text-2xl font-bold text-primary">
-										{formatPrice(product.sellingPrice)}
+										{formatPrice(product.supplierPrice)}
 									</p>
 								</div>
 							</div>
@@ -260,7 +260,7 @@ export function ProductDetailsView({
 												Cost Price
 											</p>
 											<p className="text-lg font-semibold">
-												{formatPrice(product.costPrice)}
+												{formatPrice(product.employeePrice)}
 											</p>
 										</div>
 										<div>
@@ -268,7 +268,7 @@ export function ProductDetailsView({
 												Retailer Price
 											</p>
 											<p className="text-lg font-semibold">
-												{formatPrice(product.retailerPrice)}
+												{formatPrice(product.standardPrice)}
 											</p>
 										</div>
 										<div>
@@ -276,7 +276,7 @@ export function ProductDetailsView({
 												Wholesale Price
 											</p>
 											<p className="text-lg font-semibold">
-												{formatPrice(product.wholeSalePrice)}
+												{formatPrice(product.wholesalePrice)}
 											</p>
 										</div>
 									</div>
