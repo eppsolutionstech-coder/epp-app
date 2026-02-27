@@ -10,7 +10,6 @@ import {
 	ConfirmationStep,
 	SuccessStep,
 	calculateTotals,
-	getLowestInstallmentTier,
 	calculateInstallmentPricing,
 	type CheckoutItem,
 	type CheckoutStep,
@@ -45,6 +44,8 @@ export default function CheckoutPage() {
 	const locationState = location.state as LocationState | null;
 	const checkoutItems = locationState?.items ?? [];
 	const source = locationState?.source ?? "direct"; // Default to direct if not specified
+	const cartInstallmentCount =
+		checkoutItems.find((item) => item.installmentCount != null)?.installmentCount ?? null;
 
 	// Check if we have items to checkout
 	if (checkoutItems.length === 0) {
@@ -55,12 +56,25 @@ export default function CheckoutPage() {
 
 	// Compute default selectedInstallments
 	useEffect(() => {
-		if (selectedInstallments === null && installmentConfigs.length > 0) {
-			setSelectedInstallments(getLowestInstallmentTier(baseTotal, installmentConfigs));
-		} else if (selectedInstallments === null && configsData) {
+		if (selectedInstallments !== null) return;
+
+		const cartTier = installmentConfigs.find(
+			(tier) => tier.installmentCount === cartInstallmentCount,
+		);
+		if (cartTier) {
+			setSelectedInstallments(cartTier.installmentCount);
+			return;
+		}
+
+		if (installmentConfigs.length > 0) {
+			setSelectedInstallments(installmentConfigs[0].installmentCount);
+			return;
+		}
+
+		if (configsData) {
 			setSelectedInstallments(0);
 		}
-	}, [installmentConfigs, selectedInstallments, baseTotal, configsData]);
+	}, [installmentConfigs, selectedInstallments, cartInstallmentCount, configsData]);
 
 	const activeInstallments = selectedInstallments || 0;
 

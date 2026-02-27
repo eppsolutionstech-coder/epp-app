@@ -4,7 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ArrowRight } from "lucide-react";
 import type { CheckoutItem } from "./checkout-utils";
-import { formatPrice, calculateTotals } from "./checkout-utils";
+import {
+	formatPrice,
+	calculateTotals,
+	calculateInstallmentPricing,
+} from "./checkout-utils";
 import { CheckoutItemCard } from "./checkout-item-card";
 
 interface SummaryStepProps {
@@ -17,8 +21,21 @@ export function SummaryStep({ items, onNext, isEppEmployee = false }: SummarySte
 	const { totalItems, subtotal, totalSavings, total, eppTotalWithInterest } =
 		calculateTotals(items);
 
+	const eppPerInstallmentSubtotal = items.reduce((sum, item) => {
+		const costPrice = item.item.employeePrice ?? item.item.srp;
+		if (item.installmentCount != null && item.rate != null) {
+			const installmentPricing = calculateInstallmentPricing(
+				costPrice,
+				item.installmentCount,
+				item.rate,
+			);
+			return sum + installmentPricing.perInstallment * item.quantity;
+		}
+		return sum + costPrice * item.quantity;
+	}, 0);
+
 	const displayTotal = isEppEmployee ? eppTotalWithInterest : total;
-	const displaySubtotal = isEppEmployee ? eppTotalWithInterest : subtotal;
+	const displaySubtotal = isEppEmployee ? eppPerInstallmentSubtotal : subtotal;
 
 	return (
 		<>
@@ -43,7 +60,9 @@ export function SummaryStep({ items, onNext, isEppEmployee = false }: SummarySte
 					<div className="space-y-3 text-sm">
 						<div className="flex justify-between">
 							<span className="text-muted-foreground">
-								Subtotal ({totalItems} {totalItems === 1 ? "item" : "items"})
+								{isEppEmployee
+									? "Subtotal (Per installment)"
+									: `Subtotal (${totalItems} ${totalItems === 1 ? "item" : "items"})`}
 							</span>
 							<span>{formatPrice(displaySubtotal)}</span>
 						</div>
