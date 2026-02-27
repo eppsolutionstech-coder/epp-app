@@ -420,6 +420,13 @@ export default function AdminProductsPage() {
 										product={product}
 										variant="admin"
 										onClick={handleRowClick}
+										onApprove={(selectedProduct) =>
+											handleStatusUpdate(selectedProduct.id, "APPROVED")
+										}
+										onReject={(selectedProduct) =>
+											handleStatusUpdate(selectedProduct.id, "REJECTED")
+										}
+										isStatusUpdating={updateItem.isPending}
 									/>
 								))}
 							</div>

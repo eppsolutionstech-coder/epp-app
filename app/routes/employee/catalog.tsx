@@ -42,7 +42,7 @@ export default function EmployeeCatalog() {
 	};
 
 	const { apiParams, searchTerm, handleSearchChange, handleFilterChange } = useApiParams({
-		limit: 100,
+		limit: 1000,
 		fields: "id, sku, name, description, category.id, category.name, supplier.id, supplier.name, srp, employeePrice, stockQuantity, isActive, status, imageUrl, images",
 		filter: "status:APPROVED",
 	});

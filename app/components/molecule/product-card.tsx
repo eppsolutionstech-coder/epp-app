@@ -2,7 +2,7 @@
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Package, ChevronLeft, ChevronRight } from "lucide-react";
+import { Package, ChevronLeft, ChevronRight, Check, X, Loader2 } from "lucide-react";
 import type { Item, ItemWithRelation } from "~/zod/item.zod";
 import { useGetFinancierConfigs } from "~/hooks/use-financier-config";
 import {
@@ -15,6 +15,9 @@ export interface ProductCardProps {
 	variant?: "admin" | "employee" | "supplier" | "landing";
 	onClick?: (product: Item | ItemWithRelation) => void;
 	isEppEmployee?: boolean;
+	onApprove?: (product: Item | ItemWithRelation) => void | Promise<void>;
+	onReject?: (product: Item | ItemWithRelation) => void | Promise<void>;
+	isStatusUpdating?: boolean;
 }
 
 interface StatusBadgeProps {
@@ -46,7 +49,15 @@ export function StatusBadge({ status, className = "" }: StatusBadgeProps) {
 	);
 }
 
-export function ProductCard({ product, variant = "admin", onClick, isEppEmployee = false }: ProductCardProps) {
+export function ProductCard({
+	product,
+	variant = "admin",
+	onClick,
+	isEppEmployee = false,
+	onApprove,
+	onReject,
+	isStatusUpdating = false,
+}: ProductCardProps) {
 	const [currentImageIndex, setCurrentImageIndex] = useState(0);
 	const { data: configsData } = useGetFinancierConfigs();
 
@@ -66,6 +77,18 @@ export function ProductCard({ product, variant = "admin", onClick, isEppEmployee
 		e.preventDefault();
 		e.stopPropagation();
 		setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+	};
+
+	const handleApprove = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+		onApprove?.(product);
+	};
+
+	const handleReject = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault();
+		e.stopPropagation();
+		onReject?.(product);
 	};
 
 	if (variant === "employee" || variant === "landing") {
@@ -316,10 +339,46 @@ export function ProductCard({ product, variant = "admin", onClick, isEppEmployee
 						</DropdownMenuContent>
 					</DropdownMenu>
 				</div> */}
-				{/* Status Badge */}
 				<div className="absolute left-2 top-2">
 					<StatusBadge status={product.status} className="backdrop-blur-sm" />
 				</div>
+				{variant === "admin" && product.status === "PENDING" && (onApprove || onReject) && (
+					<div className="absolute right-2 top-2 flex items-center gap-1">
+						{isStatusUpdating ? (
+							<Button
+								type="button"
+								size="icon"
+								variant="secondary"
+								className="h-7 w-7 bg-background/85 backdrop-blur-sm"
+								disabled>
+								<Loader2 className="h-3.5 w-3.5 animate-spin" />
+							</Button>
+						) : (
+							<>
+								{onApprove && (
+									<Button
+										type="button"
+										size="icon"
+										variant="secondary"
+										className="h-7 w-7 bg-background/85 text-green-700 hover:text-green-800 backdrop-blur-sm"
+										onClick={handleApprove}>
+										<Check className="h-3.5 w-3.5" />
+									</Button>
+								)}
+								{onReject && (
+									<Button
+										type="button"
+										size="icon"
+										variant="secondary"
+										className="h-7 w-7 bg-background/85 text-red-700 hover:text-red-800 backdrop-blur-sm"
+										onClick={handleReject}>
+										<X className="h-3.5 w-3.5" />
+									</Button>
+								)}
+							</>
+						)}
+					</div>
+				)}
 			</div>
 			<div className="p-4">
 				<div className="mb-2 flex items-start justify-between gap-2">
@@ -344,4 +403,3 @@ export function ProductCard({ product, variant = "admin", onClick, isEppEmployee
 		</Card>
 	);
 }
-

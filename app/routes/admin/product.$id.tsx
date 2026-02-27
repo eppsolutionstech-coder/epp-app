@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Loader2, Pencil } from "lucide-react";
+import { Check, Loader2, Pencil, X } from "lucide-react";
 import { toast } from "sonner";
 import { ProductDetailsView } from "~/components/organism/product-details-view";
 import { useGetItemById, useUpdateItem } from "~/hooks/use-item";
@@ -107,12 +107,59 @@ export default function AdminProductDetailsPage() {
 		}
 	};
 
+	const handleStatusUpdate = async (newStatus: "APPROVED" | "REJECTED") => {
+		if (!itemId) return;
+
+		try {
+			await updateItem.mutateAsync({
+				itemId,
+				data: { status: newStatus },
+			});
+			toast.success(`Product ${newStatus.toLowerCase()} successfully.`);
+			await refetch();
+		} catch (error: any) {
+			toast.error(error.message || "Failed to update product status.");
+		}
+	};
+
 	const editPricesAction = (
 		<Button variant="outline" size="sm" onClick={() => handleDialogOpenChange(true)}>
 			<Pencil className="mr-2 h-4 w-4" />
 			Edit Prices
 		</Button>
 	);
+
+	const approvalActions =
+		product?.status === "PENDING" ? (
+			<>
+				<Button
+					size="sm"
+					variant="outline"
+					className="border-green-200 text-green-700 hover:bg-green-50 hover:text-green-800"
+					disabled={updateItem.isPending}
+					onClick={() => handleStatusUpdate("APPROVED")}>
+					{updateItem.isPending ? (
+						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+					) : (
+						<Check className="mr-2 h-4 w-4" />
+					)}
+					Approve
+				</Button>
+				<Button
+					size="sm"
+					variant="outline"
+					className="border-red-200 text-red-700 hover:bg-red-50 hover:text-red-800"
+					disabled={updateItem.isPending}
+					onClick={() => handleStatusUpdate("REJECTED")}>
+					{updateItem.isPending ? (
+						<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+					) : (
+						<X className="mr-2 h-4 w-4" />
+					)}
+					Reject
+				</Button>
+			</>
+		) : null;
 
 	return (
 		<>
@@ -201,6 +248,7 @@ export default function AdminProductDetailsPage() {
 				isLoading={isLoading}
 				isError={isError}
 				showsupplierInfo
+				headerActions={approvalActions}
 				showAdminPriceSection
 				adminPriceAction={editPricesAction}
 			/>
