@@ -5,6 +5,7 @@ import type {
 	CreateDeliveryDocument,
 	UpdateDeliveryDocument,
 	CreateDOToClient,
+	CreateDRFromAdmin,
 	CreateDRFromSupplier,
 } from "~/zod/deliveryDocument.zod";
 import { queryClient } from "~/lib/query-client";
@@ -73,6 +74,19 @@ export const useCreateDOToClient = () => {
 	return useMutation({
 		mutationFn: ({ orderId, data }: { orderId: string; data?: CreateDOToClient }) => {
 			return deliveryDocumentService.createDOToClient({ orderId, data });
+		},
+		onSuccess: (_response, variables) => {
+			queryClient.invalidateQueries({ queryKey: ["delivery-documents"] });
+			queryClient.invalidateQueries({ queryKey: ["orders"] });
+			queryClient.invalidateQueries({ queryKey: ["order-by-id", variables.orderId] });
+		},
+	});
+};
+
+export const useCreateDRFromAdmin = () => {
+	return useMutation({
+		mutationFn: ({ orderId, data }: { orderId: string; data?: CreateDRFromAdmin }) => {
+			return deliveryDocumentService.createDRFromAdmin({ orderId, data });
 		},
 		onSuccess: (_response, variables) => {
 			queryClient.invalidateQueries({ queryKey: ["delivery-documents"] });

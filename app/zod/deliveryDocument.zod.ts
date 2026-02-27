@@ -109,6 +109,12 @@ export type CreateDOToClientResponse = {
 	deliveryOrder: DeliveryDocument;
 };
 
+export const CreateDRFromAdminSchema = CreateDOToClientSchema;
+
+export type CreateDRFromAdmin = CreateDOToClient;
+
+export type CreateDRFromAdminResponse = CreateDOToClientResponse;
+
 export const CreateDRFromSupplierSchema = z.object({
 	receiverName: z.string().optional().nullable(),
 	receiverSignature: z.string().optional().nullable(),

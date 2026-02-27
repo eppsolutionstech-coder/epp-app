@@ -158,6 +158,7 @@
 		CREATE: "/deliveryDocument",
 		CREATE_DO_TO_ADMIN: "/deliveryDocument/:purchaseOrderId/dispatch",
 		CREATE_DO_TO_CLIENT: "/deliveryDocument/:orderId/dispatch-to-client",
+		CREATE_DR_FROM_ADMIN: "/deliveryDocument/:orderId/dispatch-to-client",
 		CREATE_DR_FROM_SUPPLIER: "/deliveryDocument/:doId/receive",
 		UPDATE: "/deliveryDocument/:id",
 		DELETE: "/deliveryDocument/:id",
