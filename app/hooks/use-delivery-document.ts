@@ -1,7 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import deliveryDocumentService from "~/services/delivery-document-service";
 import type { ApiQueryParams } from "~/services/api-service";
-import type { CreateDeliveryDocument, UpdateDeliveryDocument } from "~/zod/deliveryDocument.zod";
+import type {
+	CreateDeliveryDocument,
+	UpdateDeliveryDocument,
+	CreateDRFromSupplier,
+} from "~/zod/deliveryDocument.zod";
 import { queryClient } from "~/lib/query-client";
 
 // GET ALL
@@ -60,6 +64,19 @@ export const useCreateDOToAdmin = () => {
 			queryClient.invalidateQueries({ queryKey: ["delivery-documents"] });
 			queryClient.invalidateQueries({ queryKey: ["purchase-orders"] });
 			queryClient.invalidateQueries({ queryKey: ["purchase-order", purchaseOrderId] });
+		},
+	});
+};
+
+export const useCreateDRFromSupplier = () => {
+	return useMutation({
+		mutationFn: ({ doId, data }: { doId: string; data?: CreateDRFromSupplier }) => {
+			return deliveryDocumentService.createDRFromSupplier({ doId, data });
+		},
+		onSuccess: (_response, variables) => {
+			queryClient.invalidateQueries({ queryKey: ["delivery-documents"] });
+			queryClient.invalidateQueries({ queryKey: ["delivery-document-by-id", variables.doId] });
+			queryClient.invalidateQueries({ queryKey: ["purchase-orders"] });
 		},
 	});
 };

@@ -7,6 +7,8 @@ import type {
 	CreateDeliveryDocument,
 	UpdateDeliveryDocument,
 	CreateDOToAdminResponse,
+	CreateDRFromSupplier,
+	CreateDRFromSupplierResponse,
 } from "~/zod/deliveryDocument.zod";
 
 const { DELIVERY_DOCUMENT } = API_ENDPOINTS;
@@ -54,6 +56,26 @@ class DeliveryDocumentService extends APIService {
 		try {
 			const response: ApiResponse<CreateDOToAdminResponse> = await apiClient.post(
 				DELIVERY_DOCUMENT.CREATE_DO_TO_ADMIN.replace(":purchaseOrderId", purchaseOrderId),
+			);
+			return response.data;
+		} catch (error: any) {
+			throw new Error(
+				error.data?.errors?.[0]?.message || error.message || "An error has occurred",
+			);
+		}
+	};
+
+	createDRFromSupplier = async ({
+		doId,
+		data,
+	}: {
+		doId: string;
+		data?: CreateDRFromSupplier;
+	}) => {
+		try {
+			const response: ApiResponse<CreateDRFromSupplierResponse> = await apiClient.post(
+				DELIVERY_DOCUMENT.CREATE_DR_FROM_SUPPLIER.replace(":doId", doId),
+				data,
 			);
 			return response.data;
 		} catch (error: any) {

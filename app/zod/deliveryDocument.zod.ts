@@ -91,3 +91,16 @@ export type GetAllDeliveryDocuments = {
 export type CreateDOToAdminResponse = {
 	deliveryOrder: DeliveryDocument;
 };
+
+export const CreateDRFromSupplierSchema = z.object({
+	receiverName: z.string().optional().nullable(),
+	receiverSignature: z.string().optional().nullable(),
+	conditionOfGoods: z.string().optional().nullable(),
+});
+
+export type CreateDRFromSupplier = z.infer<typeof CreateDRFromSupplierSchema>;
+
+export type CreateDRFromSupplierResponse = {
+	deliveryReceipt: DeliveryDocument;
+	documentNumber: string;
+};
