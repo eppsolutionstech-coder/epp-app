@@ -19,10 +19,10 @@ The Employee Purchase Program (EPP) is a B2B2C e-commerce platform owned by **Uz
 
 ### 2.2 Revenue Streams
 
-| Revenue Source | Description |
-|----------------|-------------|
-| Product Markup | Small margin added to vendor wholesale price |
-| Platform Fees | Commission from vendor sales |
+| Revenue Source           | Description                                                          |
+| ------------------------ | -------------------------------------------------------------------- |
+| Product Markup           | Small margin added to vendor wholesale price                         |
+| Platform Fees            | Commission from vendor sales                                         |
 | Financier Interest Share | 50% (configurable) of installment interest revenue shared with Uzaro |
 
 ---
@@ -31,20 +31,20 @@ The Employee Purchase Program (EPP) is a B2B2C e-commerce platform owned by **Uz
 
 ### 3.1 Customer Types
 
-| Customer Type | Description | Pricing Tier | Payment Options |
-|---------------|-------------|--------------|-----------------|
-| **Employee** | Corporate employees enrolled in EPP | Employee Price (Lowest) | Full Payment, Installment (Salary Deduction) |
-| **Wholesaler** | Bulk buyers / Resellers | Wholesale Price | Full Payment, Installment |
-| **Retailer** | Small business owners | Retail Price | Full Payment, Installment |
-| **Regular User** | General consumers | Standard Price | Full Payment, Installment |
+| Customer Type    | Description                         | Pricing Tier            | Payment Options                              |
+| ---------------- | ----------------------------------- | ----------------------- | -------------------------------------------- |
+| **Employee**     | Corporate employees enrolled in EPP | Employee Price (Lowest) | Full Payment, Installment (Salary Deduction) |
+| **Wholesaler**   | Bulk buyers / Resellers             | Wholesale Price         | Full Payment, Installment                    |
+| **Retailer**     | Small business owners               | Retail Price            | Full Payment, Installment                    |
+| **Regular User** | General consumers                   | Standard Price          | Full Payment, Installment                    |
 
 ### 3.2 Platform Roles
 
-| Role | Description | Primary Functions |
-|------|-------------|-------------------|
-| **Customer** | End users purchasing products | Browse, purchase, track orders, manage loans |
-| **Vendor** | Suppliers/partners providing products | Manage products, fulfill orders, track sales |
-| **Admin** | Uzaro platform administrators | Manage users, vendors, organizations, approvals |
+| Role          | Description                                      | Primary Functions                                                                         |
+| ------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| **Customer**  | End users purchasing products                    | Browse, purchase, track orders, manage loans                                              |
+| **Vendor**    | Suppliers/partners providing products            | Manage products, fulfill orders, track sales                                              |
+| **Admin**     | Uzaro platform administrators                    | Manage users, vendors, organizations, approvals                                           |
 | **Financier** | Lending institutions that fund product purchases | Approve orders, release funds to Uzaro, set installment terms & rates, receive repayments |
 
 ---
@@ -76,16 +76,16 @@ Final Installment Price (Base Price + Financier Interest)
 
 ### 4.3 Pricing Terminology
 
-| Term | Definition |
-|------|-----------|
-| **SRP** | Suggested Retail Price — the market price set by the vendor |
-| **Cost Price** | The discounted price Uzaro acquires the product for via vendor partnership |
-| **Employee Price** | Cost Price + Uzaro markup for employee customers |
-| **Wholesaler Price** | Cost Price + Uzaro markup for wholesaler customers |
-| **Retailer Price** | Cost Price + Uzaro markup for retailer customers |
-| **Regular User Price** | Cost Price + Uzaro markup for general consumers |
-| **Financier Rate** | Interest rate per installment set by the Financier |
-| **Total Installment Price** | Base price + total accumulated interest across all installments |
+| Term                        | Definition                                                                 |
+| --------------------------- | -------------------------------------------------------------------------- |
+| **SRP**                     | Suggested Retail Price — the market price set by the vendor                |
+| **Cost Price**              | The discounted price Uzaro acquires the product for via vendor partnership |
+| **Employee Price**          | Cost Price + Uzaro markup for employee customers                           |
+| **Wholesaler Price**        | Cost Price + Uzaro markup for wholesaler customers                         |
+| **Retailer Price**          | Cost Price + Uzaro markup for retailer customers                           |
+| **Regular User Price**      | Cost Price + Uzaro markup for general consumers                            |
+| **Financier Rate**          | Interest rate per installment set by the Financier                         |
+| **Total Installment Price** | Base price + total accumulated interest across all installments            |
 
 ### 4.4 Pricing Calculation with Financier (Installment Orders)
 
@@ -118,6 +118,12 @@ Step 6: Calculate total price
   Total Interest Revenue  = ₱9,435.00 - ₱9,250.00 = ₱185.00
 ```
 
+**UI Display Rule for EPP Employees:**
+To prevent confusion and provide transparent installment terms to EPP Employees, the following UI rules are enforced:
+
+1. The base `Cost Price` (the discounted principal) and resulting retail discount savings are intentionally NOT displayed or calculated in cart totals or checkout summaries for the EPP Employee role.
+2. The UI effectively replaces `Cost Price` with the pre-calculated `Total With Interest` across summary displays for EPP Employees.
+
 ### 4.5 Financier Interest Revenue Sharing
 
 The total interest revenue generated from installment plans is **split between Uzaro and the Financier** based on a configurable ratio.
@@ -134,11 +140,11 @@ Financier Share = ₱185.00 × 50% = ₱92.50
 
 **Revenue Split Configuration:**
 
-| Setting | Description | Default |
-|---------|-------------|---------|
-| Split Ratio | Percentage of interest revenue allocated to each party | 50% Uzaro / 50% Financier |
-| Configurable Per | Can be configured per Financier agreement | Per Financier |
-| Override | Admin can override default split for specific Financier partnerships | Yes |
+| Setting          | Description                                                          | Default                   |
+| ---------------- | -------------------------------------------------------------------- | ------------------------- |
+| Split Ratio      | Percentage of interest revenue allocated to each party               | 50% Uzaro / 50% Financier |
+| Configurable Per | Can be configured per Financier agreement                            | Per Financier             |
+| Override         | Admin can override default split for specific Financier partnerships | Yes                       |
 
 **Uzaro Total Revenue per Transaction (Installment):**
 
@@ -157,74 +163,74 @@ Uzaro remits to Financier = ₱9,000.00 + ₱92.50 = ₱9,092.50
 
 ### 5.1 Employee Features
 
-| Feature | Description |
-|---------|-------------|
-| Product Catalog | Browse products with category/vendor/price filters |
-| Shopping Cart | Add, remove, update quantities |
-| Checkout | Multi-step checkout with installment options |
-| Salary Deduction | Automatic payroll deduction for installment payments |
-| Credit Limit | Maximum purchase limit based on salary/eligibility |
-| Order Tracking | View order status and history |
-| Loan Management | Track active loans and payment schedules |
-| Profile Management | Personal info, payment methods, preferences |
+| Feature            | Description                                          |
+| ------------------ | ---------------------------------------------------- |
+| Product Catalog    | Browse products with category/vendor/price filters   |
+| Shopping Cart      | Add, remove, update quantities                       |
+| Checkout           | Multi-step checkout with installment options         |
+| Salary Deduction   | Automatic payroll deduction for installment payments |
+| Credit Limit       | Maximum purchase limit based on salary/eligibility   |
+| Order Tracking     | View order status and history                        |
+| Loan Management    | Track active loans and payment schedules             |
+| Profile Management | Personal info, payment methods, preferences          |
 
 ### 5.2 Wholesaler Features
 
-| Feature | Description |
-|---------|-------------|
-| Bulk Ordering | Order large quantities with volume discounts |
-| Minimum Order Quantity | MOQ requirements for wholesale pricing |
-| Bulk Pricing Calculator | Calculate total cost for bulk orders |
-| Recurring Orders | Set up scheduled repeat orders |
-| Invoice Management | Business invoicing and payment terms |
+| Feature                 | Description                                  |
+| ----------------------- | -------------------------------------------- |
+| Bulk Ordering           | Order large quantities with volume discounts |
+| Minimum Order Quantity  | MOQ requirements for wholesale pricing       |
+| Bulk Pricing Calculator | Calculate total cost for bulk orders         |
+| Recurring Orders        | Set up scheduled repeat orders               |
+| Invoice Management      | Business invoicing and payment terms         |
 
 ### 5.3 Retailer Features
 
-| Feature | Description |
-|---------|-------------|
+| Feature           | Description                         |
+| ----------------- | ----------------------------------- |
 | Standard Ordering | Regular order flow with EPP pricing |
-| Business Account | Company profile and tax information |
-| Order History | Track all business purchases |
-| Payment Options | Multiple payment methods available |
+| Business Account  | Company profile and tax information |
+| Order History     | Track all business purchases        |
+| Payment Options   | Multiple payment methods available  |
 
 ### 5.4 Vendor Features
 
-| Feature | Description |
-|---------|-------------|
-| Product Management | Create, update, manage product listings |
-| Inventory Tracking | Stock levels, low stock alerts |
+| Feature               | Description                               |
+| --------------------- | ----------------------------------------- |
+| Product Management    | Create, update, manage product listings   |
+| Inventory Tracking    | Stock levels, low stock alerts            |
 | Pricing Configuration | Set cost price, recommended selling price |
-| Category Management | Organize products into categories |
-| Order Fulfillment | Process and ship orders |
-| Performance Analytics | Sales metrics, revenue tracking |
-| Profile Management | Business info, bank details |
+| Category Management   | Organize products into categories         |
+| Order Fulfillment     | Process and ship orders                   |
+| Performance Analytics | Sales metrics, revenue tracking           |
+| Profile Management    | Business info, bank details               |
 
 ### 5.5 Admin Features
 
-| Feature | Description |
-|---------|-------------|
-| Organization Management | Onboard and manage client companies |
-| Employee Management | User eligibility, credit limits |
-| Vendor Management | Onboard, approve, manage vendors |
-| Product Approval | Review and approve vendor products |
-| Order Management | Oversight and intervention capabilities |
-| Approval Workflows | Configure multi-level approval chains |
-| Reports & Analytics | Platform-wide metrics and insights |
-| Settings | System configuration and parameters |
+| Feature                 | Description                             |
+| ----------------------- | --------------------------------------- |
+| Organization Management | Onboard and manage client companies     |
+| Employee Management     | User eligibility, credit limits         |
+| Vendor Management       | Onboard, approve, manage vendors        |
+| Product Approval        | Review and approve vendor products      |
+| Order Management        | Oversight and intervention capabilities |
+| Approval Workflows      | Configure multi-level approval chains   |
+| Reports & Analytics     | Platform-wide metrics and insights      |
+| Settings                | System configuration and parameters     |
 
 ### 5.6 Financier Features
 
-| Feature | Description |
-|---------|-------------|
-| Order Approval | Review and approve/reject customer installment orders |
-| Fund Release | Release lending capital to Uzaro for approved orders |
+| Feature                   | Description                                           |
+| ------------------------- | ----------------------------------------------------- |
+| Order Approval            | Review and approve/reject customer installment orders |
+| Fund Release              | Release lending capital to Uzaro for approved orders  |
 | Installment Configuration | Set number of installments and interest rate per term |
-| Interest Rate Management | Configure interest rates per installment term |
-| Payment Tracking | Monitor scheduled repayments from Uzaro |
-| Revenue Share Dashboard | Track interest revenue and split with Uzaro |
-| Collection Management | Handle overdue and default cases |
-| Customer Portfolio | View customer loan history and risk profile |
-| Financial Reports | Loan portfolio analytics, revenue share reports |
+| Interest Rate Management  | Configure interest rates per installment term         |
+| Payment Tracking          | Monitor scheduled repayments from Uzaro               |
+| Revenue Share Dashboard   | Track interest revenue and split with Uzaro           |
+| Collection Management     | Handle overdue and default cases                      |
+| Customer Portfolio        | View customer loan history and risk profile           |
+| Financial Reports         | Loan portfolio analytics, revenue share reports       |
 
 ---
 
@@ -232,32 +238,32 @@ Uzaro remits to Financier = ₱9,000.00 + ₱92.50 = ₱9,092.50
 
 ### 6.1 Payment Types
 
-| Type | Description | Applicable To |
-|------|-------------|---------------|
-| **Full Payment** | Complete payment at checkout | All customers |
-| **Installment** | Split payment over months | All customers |
-| **Points** | Loyalty points redemption | Enrolled customers |
-| **Mixed** | Combination of above | All customers |
+| Type             | Description                  | Applicable To      |
+| ---------------- | ---------------------------- | ------------------ |
+| **Full Payment** | Complete payment at checkout | All customers      |
+| **Installment**  | Split payment over months    | All customers      |
+| **Points**       | Loyalty points redemption    | Enrolled customers |
+| **Mixed**        | Combination of above         | All customers      |
 
 ### 6.2 Payment Methods
 
-| Method | Description | Applicable To |
-|--------|-------------|---------------|
+| Method                | Description             | Applicable To  |
+| --------------------- | ----------------------- | -------------- |
 | **Payroll Deduction** | Auto-deduct from salary | Employees only |
-| **Cash** | Cash on delivery | All customers |
-| **Credit Card** | Card payment | All customers |
-| **Debit Card** | Card payment | All customers |
-| **Bank Transfer** | Direct bank transfer | All customers |
+| **Cash**              | Cash on delivery        | All customers  |
+| **Credit Card**       | Card payment            | All customers  |
+| **Debit Card**        | Card payment            | All customers  |
+| **Bank Transfer**     | Direct bank transfer    | All customers  |
 
 ### 6.3 Installment Plans
 
-| Term | Duration | Interest Rate | Notes |
-|------|----------|---------------|-------|
-| 3 months | 3 months | Set by Financier | Short-term |
-| 6 months | 6 months | Set by Financier | Popular option |
-| 12 months | 12 months | Set by Financier | Standard |
-| 18 months | 18 months | Set by Financier | Extended |
-| 24 months | 24 months | Set by Financier | Long-term |
+| Term      | Duration  | Interest Rate    | Notes          |
+| --------- | --------- | ---------------- | -------------- |
+| 3 months  | 3 months  | Set by Financier | Short-term     |
+| 6 months  | 6 months  | Set by Financier | Popular option |
+| 12 months | 12 months | Set by Financier | Standard       |
+| 18 months | 18 months | Set by Financier | Extended       |
+| 24 months | 24 months | Set by Financier | Long-term      |
 
 ### 6.4 Salary Deduction Flow (Employees)
 
@@ -356,13 +362,13 @@ Alternative flows:
 
 ### 8.2 Organization Configuration
 
-| Setting | Description |
-|---------|-------------|
-| Credit Limits | Default and max credit limits for employees |
-| Approval Workflows | Multi-level approval chains |
-| Product Catalog | Curated product selection for organization |
-| Payment Options | Enabled payment methods |
-| Deduction Schedule | Payroll deduction timing |
+| Setting            | Description                                 |
+| ------------------ | ------------------------------------------- |
+| Credit Limits      | Default and max credit limits for employees |
+| Approval Workflows | Multi-level approval chains                 |
+| Product Catalog    | Curated product selection for organization  |
+| Payment Options    | Enabled payment methods                     |
+| Deduction Schedule | Payroll deduction timing                    |
 
 ---
 
@@ -455,14 +461,14 @@ Verification: ₱9,092.50 + ₱342.50 = ₱9,435.00 ✓ (matches total paid by c
 
 ### 10.4 Risk Management
 
-| Factor | Description |
-|--------|-------------|
-| Credit Scoring | Assess customer creditworthiness |
-| Employment Verification | Confirm active employment status |
-| Salary Validation | Verify salary for deduction capacity |
-| Loan-to-Income Ratio | Cap installment vs. monthly salary |
-| Default Handling | Collections process for non-payment |
-| Order Approval | Financier can reject high-risk orders before releasing funds |
+| Factor                  | Description                                                  |
+| ----------------------- | ------------------------------------------------------------ |
+| Credit Scoring          | Assess customer creditworthiness                             |
+| Employment Verification | Confirm active employment status                             |
+| Salary Validation       | Verify salary for deduction capacity                         |
+| Loan-to-Income Ratio    | Cap installment vs. monthly salary                           |
+| Default Handling        | Collections process for non-payment                          |
+| Order Approval          | Financier can reject high-risk orders before releasing funds |
 
 ---
 
@@ -478,13 +484,13 @@ Verification: ₱9,092.50 + ₱342.50 = ₱9,435.00 ✓ (matches total paid by c
 
 ### 11.2 Integration Points
 
-| System | Integration Type | Purpose |
-|--------|------------------|---------|
-| Payroll Systems | API/File | Salary deduction processing |
-| Payment Gateway | API | Card and bank payments |
-| Financier Systems | API | Loan processing and management |
-| Shipping Providers | API | Order tracking |
-| SMS/Email Gateway | API | Notifications |
+| System             | Integration Type | Purpose                        |
+| ------------------ | ---------------- | ------------------------------ |
+| Payroll Systems    | API/File         | Salary deduction processing    |
+| Payment Gateway    | API              | Card and bank payments         |
+| Financier Systems  | API              | Loan processing and management |
+| Shipping Providers | API              | Order tracking                 |
+| SMS/Email Gateway  | API              | Notifications                  |
 
 ---
 
@@ -536,37 +542,37 @@ Verification: ₱9,092.50 + ₱342.50 = ₱9,435.00 ✓ (matches total paid by c
 
 ## 14. Success Metrics
 
-| Metric | Target | Description |
-|--------|--------|-------------|
-| Employee Participation | >50% | Active users vs. eligible employees |
-| Order Fulfillment Rate | >95% | Orders delivered on time |
-| Loan Approval Rate | >80% | Approved vs. total applications |
-| Payment Collection Rate | >98% | On-time payments |
-| Customer Satisfaction | >4.5/5 | User ratings and feedback |
-| Vendor Retention | >90% | Active vendors year-over-year |
+| Metric                  | Target | Description                         |
+| ----------------------- | ------ | ----------------------------------- |
+| Employee Participation  | >50%   | Active users vs. eligible employees |
+| Order Fulfillment Rate  | >95%   | Orders delivered on time            |
+| Loan Approval Rate      | >80%   | Approved vs. total applications     |
+| Payment Collection Rate | >98%   | On-time payments                    |
+| Customer Satisfaction   | >4.5/5 | User ratings and feedback           |
+| Vendor Retention        | >90%   | Active vendors year-over-year       |
 
 ---
 
 ## 15. Future Enhancements
 
-| Phase | Feature | Description |
-|-------|---------|-------------|
-| Phase 2 | Mobile App | Native iOS/Android applications |
-| Phase 2 | Loyalty Program | Points earning and redemption |
-| Phase 3 | AI Recommendations | Personalized product suggestions |
-| Phase 3 | Advanced Analytics | Predictive insights and forecasting |
+| Phase   | Feature               | Description                             |
+| ------- | --------------------- | --------------------------------------- |
+| Phase 2 | Mobile App            | Native iOS/Android applications         |
+| Phase 2 | Loyalty Program       | Points earning and redemption           |
+| Phase 3 | AI Recommendations    | Personalized product suggestions        |
+| Phase 3 | Advanced Analytics    | Predictive insights and forecasting     |
 | Phase 4 | Marketplace Expansion | Open marketplace for additional vendors |
 
 ---
 
 ## Document History
 
-| Version | Date | Author | Changes |
-|---------|------|--------|---------|
-| 1.0 | 2026-01-30 | - | Initial document |
-| 1.1 | 2026-02-11 | - | Added Financier role, fund flow, detailed order workflow, pricing with financier interest, revenue sharing model |
-| 1.2 | 2026-02-11 | - | Clarified Financier lends Cost Price only (excludes Uzaro markup), updated settlement calculations |
+| Version | Date       | Author | Changes                                                                                                          |
+| ------- | ---------- | ------ | ---------------------------------------------------------------------------------------------------------------- |
+| 1.0     | 2026-01-30 | -      | Initial document                                                                                                 |
+| 1.1     | 2026-02-11 | -      | Added Financier role, fund flow, detailed order workflow, pricing with financier interest, revenue sharing model |
+| 1.2     | 2026-02-11 | -      | Clarified Financier lends Cost Price only (excludes Uzaro markup), updated settlement calculations               |
 
 ---
 
-*This document serves as the foundational business requirements for the EPP platform. Technical specifications and detailed user stories should be derived from these requirements.*
+_This document serves as the foundational business requirements for the EPP platform. Technical specifications and detailed user stories should be derived from these requirements._

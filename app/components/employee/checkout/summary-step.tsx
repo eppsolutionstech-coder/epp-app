@@ -10,10 +10,15 @@ import { CheckoutItemCard } from "./checkout-item-card";
 interface SummaryStepProps {
 	items: CheckoutItem[];
 	onNext: () => void;
+	isEppEmployee?: boolean;
 }
 
-export function SummaryStep({ items, onNext }: SummaryStepProps) {
-	const { totalItems, subtotal, totalSavings, total } = calculateTotals(items);
+export function SummaryStep({ items, onNext, isEppEmployee = false }: SummaryStepProps) {
+	const { totalItems, subtotal, totalSavings, total, eppTotalWithInterest } =
+		calculateTotals(items);
+
+	const displayTotal = isEppEmployee ? eppTotalWithInterest : total;
+	const displaySubtotal = isEppEmployee ? eppTotalWithInterest : subtotal;
 
 	return (
 		<>
@@ -27,7 +32,7 @@ export function SummaryStep({ items, onNext }: SummaryStepProps) {
 			{/* Product Cards */}
 			<div className="space-y-4">
 				{items.map((item) => (
-					<CheckoutItemCard key={item.itemId} item={item} />
+					<CheckoutItemCard key={item.itemId} item={item} isEppEmployee={isEppEmployee} />
 				))}
 			</div>
 
@@ -40,10 +45,10 @@ export function SummaryStep({ items, onNext }: SummaryStepProps) {
 							<span className="text-muted-foreground">
 								Subtotal ({totalItems} {totalItems === 1 ? "item" : "items"})
 							</span>
-							<span>{formatPrice(subtotal)}</span>
+							<span>{formatPrice(displaySubtotal)}</span>
 						</div>
 
-						{totalSavings > 0 && (
+						{totalSavings > 0 && !isEppEmployee && (
 							<div className="flex justify-between text-green-600">
 								<span>Employee Discount</span>
 								<span>-{formatPrice(totalSavings)}</span>
@@ -54,10 +59,10 @@ export function SummaryStep({ items, onNext }: SummaryStepProps) {
 
 						<div className="flex justify-between text-base font-semibold">
 							<span>Total</span>
-							<span>{formatPrice(total)}</span>
+							<span>{formatPrice(displayTotal)}</span>
 						</div>
 
-						{totalSavings > 0 && (
+						{totalSavings > 0 && !isEppEmployee && (
 							<p className="text-xs text-muted-foreground text-center pt-1">
 								You're saving {formatPrice(totalSavings)} with employee discount!
 							</p>

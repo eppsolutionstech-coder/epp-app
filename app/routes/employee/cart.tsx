@@ -132,7 +132,11 @@ export default function EmployeeCart() {
 				</div>
 
 				{/* Order Summary */}
-				<OrderSummary selectedItems={selectedItems} cartItems={selectedCartItems} />
+				<OrderSummary
+					selectedItems={selectedItems}
+					cartItems={selectedCartItems}
+					isEppEmployee={isEppEmployee}
+				/>
 			</div>
 		</div>
 	);

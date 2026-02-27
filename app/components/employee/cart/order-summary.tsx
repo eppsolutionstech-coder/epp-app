@@ -10,13 +10,24 @@ import type { CartItemWithRelation } from "~/zod/cartItem.zod";
 interface OrderSummaryProps {
 	selectedItems: Set<string>;
 	cartItems: CartItemWithRelation[];
+	isEppEmployee?: boolean;
 }
 
-export function OrderSummary({ selectedItems, cartItems }: OrderSummaryProps) {
+export function OrderSummary({
+	selectedItems,
+	cartItems,
+	isEppEmployee = false,
+}: OrderSummaryProps) {
 	const navigate = useNavigate();
 	const hasSelectedItems = selectedItems.size > 0;
 
-	const { totalItems, subtotal, totalSavings, total } = calculateTotals(cartItems);
+	const { totalItems, subtotal, totalSavings, total, eppTotalWithInterest } = calculateTotals(
+		cartItems as unknown as CheckoutItem[],
+		isEppEmployee,
+	);
+
+	const displayTotal = isEppEmployee ? eppTotalWithInterest : total;
+	const displaySubtotal = isEppEmployee ? eppTotalWithInterest : subtotal;
 
 	const handleCheckout = () => {
 		navigate("/employee/checkout", {
@@ -40,10 +51,10 @@ export function OrderSummary({ selectedItems, cartItems }: OrderSummaryProps) {
 								<span className="text-muted-foreground">
 									Subtotal ({totalItems} {totalItems === 1 ? "item" : "items"})
 								</span>
-								<span>{formatPrice(subtotal)}</span>
+								<span>{formatPrice(displaySubtotal)}</span>
 							</div>
 
-							{totalSavings > 0 && (
+							{totalSavings > 0 && !isEppEmployee && (
 								<div className="flex justify-between text-green-600">
 									<span>Employee Discount</span>
 									<span>-{formatPrice(totalSavings)}</span>
@@ -54,10 +65,10 @@ export function OrderSummary({ selectedItems, cartItems }: OrderSummaryProps) {
 
 							<div className="flex justify-between text-base font-semibold">
 								<span>Total</span>
-								<span>{formatPrice(total)}</span>
+								<span>{formatPrice(displayTotal)}</span>
 							</div>
 
-							{totalSavings > 0 && (
+							{totalSavings > 0 && !isEppEmployee && (
 								<p className="text-xs text-muted-foreground text-center pt-1">
 									You're saving {formatPrice(totalSavings)} with employee pricing!
 								</p>

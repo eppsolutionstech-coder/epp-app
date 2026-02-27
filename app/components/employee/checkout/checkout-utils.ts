@@ -8,6 +8,8 @@ export interface CheckoutItem {
 	itemId: string; // Product ID
 	quantity: number;
 	item: ItemWithRelation;
+	installmentCount?: number | null;
+	rate?: number | null;
 }
 
 export type CheckoutStep = "summary" | "installment" | "confirmation" | "success";
@@ -55,10 +57,7 @@ export interface InstallmentRateTier {
  * Returns the installmentCount of the tier that yields the lowest per-installment payment.
  * Falls back to 0 if the tiers array is empty.
  */
-export const getLowestInstallmentTier = (
-	price: number,
-	tiers: InstallmentRateTier[],
-): number => {
+export const getLowestInstallmentTier = (price: number, tiers: InstallmentRateTier[]): number => {
 	if (!tiers.length) return 0;
 	let lowestTier = tiers[0].installmentCount;
 	let lowestPayment = Infinity;
@@ -86,7 +85,7 @@ export const calculateInstallmentPricing = (
 	return { totalWithInterest, perInstallment };
 };
 
-export const calculateTotals = (items: CheckoutItem[]) => {
+export const calculateTotals = (items: CheckoutItem[], isEppEmployee = false) => {
 	const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 	const costTotal = items.reduce(
 		(sum, item) => sum + (item.item.costPrice ?? 0) * item.quantity,
@@ -100,5 +99,20 @@ export const calculateTotals = (items: CheckoutItem[]) => {
 	// Total to pay is Cost Price Sum
 	const total = costTotal;
 
-	return { totalItems, subtotal, totalSavings, total };
+	let eppTotalWithInterest = 0;
+	items.forEach((item) => {
+		const costPrice = item.item.costPrice ?? item.item.retailPrice;
+		if (item.installmentCount != null && item.rate != null) {
+			const pricing = calculateInstallmentPricing(
+				costPrice,
+				item.installmentCount,
+				item.rate,
+			);
+			eppTotalWithInterest += pricing.totalWithInterest * item.quantity;
+		} else {
+			eppTotalWithInterest += costPrice * item.quantity;
+		}
+	});
+
+	return { totalItems, subtotal, totalSavings, total, eppTotalWithInterest };
 };

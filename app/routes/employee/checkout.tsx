@@ -33,6 +33,7 @@ export default function CheckoutPage() {
 	const [selectedInstallments, setSelectedInstallments] = useState<number | null>(null);
 	const [orderNumber, setOrderNumber] = useState<string>();
 	const { user } = useAuth();
+	const isEppEmployee = (user?.role as string) === "epp-employee";
 	const createOrder = useCreateOrder();
 	const checkoutCart = useCheckoutCart();
 
@@ -133,7 +134,11 @@ export default function CheckoutPage() {
 
 			<div className="space-y-6">
 				{currentStep === "summary" && (
-					<SummaryStep items={checkoutItems} onNext={handleNext} />
+					<SummaryStep
+						items={checkoutItems}
+						onNext={handleNext}
+						isEppEmployee={isEppEmployee}
+					/>
 				)}
 
 				{currentStep === "installment" && (

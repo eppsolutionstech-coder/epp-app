@@ -36,14 +36,19 @@ export function ProductPricing({
 					<span className="text-base text-muted-foreground -ml-1">/installment</span>
 				)}
 				{savings > 0 && (
-					<>
-						<span className="text-lg text-muted-foreground line-through ml-2">
-							{formatPrice(retailPrice)}
-						</span>
-						<Badge className="bg-red-50 text-red-600 border-0">
+					<div className="flex items-center gap-2 ml-2">
+						<div className="text-muted-foreground flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-muted/20 border border-muted/50">
+							<span className="text-[10px] font-semibold uppercase tracking-widest opacity-70">
+								SRP
+							</span>
+							<span className="text-md font-medium line-through opacity-80">
+								{formatPrice(retailPrice)}
+							</span>
+						</div>
+						<Badge className="bg-green-500/15 text-green-600 hover:bg-green-500/25 border border-green-500/20 transition-colors shadow-sm">
 							Save {savingsPercent}%
 						</Badge>
-					</>
+					</div>
 				)}
 			</div>
 			<p className="text-sm text-muted-foreground">
