@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/accordion";
 import { Checkbox } from "@/components/ui/checkbox";
 import type { Category } from "~/zod/category.zod";
-import type { supplier } from "~/zod/supplier.zod";
+import type { Supplier } from "~/zod/supplier.zod";
 import { cn } from "@/lib/utils";
 
 interface CatalogSidebarProps {
@@ -23,7 +23,7 @@ interface CatalogSidebarProps {
 	priceRange: string;
 	onPriceChange: (range: string) => void;
 	categories: Category[];
-	suppliers: supplier[];
+	suppliers: Supplier[];
 	hasFilters: boolean;
 	onClearFilters: () => void;
 	className?: string;

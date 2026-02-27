@@ -17,7 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useGetItems } from "~/hooks/use-item";
 import { useGetCategories } from "~/hooks/use-category";
 import type { Category } from "~/zod/category.zod";
-import type { supplier } from "~/zod/supplier.zod";
+import type { Supplier } from "~/zod/supplier.zod";
 import type { Item, ItemWithRelation } from "~/zod/item.zod";
 import { useApiParams } from "~/hooks/util-hooks/use-api-params";
 import { cn } from "~/lib/utils";
@@ -68,7 +68,7 @@ export default function OrganizationProductsPage() {
 		limit: 100,
 		fields: "id, name",
 	});
-	const suppliers: supplier[] = suppliersResponse?.suppliers || [];
+	const suppliers: Supplier[] = suppliersResponse?.suppliers || [];
 
 	const handleRowClick = (product: Item | ItemWithRelation) => {
 		navigate(`/admin/products/${product.id}`);

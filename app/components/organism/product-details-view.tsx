@@ -238,13 +238,13 @@ export function ProductDetailsView({
 						<CardContent className="space-y-6">
 							<div className="grid grid-cols-2 gap-4">
 								<div>
-									<p className="text-sm text-muted-foreground">Retail Price</p>
+									<p className="text-sm text-muted-foreground">SRP</p>
 									<p className="text-2xl font-bold">
 										{formatPrice(product.srp)}
 									</p>
 								</div>
 								<div>
-									<p className="text-sm text-muted-foreground">Selling Price</p>
+									<p className="text-sm text-muted-foreground">Supplier Price</p>
 									<p className="text-2xl font-bold text-primary">
 										{formatPrice(product.supplierPrice)}
 									</p>
@@ -257,7 +257,7 @@ export function ProductDetailsView({
 									<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
 										<div>
 											<p className="text-sm text-muted-foreground">
-												Cost Price
+												Employee Price
 											</p>
 											<p className="text-lg font-semibold">
 												{formatPrice(product.employeePrice)}
@@ -265,7 +265,7 @@ export function ProductDetailsView({
 										</div>
 										<div>
 											<p className="text-sm text-muted-foreground">
-												Retailer Price
+												Standard Price
 											</p>
 											<p className="text-lg font-semibold">
 												{formatPrice(product.standardPrice)}

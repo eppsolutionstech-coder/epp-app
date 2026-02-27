@@ -121,13 +121,13 @@ export default function AdminProductDetailsPage() {
 					<DialogHeader>
 						<DialogTitle>Edit Prices</DialogTitle>
 						<DialogDescription>
-							Update cost, retailer, and wholesale prices for this product.
+							Update employee, standard, and wholesale prices for this product.
 						</DialogDescription>
 					</DialogHeader>
 
 					<div className="space-y-4 py-2">
 						<div className="space-y-2">
-							<Label htmlFor="cost-price">Cost Price (PHP)</Label>
+							<Label htmlFor="cost-price">Employee Price (PHP)</Label>
 							<Input
 								id="cost-price"
 								type="number"
@@ -144,7 +144,7 @@ export default function AdminProductDetailsPage() {
 							/>
 						</div>
 						<div className="space-y-2">
-							<Label htmlFor="retailer-price">Retailer Price (PHP)</Label>
+							<Label htmlFor="retailer-price">Standard Price (PHP)</Label>
 							<Input
 								id="retailer-price"
 								type="number"
