@@ -1,4 +1,4 @@
-﻿import { useParams, Link } from "react-router";
+﻿	import { useParams, Link } from "react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Printer, Loader2, Calendar, CheckCircle, Truck } from "lucide-react";
@@ -13,9 +13,9 @@ import {
 	DialogClose,
 } from "~/components/ui/dialog";
 import { useGetPurchaseOrderById, useUpdatePurchaseOrder } from "~/hooks/use-purchase-order";
+import { useCreateDOToAdmin } from "~/hooks/use-delivery-document";
 import { PurchaseOrderDetails } from "~/components/organism/order/purchase-order-details";
 import { DeliveryOrderModal } from "~/components/organism/order/delivery-order-modal";
-import { type PurchaseOrderWithRelations } from "~/zod/purchaseOrder.zod";
 import { toast } from "sonner";
 
 export default function supplierOrderDetailsPage() {
@@ -26,6 +26,7 @@ export default function supplierOrderDetailsPage() {
 	});
 
 	const { mutate: updatePurchaseOrder, isPending: isUpdating } = useUpdatePurchaseOrder();
+	const { mutate: createDOToAdmin, isPending: isCreatingDO } = useCreateDOToAdmin();
 	const [showDeliveryOrderModal, setShowDeliveryOrderModal] = useState(false);
 
 	const deliveryOrderId = purchaseOrder?.deliveryDocuments?.find(
@@ -75,6 +76,17 @@ export default function supplierOrderDetailsPage() {
 		);
 	};
 
+	const handleCreateDO = () => {
+		createDOToAdmin(purchaseOrder.id, {
+			onSuccess: () => {
+				toast.success("Delivery Order created successfully");
+			},
+			onError: (error) => {
+				toast.error(`Failed to create delivery order: ${error.message}`);
+			},
+		});
+	};
+
 	return (
 		<div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
 			{/* Header */}
@@ -116,12 +128,11 @@ export default function supplierOrderDetailsPage() {
 									Confirm PO
 								</Button>
 							</DialogTrigger>
-							<DialogContent>
+							<DialogContent className="sm:max-w-md">
 								<DialogHeader>
 									<DialogTitle>Confirm Purchase Order</DialogTitle>
 									<DialogDescription>
-										After confirming this purchase order, it will automatically
-										create a delivery order.
+										Are you sure you want to confirm this purchase order?
 									</DialogDescription>
 								</DialogHeader>
 								<DialogFooter>
@@ -131,7 +142,7 @@ export default function supplierOrderDetailsPage() {
 									<Button
 										onClick={handleConfirmPO}
 										disabled={isUpdating}
-										className="bg-green-600 hover:bg-green-700 text-white">
+										className="bg-primary hover:bg-primary/90 text-primary-foreground">
 										{isUpdating && (
 											<Loader2 className="h-4 w-4 animate-spin mr-2" />
 										)}
@@ -140,6 +151,19 @@ export default function supplierOrderDetailsPage() {
 								</DialogFooter>
 							</DialogContent>
 						</Dialog>
+					)}
+					{purchaseOrder.status === "CONFIRMED" && !deliveryOrderId && (
+						<Button
+							disabled={isCreatingDO}
+							className="gap-2 rounded-full h-9 bg-primary hover:bg-primary/90 text-primary-foreground"
+							onClick={handleCreateDO}>
+							{isCreatingDO ? (
+								<Loader2 className="h-4 w-4 animate-spin" />
+							) : (
+								<Truck className="h-4 w-4" />
+							)}
+							Create DO
+						</Button>
 					)}
 					{purchaseOrder.status === "CONFIRMED" && deliveryOrderId && (
 						<Button
