@@ -101,10 +101,18 @@ export const useCreateDRFromSupplier = () => {
 		mutationFn: ({ doId, data }: { doId: string; data?: CreateDRFromSupplier }) => {
 			return deliveryDocumentService.createDRFromSupplier({ doId, data });
 		},
-		onSuccess: (_response, variables) => {
+		onSuccess: (response, variables) => {
 			queryClient.invalidateQueries({ queryKey: ["delivery-documents"] });
 			queryClient.invalidateQueries({ queryKey: ["delivery-document-by-id", variables.doId] });
 			queryClient.invalidateQueries({ queryKey: ["purchase-orders"] });
+			queryClient.invalidateQueries({ queryKey: ["orders"] });
+			queryClient.invalidateQueries({ queryKey: ["order-by-id"] });
+			const orderId = response?.deliveryReceipt?.orderId;
+			if (orderId) {
+				queryClient.invalidateQueries({ queryKey: ["order-tracking", orderId] });
+			} else {
+				queryClient.invalidateQueries({ queryKey: ["order-tracking"] });
+			}
 		},
 	});
 };

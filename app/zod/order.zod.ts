@@ -232,6 +232,12 @@ export type OrderApprovalWithLegacyFields = OrderApproval & {
 	approvalLevel?: number;
 };
 
+export type OrderDeliveryDocumentSummary = {
+	id: string;
+	documentType: "DELIVERY_ORDER" | "DELIVERY_RECEIPT";
+	transferStage: "VENDOR_TO_ADMIN" | "ADMIN_TO_CLIENT";
+};
+
 export interface OrderWithRelation extends Order {
 	organizationId?: string | null;
 	userType?: z.infer<typeof UserTypeEnum>;
@@ -239,7 +245,12 @@ export interface OrderWithRelation extends Order {
 	orderItems?: OrderItemWithRelation[];
 	workflow?: ApprovalWorkflow | null;
 	approvals?: OrderApprovalWithLegacyFields[];
-	purchaseOrders?: PurchaseOrder[];
+	purchaseOrders?: Array<
+		PurchaseOrder & {
+			deliveryDocuments?: OrderDeliveryDocumentSummary[];
+		}
+	>;
+	deliveryDocuments?: OrderDeliveryDocumentSummary[];
 	user?:
 		| Pick<UserWithRelation, "id" | "email" | "userName"> & {
 				firstName?: string;
