@@ -1,25 +1,35 @@
-﻿import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Truck, CheckCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getOrderTimelineSteps, type OrderTimelineStep } from "~/lib/order-utils";
+import type { OrderWithRelation } from "~/zod/order.zod";
 
 interface OrderTimelineProps {
-	order: any;
+	order: OrderWithRelation;
 }
 
 export function OrderTimeline({ order }: OrderTimelineProps) {
+	const formatDate = (value?: Date | string | null) => {
+		if (!value) {
+			return undefined;
+		}
+		const parsedDate = new Date(value);
+		if (Number.isNaN(parsedDate.getTime())) {
+			return undefined;
+		}
+		return parsedDate.toLocaleDateString();
+	};
+
+	const timelineSteps = getOrderTimelineSteps(order);
+
 	const TimelineItem = ({
 		title,
 		date,
 		description,
 		isActive,
 		isCompleted,
-	}: {
-		title: string;
-		date?: string;
-		description: string;
-		isActive?: boolean;
-		isCompleted?: boolean;
-	}) => (
+		tone = "default",
+	}: OrderTimelineStep) => (
 		<div className="relative pl-6 pb-6 last:pb-0 group">
 			{/* Line */}
 			<div className="absolute left-[9px] top-3 h-full w-0.5 bg-muted group-last:hidden" />
@@ -29,9 +39,17 @@ export function OrderTimeline({ order }: OrderTimelineProps) {
 				className={cn(
 					"absolute left-0 top-1 h-5 w-5 rounded-full border-2 flex items-center justify-center transition-colors z-10",
 					isCompleted
-						? "bg-primary border-primary text-primary-foreground"
+						? tone === "danger"
+							? "bg-red-600 border-red-600 text-white"
+							: tone === "warning"
+								? "bg-orange-500 border-orange-500 text-white"
+								: "bg-primary border-primary text-primary-foreground"
 						: isActive
-							? "border-primary bg-background text-primary"
+							? tone === "danger"
+								? "border-red-600 bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-300"
+								: tone === "warning"
+									? "border-orange-500 bg-orange-50 text-orange-700 dark:bg-orange-950/30 dark:text-orange-300"
+									: "border-primary bg-background text-primary"
 							: "border-muted bg-muted text-muted-foreground",
 				)}>
 				{isCompleted ? (
@@ -42,10 +60,19 @@ export function OrderTimeline({ order }: OrderTimelineProps) {
 			</div>
 
 			<div className="space-y-1">
-				<p className={cn("text-sm font-medium leading-none", isActive && "text-primary")}>
+				<p
+					className={cn(
+						"text-sm font-medium leading-none",
+						isActive &&
+							(tone === "danger"
+								? "text-red-700 dark:text-red-300"
+								: tone === "warning"
+									? "text-orange-700 dark:text-orange-300"
+									: "text-primary"),
+					)}>
 					{title}
 				</p>
-				{date && <p className="text-xs text-muted-foreground">{date}</p>}
+				{date && <p className="text-xs text-muted-foreground">{formatDate(date)}</p>}
 				<p className="text-sm text-muted-foreground">{description}</p>
 			</div>
 		</div>
@@ -61,43 +88,11 @@ export function OrderTimeline({ order }: OrderTimelineProps) {
 			</CardHeader>
 			<CardContent>
 				<div className="pt-2">
-					<TimelineItem
-						title="Order Placed"
-						date={
-							order.orderDate ? new Date(order.orderDate).toLocaleDateString() : "N/A"
-						}
-						description="Customer placed the order."
-						isCompleted={true}
-					/>
-					<TimelineItem
-						title="Verified & Approved"
-						description="Order approved by supplier."
-						isCompleted={["APPROVED", "PROCESSING", "SHIPPED", "DELIVERED"].includes(
-							order.status,
-						)}
-						isActive={order.status === "PENDING_APPROVAL"}
-					/>
-					<TimelineItem
-						title="Processing"
-						description="Items are being packed."
-						isCompleted={["PROCESSING", "SHIPPED", "DELIVERED"].includes(order.status)}
-						isActive={order.status === "APPROVED"}
-					/>
-					<TimelineItem
-						title="Shipped"
-						description="Package is on its way."
-						isCompleted={["SHIPPED", "DELIVERED"].includes(order.status)}
-						isActive={order.status === "PROCESSING"}
-					/>
-					<TimelineItem
-						title="Delivered"
-						description="Package received by customer."
-						isCompleted={order.status === "DELIVERED"}
-						isActive={order.status === "SHIPPED"}
-					/>
+					{timelineSteps.map(({ key, ...step }) => (
+						<TimelineItem key={key} {...step} />
+					))}
 				</div>
 			</CardContent>
 		</Card>
 	);
 }
-

@@ -8,6 +8,10 @@ import { DataTable, type DataTableColumn } from "@/components/molecule/data-tabl
 // import { useGetOrders } from "~/hooks/use-order";
 import { useGetOrders } from "~/hooks/use-order";
 import type { Order } from "~/zod/order.zod";
+import {
+	getOrderStatusBadgeClass,
+	getOrderStatusLabel,
+} from "~/lib/order-utils";
 
 export default function AdminOrdersPage() {
 	const navigate = useNavigate();
@@ -27,25 +31,6 @@ export default function AdminOrdersPage() {
 
 	const orders = ordersResponse?.orders || [];
 	const totalDocs = ordersResponse?.count || 0;
-
-	const getStatusColor = (status: string) => {
-		switch (status) {
-			case "PENDING_APPROVAL":
-				return "bg-yellow-500 hover:bg-yellow-600";
-			case "APPROVED":
-				return "bg-emerald-500 hover:bg-emerald-600";
-			case "PROCESSING":
-				return "bg-purple-500 hover:bg-purple-600";
-			case "SHIPPED":
-				return "bg-indigo-500 hover:bg-indigo-600";
-			case "DELIVERED":
-				return "bg-green-500 hover:bg-green-600";
-			case "CANCELLED":
-				return "bg-red-500 hover:bg-red-600";
-			default:
-				return "bg-gray-500 hover:bg-gray-600";
-		}
-	};
 
 	const handleViewDetails = (order: Order) => {
 		// Navigate to admin order details
@@ -109,14 +94,16 @@ export default function AdminOrdersPage() {
 			filterOptions: [
 				{ label: "Pending", value: "PENDING_APPROVAL" },
 				{ label: "Approved", value: "APPROVED" },
+				{ label: "Rejected", value: "REJECTED" },
 				{ label: "Processing", value: "PROCESSING" },
 				{ label: "Shipped", value: "SHIPPED" },
 				{ label: "Delivered", value: "DELIVERED" },
 				{ label: "Cancelled", value: "CANCELLED" },
+				{ label: "Returned", value: "RETURNED" },
 			],
 			render: (value) => (
-				<Badge className={getStatusColor(String(value))}>
-					{String(value).replace("_", " ").toLowerCase()}
+				<Badge className={getOrderStatusBadgeClass(String(value))}>
+					{getOrderStatusLabel(String(value))}
 				</Badge>
 			),
 		},

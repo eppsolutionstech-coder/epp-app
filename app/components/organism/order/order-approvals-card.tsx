@@ -10,7 +10,7 @@ import { toast } from "sonner";
 interface OrderApprovalsCardProps {
 	approvals: Array<{
 		id: string;
-		approvalLevel: number;
+		approvalLevel?: number;
 		approverRole: string;
 		approverId: string;
 		approverName: string;
@@ -21,7 +21,9 @@ interface OrderApprovalsCardProps {
 
 export function OrderApprovalsCard({ approvals = [] }: OrderApprovalsCardProps) {
 	const { user } = useAuth();
-	const sortedApprovals = [...approvals].sort((a, b) => a.approvalLevel - b.approvalLevel);
+	const sortedApprovals = [...approvals].sort(
+		(a, b) => (a.approvalLevel ?? 0) - (b.approvalLevel ?? 0),
+	);
 
 	const getStatusColor = (status: string) => {
 		switch (status) {

@@ -2,10 +2,8 @@ import { useState } from "react";
 import { useParams, Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, FileText, Loader2 } from "lucide-react";
-import { toast } from "sonner";
 import { useGetOrderById } from "~/hooks/use-order";
 
-// New Component Imports
 import { OrderItemsList } from "@/components/organism/order/order-items-list";
 import { CustomerDetailsCard } from "@/components/organism/order/customer-details-card";
 import { PaymentDetailsCard } from "@/components/organism/order/payment-details-card";
@@ -14,40 +12,51 @@ import { OrderApprovalsCard } from "@/components/organism/order/order-approvals-
 import { OrderTimeline } from "@/components/organism/order/order-timeline";
 import { PurchaseOrderModal } from "@/components/organism/order/purchase-order-modal";
 
+const ORDER_DETAIL_FIELDS = [
+	"id",
+	"orderNumber",
+	"userId",
+	"status",
+	"orderDate",
+	"approvedAt",
+	"rejectedAt",
+	"cancelledDate",
+	"shippedDate",
+	"deliveredDate",
+	"updatedAt",
+	"paymentType",
+	"paymentMethod",
+	"installmentMonths",
+	"installmentCount",
+	"installmentAmount",
+	"subtotal",
+	"tax",
+	"total",
+	"orderItems.id",
+	"orderItems.quantity",
+	"orderItems.unitPrice",
+	"orderItems.subtotal",
+	"orderItems.item.supplier.name",
+	"orderItems.item.name",
+	"orderItems.item.sku",
+	"orderItems.item.images",
+	"approvals.id",
+	"approvals.approvalLevel",
+	"approvals.approverRole",
+	"approvals.approverId",
+	"approvals.approverName",
+	"approvals.approverEmail",
+	"approvals.status",
+	"purchaseOrders.id",
+].join(",");
+
 export default function AdminOrderDetailsPage() {
 	const { id } = useParams();
 	const [isPOModalOpen, setIsPOModalOpen] = useState(false);
 
-	// Cast to any to handle relations not in the base Zod schema
-	const { data: orderResponse, isLoading } = useGetOrderById(id!, {
-		fields: "id, orderNumber, userId, status, orderDate, paymentType, paymentMethod, installmentMonths, installmentCount, installmentAmount, subtotal, tax, total, orderItems.id, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.supplier.name	, orderItems.item.name, orderItems.item.sku, orderItems.item.images, approvals.id, approvals.approvalLevel, approvals.approverRole, approvals.approverId, approvals.approverName, approvals.approverEmail, approvals.status, purchaseOrders",
+	const { data: order, isLoading } = useGetOrderById(id ?? "", {
+		fields: ORDER_DETAIL_FIELDS,
 	});
-
-	const order = orderResponse as any;
-
-	const getStatusColor = (status: string) => {
-		switch (status) {
-			case "PENDING_APPROVAL":
-				return "bg-yellow-500 hover:bg-yellow-600";
-			case "APPROVED":
-				return "bg-emerald-500 hover:bg-emerald-600";
-			case "PROCESSING":
-				return "bg-purple-500 hover:bg-purple-600";
-			case "SHIPPED":
-				return "bg-indigo-500 hover:bg-indigo-600";
-			case "DELIVERED":
-				return "bg-green-500 hover:bg-green-600";
-			case "CANCELLED":
-				return "bg-red-500 hover:bg-red-600";
-			default:
-				return "bg-gray-500 hover:bg-gray-600";
-		}
-	};
-
-	const handleStatusUpdate = (newStatus: string) => {
-		// In a real app, this would be a mutation
-		toast.success(`Order marked as ${newStatus}`);
-	};
 
 	if (isLoading) {
 		return (
@@ -71,9 +80,8 @@ export default function AdminOrderDetailsPage() {
 		);
 	}
 
-	const orderItems = order.orderItems || [];
+	const orderItems = order.orderItems ?? [];
 
-	// Header Component
 	const PageHeader = () => (
 		<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
 			<div className="flex items-center gap-4">
@@ -91,7 +99,7 @@ export default function AdminOrderDetailsPage() {
 				</div>
 			</div>
 			<div className="flex items-center gap-2">
-				{order.purchaseOrders?.length > 0 ? (
+				{order.purchaseOrders?.length ? (
 					<Button
 						variant="outline"
 						className="gap-2 rounded-full h-9"
@@ -117,22 +125,20 @@ export default function AdminOrderDetailsPage() {
 			<PurchaseOrderModal
 				open={isPOModalOpen}
 				onOpenChange={setIsPOModalOpen}
-				purchaseOrderId={order.purchaseOrders[0]?.id}
+				purchaseOrderId={order.purchaseOrders?.[0]?.id}
 			/>
 
 			<div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-				{/* MAIN CONTENT - Left Side (8 cols) */}
 				<div className="md:col-span-8 flex flex-col gap-4">
 					<OrderItemsList items={orderItems} />
 					<CustomerDetailsCard user={order.user} />
 					<PaymentDetailsCard order={order} />
 				</div>
 
-				{/* RIGHT SIDEBAR (4 cols) */}
 				<div className="md:col-span-4 flex flex-col gap-4">
 					<div className="space-y-4">
-						<OrderStatusCard order={order} getStatusColor={getStatusColor} />
-						<OrderApprovalsCard approvals={order.approvals} />
+						<OrderStatusCard order={order} />
+						<OrderApprovalsCard approvals={order.approvals ?? []} />
 						<OrderTimeline order={order} />
 					</div>
 				</div>

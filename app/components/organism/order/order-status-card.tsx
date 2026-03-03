@@ -3,19 +3,19 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+	getOrderStatusBadgeClass,
+	getOrderStatusLabel,
+	getOrderStatusMessage,
+	getOrderStatusSurfaceClass,
+} from "~/lib/order-utils";
+import type { OrderWithRelation } from "~/zod/order.zod";
 
 interface OrderStatusCardProps {
-	order: any;
-	getStatusColor: (status: string) => string;
+	order: OrderWithRelation;
 }
 
-export function OrderStatusCard({ order, getStatusColor }: OrderStatusCardProps) {
-	const isPending = order.status === "PENDING_APPROVAL";
-	const isApproved = order.status === "APPROVED";
-	const isProcessing = order.status === "PROCESSING";
-	const isShipped = order.status === "SHIPPED";
-	const isDelivered = order.status === "DELIVERED";
-
+export function OrderStatusCard({ order }: OrderStatusCardProps) {
 	return (
 		<Card className="rounded-xl border-none shadow-sm bg-card ring-1 ring-border/50">
 			<CardHeader className="pb-3">
@@ -54,32 +54,20 @@ export function OrderStatusCard({ order, getStatusColor }: OrderStatusCardProps)
 					<div
 						className={cn(
 							"rounded-lg p-4 border",
-							isPending
-								? "bg-yellow-50/50 border-yellow-200 dark:border-yellow-900/30 dark:bg-yellow-900/10"
-								: isApproved
-									? "bg-emerald-50/50 border-emerald-200 dark:border-emerald-900/30 dark:bg-emerald-900/10"
-									: isProcessing
-										? "bg-purple-50/50 border-purple-200 dark:border-purple-900/30 dark:bg-purple-900/10"
-										: isShipped
-											? "bg-indigo-50/50 border-indigo-200 dark:border-indigo-900/30 dark:bg-indigo-900/10"
-											: isDelivered
-												? "bg-green-50/50 border-green-200 dark:border-green-900/30 dark:bg-green-900/10"
-												: "bg-muted/50 border-border",
+							getOrderStatusSurfaceClass(order.status),
 						)}>
 						<div className="flex flex-col gap-2">
 							<Badge
 								className={cn(
 									"w-fit text-sm py-0.5 px-3 h-auto shadow-none",
-									getStatusColor(order.status || ""),
+									getOrderStatusBadgeClass(order.status),
 									"border-none text-white",
 								)}>
-								{order.status?.replace("_", " ") || "Unknown Status"}
+								{getOrderStatusLabel(order.status)}
 							</Badge>
-							{isPending && (
-								<p className="text-xs text-muted-foreground leading-tight">
-									This order requires your approval before processing.
-								</p>
-							)}
+							<p className="text-xs text-muted-foreground leading-tight">
+								{getOrderStatusMessage(order.status)}
+							</p>
 						</div>
 					</div>
 				</div>
