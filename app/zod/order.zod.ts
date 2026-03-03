@@ -259,3 +259,51 @@ export type GetAllOrders = {
 	pagination: z.infer<typeof PaginationSchema>;
 	count: number;
 };
+
+export const TrackingStageEnum = z.enum([
+	"ORDER_CREATED",
+	"ORDER_APPROVED",
+	"PURCHASE_ORDER_CREATED",
+	"SUPPLIER_DELIVERY_ORDER",
+	"ADMIN_RECEIVED_FROM_SUPPLIER",
+	"ADMIN_DELIVERY_ORDER",
+	"CLIENT_RECEIVED",
+]);
+
+export const CurrentStageEnum = z.enum([
+	"ORDER_PLACED",
+	"ORDER_APPROVED",
+	"PURCHASE_ORDER_CREATED",
+	"SUPPLIER_DELIVERY_ORDER",
+	"ADMIN_RECEIVED_FROM_SUPPLIER",
+	"ADMIN_DELIVERY_ORDER",
+	"CLIENT_RECEIVED",
+	"CANCELLED",
+	"REJECTED",
+	"RETURNED",
+]);
+
+export type TrackingStage = z.infer<typeof TrackingStageEnum>;
+export type CurrentStage = z.infer<typeof CurrentStageEnum>;
+
+export type TrackingEvent = {
+	step: number;
+	stage: TrackingStage;
+	label: string;
+	description: string;
+	date: Date | string | null;
+	referenceId: string | null;
+	referenceNumber: string | null;
+	completed: boolean;
+	active: boolean;
+	metadata?: Record<string, unknown>;
+};
+
+export type OrderTrackingResponse = {
+	orderId: string;
+	orderNumber: string;
+	status: OrderStatus;
+	currentStage: CurrentStage;
+	currentStageLabel: string;
+	tracking: TrackingEvent[];
+};

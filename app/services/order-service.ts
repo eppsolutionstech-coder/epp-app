@@ -1,7 +1,13 @@
 import { APIService } from "./api-service";
 import { apiClient, type ApiResponse } from "~/lib/api-client";
 import { API_ENDPOINTS } from "~/configs/endpoints";
-import type { GetAllOrders, OrderWithRelation, CreateOrder, UpdateOrder } from "~/zod/order.zod";
+import type {
+	GetAllOrders,
+	OrderWithRelation,
+	CreateOrder,
+	UpdateOrder,
+	OrderTrackingResponse,
+} from "~/zod/order.zod";
 
 const { ORDER } = API_ENDPOINTS;
 
@@ -23,6 +29,19 @@ class OrderService extends APIService {
 		try {
 			const response: ApiResponse<OrderWithRelation> = await apiClient.get(
 				`${ORDER.GET_BY_ID.replace(":id", orderId)}${this.getQueryString()}`,
+			);
+			return response.data;
+		} catch (error: any) {
+			throw new Error(
+				error.data?.errors?.[0]?.message || error.message || "An error has occurred",
+			);
+		}
+	};
+
+	getOrderTracking = async (orderId: string) => {
+		try {
+			const response: ApiResponse<OrderTrackingResponse> = await apiClient.get(
+				ORDER.GET_TRACKING.replace(":id", orderId),
 			);
 			return response.data;
 		} catch (error: any) {

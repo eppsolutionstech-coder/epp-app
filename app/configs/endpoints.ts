@@ -56,6 +56,7 @@
 	ORDER: {
 		GET_ALL: "/order",
 		GET_BY_ID: "/order/:id",
+		GET_TRACKING: "/order/:id/tracking",
 		CREATE: "/order",
 		UPDATE: "/order/:id",
 		DELETE: "/order/:id", // Soft delete

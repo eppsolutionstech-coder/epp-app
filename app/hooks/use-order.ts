@@ -33,6 +33,16 @@ export const useGetOrderById = (orderId: string, apiParams?: ApiQueryParams) => 
 	});
 };
 
+export const useGetOrderTracking = (orderId: string) => {
+	return useQuery({
+		queryKey: ["order-tracking", orderId],
+		queryFn: () => {
+			return orderService.getOrderTracking(orderId);
+		},
+		enabled: !!orderId,
+	});
+};
+
 export const useCreateOrder = () => {
 	return useMutation({
 		mutationFn: (data: CreateOrder) => {

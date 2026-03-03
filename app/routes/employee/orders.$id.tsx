@@ -14,7 +14,7 @@ import {
 	Truck,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import { useGetOrderById } from "~/hooks/use-order";
+import { useGetOrderById, useGetOrderTracking } from "~/hooks/use-order";
 
 export default function OrderDetailsPage() {
 	const { id } = useParams();
@@ -22,6 +22,7 @@ export default function OrderDetailsPage() {
 	const { data: orderData, isLoading } = useGetOrderById(id!, {
 		fields: "id, orderNumber, userId, status, orderItems.id, orderItems.item.name, orderItems.quantity, orderItems.unitPrice, orderItems.subtotal, orderItems.item.images, subtotal, tax, total, paymentType, installmentMonths, installmentCount, installmentAmount, paymentMethod, paymentStatus, orderDate, installments.status",
 	});
+	const { data: trackingData, isLoading: isTrackingLoading } = useGetOrderTracking(id ?? "");
 
 	const order = orderData as any;
 
@@ -33,14 +34,7 @@ export default function OrderDetailsPage() {
 		return <div>Order not found</div>;
 	}
 
-	// Mock timeline as requested
-	const timeline = [
-		{
-			date: order.orderDate,
-			title: "Order Placed",
-			description: "Order has been created and is pending approval.",
-		},
-	];
+	const timeline = trackingData?.tracking ?? [];
 
 	const formatCurrency = (amount: number) => {
 		return new Intl.NumberFormat("en-PH", {
@@ -182,24 +176,45 @@ export default function OrderDetailsPage() {
 								<Truck className="h-5 w-5 text-primary" />
 								Order Status
 							</CardTitle>
+							{trackingData?.currentStageLabel && (
+								<CardDescription>
+									Current stage: {trackingData.currentStageLabel}
+								</CardDescription>
+							)}
 						</CardHeader>
 						<CardContent>
-							<div className="space-y-6 relative pl-4 border-l-2 border-muted ml-2">
-								{timeline.map((event, index) => (
-									<div key={index} className="relative">
-										<div className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-primary ring-4 ring-background" />
-										<div className="space-y-1">
-											<p className="font-medium text-sm">{event.title}</p>
-											<p className="text-xs text-muted-foreground">
-												{new Date(event.date.toString()).toLocaleString()}
-											</p>
-											<p className="text-sm text-muted-foreground">
-												{event.description}
-											</p>
+							{isTrackingLoading ? (
+								<p className="text-sm text-muted-foreground">Loading tracking...</p>
+							) : timeline.length === 0 ? (
+								<p className="text-sm text-muted-foreground">No tracking data yet.</p>
+							) : (
+								<div className="space-y-6 relative pl-4 border-l-2 border-muted ml-2">
+									{timeline.map((event) => (
+										<div key={`${event.step}-${event.stage}`} className="relative">
+											<div
+												className={`absolute -left-[21px] top-1 h-3 w-3 rounded-full ${
+													event.completed
+														? "bg-primary ring-4 ring-background"
+														: event.active
+															? "bg-background border-2 border-primary ring-4 ring-background"
+															: "bg-muted ring-4 ring-background"
+												}`}
+											/>
+											<div className="space-y-1">
+												<p className="font-medium text-sm">{event.label}</p>
+												<p className="text-xs text-muted-foreground">
+													{event.date
+														? new Date(event.date.toString()).toLocaleString()
+														: "Pending"}
+												</p>
+												<p className="text-sm text-muted-foreground">
+													{event.description}
+												</p>
+											</div>
 										</div>
-									</div>
-								))}
-							</div>
+									))}
+								</div>
+							)}
 						</CardContent>
 					</Card>
 				</div>
